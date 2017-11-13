@@ -20,12 +20,13 @@ public class CameraMove : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        var instance = CameraStateManager.GetInstance;
+        var instance = PlayerStateManager.GetInstance;
         instance.GroundTp.c_exeDelegate = GroundMove;
         instance.TreeTp.c_exeDelegate = TreeTpMove;
         instance.TreeFp.c_exeDelegate = TreeFpMove;
         instance.JumpTp.c_exeDelegate = JumpTpMove;
-        g_distance = Vector3.Distance(transform.position, Camera.main.transform.position) * 1.2f;
+        instance.StringTp.c_exeDelegate = TreeTpMove;
+        g_distance = Vector3.Distance(transform.position, Camera.main.transform.position) * 1.1f;
         t_distance = g_distance * 2f;
     }
 
@@ -52,21 +53,17 @@ public class CameraMove : MonoBehaviour
         //    transform.RotateAround(target_pos, transform.right, -rotate_Speed * Time.deltaTime);
         //}
         Color current_color = m_target.transform.GetChild(0).GetComponent<Renderer>().material.color;
-        m_target.transform.GetChild(0).GetComponent<Renderer>().material.color = new Color(1, 1, 1, Mathf.Lerp(current_color.a, 1f, 0.2f));
-
-
-
+        m_target.transform.GetChild(0).GetComponent<Renderer>().material.color 
+            = new Color(current_color.r, current_color.g, current_color.b, Mathf.Lerp(current_color.a, 1f, 0.2f));
     }
 
     void GroundMove()
     {
-        //transform.position = Vector3.Lerp(transform.position, target_pos, 0.5f);
-
         if (Vector3.Distance(transform.position, Camera.main.transform.position) > g_distance)
         {
             Vector3 to_pos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z - g_distance);
             Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, to_pos, 0.2f);
-            Camera.main.transform.LookAt(transform.position);
+            //Camera.main.transform.LookAt(transform.position);
         }
     }
 
@@ -79,18 +76,20 @@ public class CameraMove : MonoBehaviour
             Camera.main.transform.position = Vector3.Lerp(c_transform.position, to_pos, 0.3f);
         }
 
-        float a;
-        //自機とカメラの間に壁があるとカメラを自機によせる
+        //自機とカメラの間に木があるとカメラを自機によせる
+        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         RaycastHit hit;
         if (Physics.Raycast(
             target_pos,
             Camera.main.transform.position - target_pos,
             out hit,
-            a = Vector3.Distance(Camera.main.transform.position, target_pos)))
+            Vector3.Distance(Camera.main.transform.position, target_pos),
+            treeLayer))
         {
             Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, hit.point, 0.5f);
             Color current_color = m_target.transform.GetChild(0).GetComponent<Renderer>().material.color;
-            m_target.transform.GetChild(0).GetComponent<Renderer>().material.color = new Color(1, 1, 1, Mathf.Lerp(current_color.a, 0f, 0.2f));
+            m_target.transform.GetChild(0).GetComponent<Renderer>().material.color
+                = new Color(current_color.r, current_color.g, current_color.b, Mathf.Lerp(current_color.a, 0.0f, 0.2f));
         }
     }
 
