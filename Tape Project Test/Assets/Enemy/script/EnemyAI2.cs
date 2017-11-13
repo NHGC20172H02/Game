@@ -8,7 +8,8 @@ public class EnemyAI2 : MonoBehaviour
     {
         A = 1 << 0,
         B = 1 << 1,
-        C = 1 << 2
+        C = 1 << 2,
+        D = 1 << 3
     }
     State state = State.A;
 
@@ -31,6 +32,7 @@ public class EnemyAI2 : MonoBehaviour
     float m_jumpSpeed = 17.0f;
     float wait_time;
     float move_time;
+    int ran;
 
     GameObject nearObj;
     GameObject nearObj2;
@@ -40,7 +42,9 @@ public class EnemyAI2 : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        m_targetPos = GetRandomPositionOnLevel();
+        //m_targetPos = GetRandomPositionOnLevel();
+        ran = Random.Range(1, 3);
+       
         insSpeed = m_speed;
     }
 
@@ -51,6 +55,17 @@ public class EnemyAI2 : MonoBehaviour
         nearObj2 = serchTag(this.gameObject, "Tree");
         //3番目のオブジェクト（木）
         nearObj3 = serchTag2(this.gameObject, "Tree");
+
+        if (ran == 1)
+        {
+            m_targetPos = GetPosition4();
+            ran = 0;
+        }
+        if (ran == 2)
+        {
+            m_targetPos = GetPosition5();
+            ran = 0;
+        }
 
         //下にRayを飛ばしす
         RaycastHit hit;
@@ -86,14 +101,22 @@ public class EnemyAI2 : MonoBehaviour
         Ray ray2 = new Ray(transform.position, transform.forward);
         if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit2, 0.5f, 1 << 10))
         {
-            if (hit.transform != this.transform)
-            {
-                transform.position = hit2.point;
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
+            //if (hit.transform != this.transform)
+            //{
+            //    transform.position = hit2.point;
+            //    transform.rotation = Quaternion.LookRotation(
+            //        Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
 
-                nearObj = hit2.collider.gameObject;
-            }
+            //    nearObj = hit2.collider.gameObject;
+            //}
+
+            transform.position = hit2.point;
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
+
+            nearObj = hit2.collider.gameObject;
+
+
             state = State.B;
         }
         //Ray ray4 = new Ray(transform.position, transform.forward);
@@ -119,11 +142,11 @@ public class EnemyAI2 : MonoBehaviour
             m_speed = insSpeed;
 
             //ランダム徘徊
-            float sprDistanceToTarget = Vector3.SqrMagnitude(transform.position - m_targetPos);
-            if (sprDistanceToTarget < 20)
-            {
-                m_targetPos = GetRandomPositionOnLevel();
-            }
+            //float sprDistanceToTarget = Vector3.SqrMagnitude(transform.position - m_targetPos);
+            //if (sprDistanceToTarget < 20)
+            //{
+            //    m_targetPos = GetRandomPositionOnLevel();
+            //}
 
             //ポジションの方に向く
             Quaternion targetRotation2 = Quaternion.LookRotation(m_targetPos - transform.position);
@@ -135,13 +158,13 @@ public class EnemyAI2 : MonoBehaviour
         //木にいるときの行動
         if (state == State.B)
         {
-            if (Physics.Raycast(ray3.origin, transform.position, out hit, 1 << 10))
-            {
-                if (hit.transform == nearObj2.transform)
-                {
-                    jump_target.point = hit.point;
-                }
-            }
+            //if (Physics.Raycast(ray3.origin, transform.position, out hit, 1 << 10))
+            //{
+            //    if (hit.transform == nearObj2.transform)
+            //    {
+            //        jump_target.point = hit.point;
+            //    }
+            //}
 
             m_speed = insSpeed;
 
@@ -156,7 +179,7 @@ public class EnemyAI2 : MonoBehaviour
                 wait_time += Time.deltaTime * 1;
                 if(wait_time >= 1 && wait_time < 2)
                 {
-                    transform.Translate(Vector3.forward * m_speed * Time.deltaTime);
+                    //transform.Translate(Vector3.forward * m_speed * Time.deltaTime);
                 }
 
                 if (wait_time >= 3)
@@ -185,20 +208,21 @@ public class EnemyAI2 : MonoBehaviour
             }
         }
 
-        //空中移動
+        //空中移動の瞬間
         if (state == State.C)
         {
             wait_time = 0;
-            tmp = m_targetPos;
-
+            tmp = m_targetPos; 
 
             //移動先と自分の間のray
             if (Physics.Raycast(m_targetPos, this.transform.position - m_targetPos, out hit))
             {
+               
                 //ヒットした場所のポイント
                 if (hit.transform == nearObj2.transform)
                 {
                     tmp = hit.point;
+                    jump_target.point = hit.point;
                 }
                 if (hit.transform == nearObj3.transform)
                 {
@@ -208,28 +232,46 @@ public class EnemyAI2 : MonoBehaviour
                 
                 if (hit.transform != gameObject.transform)
                 {
-                    Debug.Log("tree");
                     m_treeLeave = 0;
                     state = State.B;
                 }
                 if (hit.transform == gameObject.transform) //飛びたいところの間に障害物がなければ
                 {
-                    if (Vector3.Distance(transform.position, jump_target.point) < 0.5f)
-                    {
-                        transform.position = tmp;
-                        transform.rotation = Quaternion.LookRotation(
-                            Vector3.Cross(transform.right, jump_target.normal), jump_target.normal);
-                    }
-                    transform.position = Vector3.Slerp(transform.position, tmp, 0.06f);
+                    state = State.D;
 
-                    //ポジションの方に向く
-                    Quaternion targetRotation2 = Quaternion.LookRotation(tmp - transform.position);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * 10.0f);
+                    //if (Vector3.Distance(transform.position, jump_target.point) < 0.5f)
+                    //{
+                    //    transform.position = m_targetPos;
+                    //    transform.rotation = Quaternion.LookRotation(
+                    //        Vector3.Cross(transform.right, jump_target.normal), jump_target.normal);
+                    //}
+                    //transform.position = Vector3.Slerp(transform.position, tmp, 0.06f);
+
+                    ////ポジションの方に向く
+                    //Quaternion targetRotation2 = Quaternion.LookRotation(tmp - transform.position);
+                    //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * 10.0f);
                 }
-
-                jump_end = transform.position;
+                
                 //jump_end = tmp;
             }
+        }
+
+        //空中移動中
+        if(state == State.D)
+        {
+            if (Vector3.Distance(transform.position, jump_target.point) < 0.5f)
+            {
+                transform.position = m_targetPos;
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Cross(transform.right, jump_target.normal), jump_target.normal);
+            }
+            transform.position = Vector3.Slerp(transform.position, tmp, 0.06f);
+
+            //ポジションの方に向く
+            Quaternion targetRotation2 = Quaternion.LookRotation(tmp - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * 10.0f);
+
+            jump_end = transform.position;
         }
         
     }
@@ -350,6 +392,16 @@ public class EnemyAI2 : MonoBehaviour
     public Vector3 GetUpPosition3()
     {
         return new Vector3(nearObj3.transform.position.x, Random.Range(2, 20), nearObj3.transform.position.z);
+    }
+    //近くの木のポジション
+    public Vector3 GetPosition4()
+    {
+        return new Vector3(nearObj2.transform.position.x, nearObj2.transform.position.y, nearObj2.transform.position.z);
+    }
+    //２番目の近くの木のポジション
+    public Vector3 GetPosition5()
+    {
+        return new Vector3(nearObj3.transform.position.x, nearObj2.transform.position.y, nearObj3.transform.position.z);
     }
 
     void OnDrawGizmos()
