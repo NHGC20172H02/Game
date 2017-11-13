@@ -29,7 +29,7 @@ public class ResultTimer : MonoBehaviour {
             r_Count = 0;
         }
 
-        if (/*r_Count == 0 ||*/ Input.GetKeyDown(KeyCode.T))
+        if (r_Count == 0 || Input.GetKeyDown(KeyCode.T))
         {
             SceneManager.LoadScene("Title");
         }

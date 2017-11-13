@@ -7,8 +7,9 @@ public class Sample : MonoBehaviour
 {
 
     public static int score = 0;
+	public static int scoreB = 0;
 
-    public static int getscore()
+	public static int getscore()
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
