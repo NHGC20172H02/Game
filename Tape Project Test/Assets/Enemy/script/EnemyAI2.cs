@@ -55,49 +55,57 @@ public class EnemyAI2 : MonoBehaviour
         //下にRayを飛ばしす
         RaycastHit hit;
         Ray ray = new Ray(transform.position, -transform.up);
-        if (Physics.SphereCast(ray, 0.5f, out hit, 1))
+        if (Physics.SphereCast(ray, 0.5f, out hit, 0.5f))
         {
-            if (hit.transform != this.transform)
+            //if (hit.transform != this.transform)
+            //{
+            //    transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            //    Quaternion qu = Quaternion.FromToRotation(transform.up, hit.normal);
+            //    transform.rotation *= qu;
+
+            //    nearObj = hit.collider.gameObject;
+            //}
+
+            if (hit.transform.tag == "Tree")
             {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.1f);
-                //transform.position = hit.point;
+                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
                 Quaternion qu = Quaternion.FromToRotation(transform.up, hit.normal);
                 transform.rotation *= qu;
 
                 nearObj = hit.collider.gameObject;
             }
+            if (hit.transform.name == "Plane")
+            {
+                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+                Quaternion qu = Quaternion.FromToRotation(transform.up, hit.normal);
+                transform.rotation *= qu;
+            }
         }
         //前にRayを出す
         RaycastHit hit2;
-        //Ray ray2 = new Ray(transform.position, transform.forward);
-        //if (Physics.SphereCast(transform.position, 0.7f, transform.forward, out hit2, 1, 1 << 10))
-        //{
-        //    if (hit.transform != this.transform)
-        //    {
-        //        transform.position = hit2.point;
-        //        transform.rotation = Quaternion.LookRotation(
-        //            Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
-
-        //        nearObj = hit2.collider.gameObject;
-        //        //糸を貼る
-        //        //m_Shooter.StringShoot(jump_start, jump_end);
-        //    }
-        //    state = State.B;
-        //}
-
-        Ray ray4 = new Ray(transform.position, transform.forward);
-        if (Physics.SphereCast(ray4, 0.5f, out hit2, 1, 1 << 10))
+        Ray ray2 = new Ray(transform.position, transform.forward);
+        if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit2, 0.5f, 1 << 10))
         {
-            if (hit.collider != nearObj)
+            if (hit.transform != this.transform)
             {
                 transform.position = hit2.point;
                 transform.rotation = Quaternion.LookRotation(
                     Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
+
                 nearObj = hit2.collider.gameObject;
             }
-
             state = State.B;
         }
+        //Ray ray4 = new Ray(transform.position, transform.forward);
+        //if (Physics.SphereCast(ray4, 0.5f, out hit2, 1, 1 << 10))
+        //{
+        //    transform.position = hit2.point;
+        //    transform.rotation = Quaternion.LookRotation(
+        //        Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
+        //    nearObj = hit2.collider.gameObject;
+
+        //    state = State.B;
+        //}
 
 
         Ray ray3 = new Ray(m_targetPos, this.transform.position - m_targetPos);
@@ -164,6 +172,7 @@ public class EnemyAI2 : MonoBehaviour
             else if (m_treeLeave == 4) //乱数が４になったら
             {
                 wait_time += Time.deltaTime * 1;
+                
                 if (wait_time >= 2)
                 {
                     jump_start = this.transform.position;
@@ -199,10 +208,11 @@ public class EnemyAI2 : MonoBehaviour
                 
                 if (hit.transform != gameObject.transform)
                 {
+                    Debug.Log("tree");
                     m_treeLeave = 0;
                     state = State.B;
                 }
-                else if (hit.transform == gameObject.transform) //飛びたいところの間に障害物がなければ
+                if (hit.transform == gameObject.transform) //飛びたいところの間に障害物がなければ
                 {
                     if (Vector3.Distance(transform.position, jump_target.point) < 0.5f)
                     {
@@ -221,7 +231,7 @@ public class EnemyAI2 : MonoBehaviour
                 //jump_end = tmp;
             }
         }
-
+        
     }
 
     private void OnCollisionEnter(Collision col)
@@ -340,5 +350,10 @@ public class EnemyAI2 : MonoBehaviour
     public Vector3 GetUpPosition3()
     {
         return new Vector3(nearObj3.transform.position.x, Random.Range(2, 20), nearObj3.transform.position.z);
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(-transform.up * 0.2f + transform.position, 0.5f);
     }
 }
