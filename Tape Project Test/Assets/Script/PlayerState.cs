@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CameraState
+namespace PlayerState
 {
     public class StateProcessor
     {
-        private CameraState m_State;
-        public CameraState State
+        private PlayerState m_State;
+        public PlayerState State
         {
             get { return m_State; }
             set { m_State = value; }
@@ -26,7 +26,7 @@ namespace CameraState
         }
     }
 
-    public abstract class CameraState
+    public abstract class PlayerState
     {
         //デリゲート
         public delegate void executeState();
@@ -55,32 +55,44 @@ namespace CameraState
         public abstract string getStateName();
     }
 
-    public class GroundTp : CameraState
+    //地上にいる状態
+    public class GroundTp : PlayerState
     {
         public override string getStateName()
         {
             return "GroundTp";
         }
     }
-    public class TreeTp : CameraState
+    //木の上にいる状態（俯瞰）
+    public class TreeTp : PlayerState
     {
         public override string getStateName()
         {
             return "TreeTp";
         }
     }
-    public class TreeFp : CameraState
+    //木の上にいる状態（一人称視点）
+    public class TreeFp : PlayerState
     {
         public override string getStateName()
         {
             return "TreeFp";
         }
     }
-    public class JumpTp : CameraState
+    //ジャンプ中の状態
+    public class JumpTp : PlayerState
     {
         public override string getStateName()
         {
             return "JumpTp";
+        }
+    }
+    //糸の上にいる状態
+    public class StringTp : PlayerState
+    {
+        public override string getStateName()
+        {
+            return "StringTp";
         }
     }
 }

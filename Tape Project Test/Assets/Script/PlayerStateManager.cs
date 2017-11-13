@@ -1,19 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CameraState;
+using PlayerState;
 
-public class CameraStateManager : MonoBehaviour {
+public class PlayerStateManager : MonoBehaviour {
 
-    private static CameraStateManager stateManager;
-    public static CameraStateManager GetInstance
+    private static PlayerStateManager stateManager;
+    public static PlayerStateManager GetInstance
     {
         get
         {
             if (stateManager == null)
             {
-                GameObject g = new GameObject("CameraStateManager");
-                stateManager = g.AddComponent<CameraStateManager>();
+                GameObject g = new GameObject("PlayerStateManager");
+                stateManager = g.AddComponent<PlayerStateManager>();
             }
             return stateManager;
         }
@@ -45,6 +45,11 @@ public class CameraStateManager : MonoBehaviour {
     public JumpTp JumpTp
     {
         get { return m_JumpTp; }
+    }
+    private StringTp m_StringTp = new StringTp();
+    public StringTp StringTp
+    {
+        get { return m_StringTp; }
     }
 
 	// Use this for initialization
