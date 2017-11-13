@@ -7,7 +7,7 @@ public class StringShooter : MonoBehaviour {
 	public float m_Radius;
 	public GameObject m_Prefab;
 	public int m_SideNumber;
-	public int m_MaxCost;
+	public int m_MaxCost = 200;
 	public int m_Cost;
 	public Queue<StringUnit> m_Strings;
 
