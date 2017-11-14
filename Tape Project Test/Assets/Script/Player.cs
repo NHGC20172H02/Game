@@ -2,47 +2,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : Character
+{
+    public float m_speed = 1f;
 
-    [SerializeField]
-    float m_speed = 1f;
+    public float m_jumpLimit = 50f;
 
-    [SerializeField]
-    float m_jumpDistance = 50f;
+    public Canvas m_cursor;
 
-    [SerializeField]
-    LayerMask layerMask;
-
+    private RaycastHit m_hitinfo;
     private Vector3 jump_start;
     private Vector3 jump_end;
     private RaycastHit jump_target;         //ジャンプの対象
 
-	public StringShooter m_Shooter;
-	void Start () {
-        var instance = CameraStateManager.GetInstance;
+    public StringShooter m_Shooter;
+    protected override void Start()
+    {
+        var instance = PlayerStateManager.GetInstance;
         instance.GroundTp.p_exeDelegate = GroundMove;
         instance.TreeTp.p_exeDelegate = TreeTpMove;
         instance.TreeFp.p_exeDelegate = TreeFpMove;
         instance.JumpTp.p_exeDelegate = JumpTpMove;
-	}
-	
-	void Update () {
+        instance.StringTp.p_exeDelegate = StringTpMove;
+    }
+
+    protected override void Update()
+    {
 
     }
 
     //地面にいる場合の移動
     void GroundMove()
     {
-        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Camera.main.transform.forward, 0.3f));
+        m_cursor.gameObject.SetActive(false);
+        //RaycastHit m_hitinfo;
+        Vector3 start = transform.position + transform.up * 0.5f;
+        int layerMask = LayerMask.GetMask(new string[] { "Ground" });
+        Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, layerMask);
+
+        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, m_hitinfo.normal), 0.3f), m_hitinfo.normal);
         Vector3 move = Camera.main.transform.forward * Input.GetAxis("Vertical") + Camera.main.transform.right * Input.GetAxis("Horizontal");
         transform.Translate(move * Time.deltaTime * m_speed, Space.World);
 
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position + transform.up * 0.5f, transform.forward, out hit, 1))
+        if (Physics.Raycast(start, transform.forward, out m_hitinfo, 1))
         {
-            transform.position = hit.point;
-            transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.2f), hit.normal);
-            var instance = CameraStateManager.GetInstance;
+            transform.position = m_hitinfo.point;
+            transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, m_hitinfo.normal), 0.2f), m_hitinfo.normal);
+            var instance = PlayerStateManager.GetInstance;
             instance.StateProcassor.State = instance.TreeTp;
         }
     }
@@ -52,48 +58,30 @@ public class Player : MonoBehaviour {
     {
         RaycastHit hit;
         Vector3 start = transform.position + transform.up * 0.5f;
-        Physics.Raycast(start, -transform.up, out hit, 1);
+        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+        Physics.Raycast(start, -transform.up, out hit, 1, treeLayer);
 
-        transform.position = Vector3.Lerp(transform.position, hit.point, 0.5f);
-        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, hit.normal), 0.3f), hit.normal);
-        
+        var instance = PlayerStateManager.GetInstance;
+        if (hit.transform.tag == "Ground")
+        {
+            instance.StateProcassor.State = instance.GroundTp;
+        }
+
+        transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
         Vector3 forward = Vector3.Cross(Camera.main.transform.right, hit.normal);
+        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.3f), hit.normal);
+
         Vector3 move = forward * Input.GetAxis("Vertical") + Camera.main.transform.right * Input.GetAxis("Horizontal");
         transform.Translate(move * Time.deltaTime * m_speed, Space.World);
 
         //一人称視点変更
-        var instance = CameraStateManager.GetInstance;
         if (Input.GetKeyDown(KeyCode.L))
         {
             instance.StateProcassor.State = instance.TreeFp;
         }
 
-        start = transform.position + transform.up * 0.5f;
         Ray ray = new Ray(start, Camera.main.transform.forward);
-        //if (Physics.Raycast(ray, out jump_target, m_jumpDistance))
-        //{
-        //    if (hit.transform == jump_target.transform) return;
-
-        //    //ジャンプ
-        //    if (Input.GetKey(KeyCode.Space))
-        //    {
-        //        jump_start = transform.position;
-        //        jump_end = jump_target.point;
-        //        instance.StateProcassor.State = instance.JumpTp;
-        //    }
-        //}
-        if (Physics.SphereCast(ray, 2f, out jump_target, m_jumpDistance))
-        {
-            if (hit.transform == jump_target.transform) return;
-
-            //ジャンプ
-            if (Input.GetKey(KeyCode.Space))
-            {
-                jump_start = transform.position;
-                jump_end = jump_target.point;
-                instance.StateProcassor.State = instance.JumpTp;
-            }
-        }
+        Jump(ray, hit);
     }
 
     //木の上の一人称カメラ状態での操作
@@ -102,42 +90,60 @@ public class Player : MonoBehaviour {
         RaycastHit hit;
         Vector3 start = transform.position + transform.up * 0.5f;
         Physics.Raycast(start, -transform.up, out hit, 1);
-        var instance = CameraStateManager.GetInstance;
+        var instance = PlayerStateManager.GetInstance;
 
         if (Input.GetKeyDown(KeyCode.L))
         {
             instance.StateProcassor.State = instance.TreeTp;
         }
 
-        start = transform.position + transform.up * 0.5f;
         Ray ray = new Ray(start, Camera.main.transform.forward);
-        if (Physics.Raycast(ray, out jump_target, m_jumpDistance))
-        {
-            if (hit.transform == jump_target.transform) return;
-
-            //ジャンプ
-            if (Input.GetKey(KeyCode.Space))
-            {
-                jump_start = transform.position;
-                jump_end = jump_target.point;
-                instance.StateProcassor.State = instance.JumpTp;
-            }
-        }
+        Jump(ray, hit);
     }
 
     //木から木へとジャンプする際の動作
     void JumpTpMove()
     {
-        if(Vector3.Distance(transform.position, jump_target.point) < 0.5f)
+        if (Projection(jump_start, jump_end, jump_target.normal, 30f))
         {
             transform.position = jump_target.point;
             transform.rotation = Quaternion.LookRotation(Vector3.Cross(Camera.main.transform.right, jump_target.normal), jump_target.normal);
-            var instance = CameraStateManager.GetInstance;
+            var instance = PlayerStateManager.GetInstance;
             instance.StateProcassor.State = instance.TreeTp;
-			m_Shooter.StringShoot(jump_start, jump_end);
-		}
+            m_Shooter.StringShoot(jump_start, jump_end);
+        }
+    }
 
-        transform.position = Vector3.Slerp(transform.position, jump_target.point, 0.1f);
-        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, jump_target.normal), 0.5f), jump_target.normal);
+    //糸の上での移動
+    void StringTpMove()
+    {
+
+    }
+
+    //木から木へとジャンプ
+    private void Jump(Ray ray, RaycastHit hit)
+    {
+        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+        if (Physics.SphereCast(ray, 2f, out jump_target, m_jumpLimit, treeLayer))
+        {
+            if (hit.transform == jump_target.transform) return;
+
+            //カーソル表示
+            m_cursor.gameObject.SetActive(true);
+            m_cursor.transform.position = jump_target.point + jump_target.normal * 0.1f;
+            m_cursor.transform.rotation = Quaternion.LookRotation(jump_target.normal);
+
+            //ジャンプ
+            if (Input.GetKey(KeyCode.Space))
+            {
+                m_cursor.gameObject.SetActive(false);
+                jump_start = transform.position;
+                jump_end = jump_target.point;
+                var instance = PlayerStateManager.GetInstance;
+                instance.StateProcassor.State = instance.JumpTp;
+            }
+            return;
+        }
+        m_cursor.gameObject.SetActive(false);
     }
 }
