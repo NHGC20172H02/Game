@@ -1967,7 +1967,7 @@ Animator:
   m_GameObject: {fileID: 1175757489021396}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: e6a7c618a1f7bab4481239a5a0d2b9cc, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f0fb489313e8c7240af2345086da6d2d, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1987,7 +1987,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_speed: 3
-  CenterOfBalance: {fileID: 4845527018712114}
   m_Shooter: {fileID: 114732560804778798}
 --- !u!114 &114732560804778798
 MonoBehaviour:
@@ -2003,6 +2002,8 @@ MonoBehaviour:
   m_Radius: 1
   m_Prefab: {fileID: 1173252171523702, guid: 5cbbee2f3f2f26e449662ca8f86992ee, type: 2}
   m_SideNumber: 2
+  m_MaxCost: 200
+  m_Cost: 0
 --- !u!124 &124306934837161374
 Behaviour:
   m_ObjectHideFlags: 1
