@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class MyButtons : MonoBehaviour {
 
     public GameObject m_Button;
@@ -9,25 +10,36 @@ public class MyButtons : MonoBehaviour {
     public GameObject m_Button3;
 
     public GameObject s_Text;
-    public GameObject s_Text2;
+
+    public Animator animstop;
+
+    
 
     // Use this for initialization
     void Start ()
-    { 
-        
-	}
+    {
+        m_Button.SetActive(false);
+        m_Button2.SetActive(false);
+        m_Button3.SetActive(false);
+    }
 	
 	// Update is called once per frame
 	void Update ()
-    {
-		if(Input.GetKeyDown(KeyCode.Space))
-        {
-            m_Button.SetActive(true);
-            m_Button2.SetActive(true);
-            m_Button3.SetActive(true);
+    {   
 
-            s_Text.SetActive(false);
-            s_Text2.SetActive(false);
+        AnimatorStateInfo a = animstop.GetCurrentAnimatorStateInfo(0);
+
+        if (a.fullPathHash == Animator.StringToHash("Base Layer.PressButtonAnimation"))
+        {
+            if(a.normalizedTime >= 1.0f)
+            {
+                m_Button.SetActive(true);
+                m_Button2.SetActive(true);
+                m_Button3.SetActive(true);
+
+                s_Text.SetActive(false);
+                
+            }   
         }
 	}
 }
