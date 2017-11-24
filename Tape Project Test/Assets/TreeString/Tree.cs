@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Tree : Connecter {
 
-	public Material[] m_Materials;
-	public override void SideUpdate()
+	public override void ChildUpdate()
 	{
 		List<int> count = new List<int> { 0, 0, 0 };
 		foreach (var item in m_Child)
@@ -20,13 +19,7 @@ public class Tree : Connecter {
 				sideNumber = i;
 			}
 		}
-		ChengeSide(sideNumber);
-	}
-
-	private void ChengeSide(int i)
-	{
-		m_SideNumber = i;
-		GetComponent<Renderer>().material = m_Materials[m_SideNumber];
+		SetSide(sideNumber);
 	}
 
 }
