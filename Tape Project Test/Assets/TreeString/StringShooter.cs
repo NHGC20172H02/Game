@@ -62,21 +62,13 @@ public class StringShooter : MonoBehaviour {
 
 	private Connecter GetConnecter(Vector3 position)
 	{
-		Collider[] collider = Physics.OverlapSphere(position, m_Radius);
+		List<Collider> colliders = new List<Collider>(Physics.OverlapSphere(position, m_Radius));
 		Connecter result = null;
-		foreach (var item in collider)
-		{
-			switch (item.tag)
-			{
-				case "Tree":
-					return item.GetComponent<Connecter>();
-				case "String":
-					result = item.GetComponent<Connecter>();
-					break;
-				default:
-					break;
-			}
-		}
+		string[] tags = { "Tree", "Net", "String" };
+		var collider = colliders.Find((item) => item.tag == "Tree");
+		if (collider == null) collider = colliders.Find((item) => item.tag == "Net");
+		if (collider == null) collider = colliders.Find((item) => item.tag == "String");
+		result = collider.GetComponent<Connecter>();
 		return result;
 	}
 }

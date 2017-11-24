@@ -58,7 +58,7 @@ public class Player : Character
     {
         RaycastHit hit;
         Vector3 start = transform.position + transform.up * 0.5f;
-        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+        int treeLayer = LayerMask.GetMask(new string[] { "Tree" ,"Net"});
         Physics.Raycast(start, -transform.up, out hit, 1, treeLayer);
 
         var instance = PlayerStateManager.GetInstance;
@@ -123,7 +123,7 @@ public class Player : Character
     //木から木へとジャンプ
     private void Jump(Ray ray, RaycastHit hit)
     {
-        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+        int treeLayer = LayerMask.GetMask(new string[] { "Tree", "Net" });
         if (Physics.SphereCast(ray, 2f, out jump_target, m_jumpLimit, treeLayer))
         {
             if (hit.transform == jump_target.transform) return;
