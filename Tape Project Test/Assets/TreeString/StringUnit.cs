@@ -10,58 +10,60 @@ public class StringUnit : Connecter {
 	public LineRenderer m_LineRenderer;
 	public CapsuleCollider m_Collider;
 
-	public Material[] m_Materials;
-
 	public int m_Cost;
 	public StringShooter m_StringShooter;
+
 	public void SetLine(Vector3 Start, Vector3 End)
 	{
 		m_LineRenderer.SetPositions(new Vector3[] { Start, End });
 		m_Collider.height = Vector3.Distance(Start, End);
 		m_Collider.center = new Vector3(0, 0, m_Collider.height * 0.5f);
-		SetCost(Vector3.Distance(Start, End));
 	}
-
+	public void SetCost(int Cost)
+	{
+		m_Cost = Cost;
+	}
 	public void SetConnecter(Connecter Start,Connecter End)
 	{
 		m_StartConnecter = Start;
 		m_EndConnecter = End;
-		m_StartConnecter.m_Child.Add(this);
-		m_EndConnecter.m_Child.Add(this);
+		m_StartConnecter.AddString(this);
+		m_EndConnecter.AddString(this);
 	}
 
-	public void SetSide(int sideNumber)
+
+	public override void SideUpdate(int sideNumber)
 	{
-		ChengeSide(sideNumber);
-		m_StartConnecter.SideUpdate();
-		m_EndConnecter.SideUpdate();
+		if (m_SideNumber == sideNumber) return;
+		SetSide(sideNumber);
+		m_StringShooter.m_Strings.Remove(this);
+		m_StartConnecter.SideUpdate(sideNumber);
+		m_EndConnecter.SideUpdate(sideNumber);
+		foreach (var item in m_Child)
+		{
+			item.SideUpdate(sideNumber);
+		}
 	}
 
-	public override void SideUpdate()
-	{
-
-	}
-
-	private void ChengeSide(int i)
-	{
-		m_SideNumber = i;
-		GetComponent<Renderer>().material = m_Materials[m_SideNumber];
-	}
-	private void SetCost(float length,int othre = 0)
-	{
-		m_Cost = (int)length + othre;
-	}
 	public void Delete()
 	{
 		foreach (var item in m_Child.ToArray())
 		{
 			item.Delete();
 		}
-		m_StartConnecter.m_Child.Remove(this);
-		m_StartConnecter.SideUpdate();
-		m_EndConnecter.m_Child.Remove(this);
-		m_EndConnecter.SideUpdate();
+		m_StartConnecter.RemoveString(this);
+		m_EndConnecter.RemoveString(this);
 		m_StringShooter.m_Cost -= m_Cost;
 		Destroy(gameObject);
 	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if(other.tag == "Player")
+		{
+			SideUpdate(other.GetComponentInParent<StringShooter>().m_SideNumber);
+		}
+	}
+
+
 }
