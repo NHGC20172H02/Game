@@ -25,39 +25,46 @@ public class EnemyAI3 : Character
     private Vector3 jump_start;
     private Vector3 jump_end;
     private RaycastHit jump_target;         //ジャンプの対象
-    [Header("木の探知範囲")]
+    [Header("地面から跳べる木の探知範囲")]
     public float m_detection = 13.0f;
+
+    [Header("木の探知範囲")]
+    public float m_treeDetection = 50.0f;
 
 
     int m_treeLeave;
     float wait_time;
-    float move_time;
-    float ground_move;
     int one;
-    int ran;
+    int startRan;
     int treeObj = 0;
     bool ground_jump;
 
     int number;
-    int m_side;
-    bool pro;
+
+    float dist50;
 
     int m_moveCount;
     float m_moveTimer;
     bool m_moveStart = false;
 
-    Tree m_tree;
+    int m_number;
+    int sidenumber;
 
     GameObject nearObj0;
-    GameObject nearObj;
+    [System.NonSerialized]
+    public GameObject nearObj;
     GameObject nearObj2;
     GameObject nearObj3;
     GameObject nearObj40;
     GameObject nearObj50;
+  
+    GameObject stringObj;
 
-    GameObject reObj;
+    [System.NonSerialized]
+    public GameObject reObj;
 
     Vector3 m_targetPos;
+    Vector3 m_stringPos;
     Vector3 tmp;
 
     Animator anim;
@@ -65,7 +72,7 @@ public class EnemyAI3 : Character
     // Use this for initialization
     protected override void Start()
     {
-        ran = Random.Range(1, 3);
+        startRan = Random.Range(1, 3);
 
         anim = GetComponent<Animator>();
 
@@ -75,20 +82,35 @@ public class EnemyAI3 : Character
 
     protected override void Update()
     {
+        //誰の陣地でもない近くの木
+        nearObj0 = GetComponent<NearObj>().m_nearObj0;
+
+        //今いる木
+        nearObj = GetComponent<NearObj>().m_nearObj;
+
         //近かったオブジェクト（木）を取得
-        nearObj2 = serchTag(this.gameObject, "Tree");
+        nearObj2 = GetComponent<NearObj>().m_nearObj2;
+
         //2番目のオブジェクト（木）
-        nearObj3 = serchTag2(this.gameObject, "Tree");
+        nearObj3 = GetComponent<NearObj>().m_nearObj3;
 
         //近くの自分の陣地ではない木
-        nearObj40 = serchTag3(this.gameObject, "Tree");
+        nearObj40 = GetComponent<NearObj>().m_nearObj40;
+
         //2番目の自分の陣地ではない木
-        nearObj50 = serchTag4(this.gameObject, "Tree");
+        nearObj50 = GetComponent<NearObj>().m_nearObj50;
 
-        //誰の陣地でもない近くの木
-        nearObj0 = serchTag0(this.gameObject, "Tree");
+        //近くの自分の糸
+        stringObj = GetComponent<NearObj>().m_stringObj;
 
-        //Debug.Log(reObj);
+        
+        if (stringObj != null)
+        {
+            //糸のジャンプするポジション
+            m_stringPos = GetStringPosition() + stringObj.transform.forward * Random.Range(
+                0, stringObj.GetComponent<CapsuleCollider>().height);
+        }
+
 
         if (treeObj == 1)//１つ前にいた木を保持
         {
@@ -100,15 +122,15 @@ public class EnemyAI3 : Character
             treeObj = 0;
         }
 
-        if (ran == 1)
+        if (startRan == 1)
         {
             m_targetPos = GetPosition();
-            ran = 0;
+            startRan = 0;
         }
-        if (ran == 2)
+        if (startRan == 2)
         {
             m_targetPos = GetPosition2();
-            ran = 0;
+            startRan = 0;
         }
 
         //下にRayを飛ばしす
@@ -124,39 +146,45 @@ public class EnemyAI3 : Character
                 transform.rotation *= qu;
 
                 nearObj = hit.collider.gameObject;
-
-                //触れたコライダの配列を取得
-                //Collider[] hitcol = Physics.OverlapSphere(transform.position, 0.5f);
-
-                //設定ポイントから一番近い、Boundsオブジェクトのポイント
-                //Collider coll = GetComponent<Collider>();
-                //Vector3 closestPoint = coll.ClosestPointOnBounds(transform.position);
             }
 
         }
         //前にRayを出す
         RaycastHit hit2;
-        if (Physics.SphereCast(transform.position, 0.7f, transform.forward, out hit2, 0.4f, 1 << 10))
+        if (Physics.SphereCast(transform.position, 0.7f, transform.forward, out hit2, 0.4f))
         {
+            //if (stringObj != null)
+            //{
+            //    m_number = stringObj.GetComponent<StringUnit>().m_SideNumber;
+            //    sidenumber = GetComponent<StringShooter>().m_SideNumber;
+            //}
 
-            transform.position = hit2.point;
-            transform.rotation = Quaternion.LookRotation(
-                Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
-
-            nearObj = hit2.collider.gameObject;
-            treeObj += 1;
-
-            if(ground_jump == true)
+            if (hit2.transform.tag == "Tree")
             {
-                ground_jump = false;
-            }
+                transform.position = hit2.point;
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
 
-            anim.SetBool("jump", false);
+                nearObj = hit2.collider.gameObject;
+                treeObj += 1;
+
+                if (ground_jump == true)
+                {
+                    ground_jump = false;
+                }
+
+                anim.SetBool("jump", false);
+            }
+            //if (hit2.transform.tag == "String")
+            //{
+            //    transform.position = hit2.point;
+            //    transform.rotation = Quaternion.LookRotation(
+            //        Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
+            //}
 
             state = State.B;
         }
-
-
+        
 
         Ray ray3 = new Ray(m_targetPos, this.transform.position - m_targetPos);
         Debug.DrawLine(ray3.origin, this.transform.position, Color.blue);
@@ -197,7 +225,6 @@ public class EnemyAI3 : Character
         //木にいるときの行動判断
         if (state == State.B)
         {
-           
             if (nearObj0 != null)
             {
                 state = State.G;
@@ -216,50 +243,82 @@ public class EnemyAI3 : Character
         //無色の木を最優先
         if (state == State.G)
         {
-            wait_time += Time.deltaTime * 1;
-            if (wait_time >= 1)
+            float dist = Vector3.Distance(nearObj0.transform.position, this.transform.position);
+
+            if (dist <= m_treeDetection)
             {
-                jump_start = this.transform.position;
-                m_targetPos = GetUpPosition00();
-                state = State.E;
+                wait_time += Time.deltaTime * 1;
+                if (wait_time >= 1)
+                {
+                    jump_start = this.transform.position;
+                    m_targetPos = GetUpPosition00();
+                    state = State.E;
+                }
+            }
+            else
+            {
+                state = State.D;
             }
         }
 
         //自分の陣地ではない木を判断
         if (state == State.C)
         {
+            Debug.Log("C");
+            float dist40 = Vector3.Distance(nearObj40.transform.position, this.transform.position);
+            if (nearObj50 != null)
+            {
+                dist50 = Vector3.Distance(nearObj50.transform.position, this.transform.position);
+            }
+
+
             if (m_treeLeave != 5 && m_treeLeave != 4)
                 m_treeLeave = Random.Range(4, 6);
 
+
             if (m_treeLeave == 4)
             {
-                wait_time += Time.deltaTime * 1;
-
-                if (wait_time >= 1)
+                if (dist40 <= m_treeDetection)
                 {
-                    jump_start = this.transform.position;
-                    m_targetPos = GetUpPosition40();
-                    state = State.E;
+                    wait_time += Time.deltaTime * 1;
+
+                    if (wait_time >= 1)
+                    {
+                        jump_start = this.transform.position;
+                        m_targetPos = GetUpPosition40();
+                        state = State.E;
+                    }
+                }
+                else
+                {
+                    state = State.D;
                 }
             }
             if (m_treeLeave == 5)
             {
-                wait_time += Time.deltaTime * 1;
-
-                if (wait_time >= 1)
+                if (dist50 <= m_treeDetection)
                 {
-                    if (nearObj50 != null)
+                    wait_time += Time.deltaTime * 1;
+
+                    if (wait_time >= 1)
                     {
-                        jump_start = this.transform.position;
-                        m_targetPos = GetUpPosition50();
-                        state = State.E;
-                    }else if(nearObj50 == null)
-                    {
-                        m_targetPos = GetUpPosition40();
+                        if (nearObj50 != null)
+                        {
+                            jump_start = this.transform.position;
+                            m_targetPos = GetUpPosition50();
+                            state = State.E;
+                        }
+                        else if (nearObj50 == null)
+                        {
+                            m_targetPos = GetUpPosition40();
+                        }
                     }
                 }
+                else
+                {
+                    state = State.D;
+                }
             }
-
         }
 
         //ランダムに飛ぶ処理
@@ -334,6 +393,7 @@ public class EnemyAI3 : Character
 
                 if (hit.transform == gameObject.transform) //飛びたいところの間に障害物がなければ
                 {
+                    m_treeLeave = 0;
                     anim.SetBool("jump", true);
                     state = State.F;
                 }
@@ -348,7 +408,8 @@ public class EnemyAI3 : Character
             {
                 transform.position = tmp;
             }
-            transform.position = Vector3.Slerp(transform.position, tmp, 0.03f);
+            transform.position = Vector3.Slerp(transform.position, tmp, 0.04f);
+
 
             //ポジションの方に向く
             Quaternion targetRotation2 = Quaternion.LookRotation(tmp - transform.position);
@@ -418,7 +479,7 @@ public class EnemyAI3 : Character
                     m_moveStart = false;
                     randamStart = true;
                     m_moveTimer = 0;
-                   
+
                     state = State.D;
                 }
             }
@@ -441,196 +502,6 @@ public class EnemyAI3 : Character
         }
     }
 
-
-    //指定されたタグの中で最も近いオブジェクト
-    GameObject serchTag(GameObject nowObj, string tagName)
-    {
-        //距離用一時変換
-        float tmpDis;
-
-        //最も近いオブジェクトの距離
-        float nearDis = 0;
-
-        GameObject targetObj = null;
-
-        //タグ指定されたオブジェクトを配列で取得
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
-        {
-            //触れているオブジェクトを検索から外す
-            if (nearObj == obs)
-            {
-                continue;
-            }
-            if(reObj == obs)
-            {
-                continue;
-            }
-
-            //自身と取得したオブジェクトの距離を取得
-            tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
-
-            //オブジェクトの距離が近く、距離0であればオブジェクト名を取得
-            if (nearDis == 0 || nearDis > tmpDis)
-            {
-                nearDis = tmpDis;
-                targetObj = obs;
-            }
-        }
-        //最も近かったオブジェクトを返す
-        return targetObj;
-    }
-
-    //指定されたタグの中で2番目近いオブジェクト
-    GameObject serchTag2(GameObject nowObj, string tagName)
-    {
-        //距離用一時変換
-        float tmpDis;
-
-        //最も近いオブジェクトの距離
-        float nearDis = 0;
-
-        GameObject targetObj = null;
-
-        //タグ指定されたオブジェクトを配列で取得
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
-        {
-            //触れているオブジェクトを検索から外す
-            if (nearObj == obs)
-            {
-                continue;
-            }
-            else if (nearObj2 == obs)
-            {
-                continue;
-            }
-            if (reObj == obs)
-            {
-                continue;
-            }
-
-            //自身と取得したオブジェクトの距離を取得
-            tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
-
-            //オブジェクトの距離が近く、距離0であればオブジェクト名を取得
-            if (nearDis == 0 || nearDis > tmpDis)
-            {
-                nearDis = tmpDis;
-                targetObj = obs;
-            }
-
-        }
-        //3番目近かったオブジェクトを返す
-        return targetObj;
-    }
-
-    //自分の陣地ではない近くの木
-    GameObject serchTag3(GameObject nowObj, string tagName)
-    {
-        GameObject targetObj = null;
-        float tmpDis;
-        float nearDis = 0;
-
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
-        {
-
-            if (nearObj == obs)
-            {
-                continue;
-            }
-            int number = obs.GetComponent<Tree>().m_SideNumber;
-            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
-
-            if (number != sidenumber)
-            {
-                //自身と取得したオブジェクトの距離を取得
-                tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
-
-                if (nearDis == 0 || nearDis > tmpDis)
-                {
-                    nearDis = tmpDis;
-                    targetObj = obs;
-                }
-            }
-        }
-        return targetObj;
-    }
-    //自分の陣地ではない2番目の木
-    GameObject serchTag4(GameObject nowObj, string tagName)
-    {
-        GameObject targetObj = null;
-        float tmpDis;
-        float nearDis = 0;
-
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
-        {
-
-            if (nearObj == obs)
-            {
-                continue;
-            }
-            else if (nearObj40 == obs)
-            {
-                continue;
-            }
-
-            int number = obs.GetComponent<Tree>().m_SideNumber;
-            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
-
-            if (number != sidenumber)
-            {
-                //自身と取得したオブジェクトの距離を取得
-                tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
-
-                if (nearDis == 0 || nearDis > tmpDis)
-                {
-                    nearDis = tmpDis;
-                    targetObj = obs;
-                }
-            }
-        }
-        return targetObj;
-    }
-    
-
-    //誰の陣地でもない近くの木
-    GameObject serchTag0(GameObject nowObj, string tagName)
-    {
-        GameObject targetObj = null;
-        float tmpDis;
-        float nearDis = 0;
-
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
-        {
-
-            if (nearObj == obs)
-            {
-                continue;
-            }
-            int number = obs.GetComponent<Tree>().m_SideNumber;
-            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
-
-            if (number == 0)
-            {
-                //自身と取得したオブジェクトの距離を取得
-                tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
-
-                if (nearDis == 0 || nearDis > tmpDis)
-                {
-                    nearDis = tmpDis;
-                    targetObj = obs;
-                }
-            }
-        }
-        return targetObj;
-    }
-
-
-
-    //登ってる木
-    //public Vector3 GetUpPosition()
-    //{
-    //    return new Vector3(nearObj.transform.position.x, 20, nearObj.transform.position.z);
-    //}
 
 
     //近くの木
@@ -678,5 +549,12 @@ public class EnemyAI3 : Character
     public Vector3 GetPosition3()
     {
         return new Vector3(nearObj2.transform.position.x, 7.0f, nearObj2.transform.position.z);
+    }
+
+
+    //近くの自分の糸にジャンプするポジション
+    public Vector3 GetStringPosition()
+    {
+        return new Vector3(stringObj.transform.position.x, stringObj.transform.position.y, stringObj.transform.position.z);
     }
 }
