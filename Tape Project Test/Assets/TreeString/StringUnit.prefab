@@ -63,6 +63,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 8ad8f0d5efad8d247bc0344f62875aac, type: 2}
   - {fileID: 2100000, guid: 50be9aa632e1ff244b82659e2757cdfe, type: 2}
   - {fileID: 2100000, guid: 9d595b7477fc19345a13a54c4f053ac8, type: 2}
+  m_Cost: 0
+  m_StringShooter: {fileID: 0}
 --- !u!120 &120552317581310650
 LineRenderer:
   m_ObjectHideFlags: 1
