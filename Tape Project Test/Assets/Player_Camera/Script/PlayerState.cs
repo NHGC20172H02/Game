@@ -95,4 +95,11 @@ namespace PlayerState
             return "StringTp";
         }
     }
+    public class Falling : PlayerState
+    {
+        public override string getStateName()
+        {
+            return "Falling";
+        }
+    }
 }

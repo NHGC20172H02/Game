@@ -51,6 +51,11 @@ public class PlayerStateManager : MonoBehaviour {
     {
         get { return m_StringTp; }
     }
+    private Falling m_falling = new Falling();
+    public Falling Falling
+    {
+        get { return m_falling; }
+    }
 
 	// Use this for initialization
 	void Start () {

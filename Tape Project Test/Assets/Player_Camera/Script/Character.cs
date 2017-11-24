@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    private float elapse_time = 0;      //ジャンプの経過時間
+    protected float elapse_time = 0;      //ジャンプの経過時間
 
     protected virtual void Start () {
 		

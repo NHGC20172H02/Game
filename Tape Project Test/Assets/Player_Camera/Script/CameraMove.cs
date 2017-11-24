@@ -26,7 +26,8 @@ public class CameraMove : MonoBehaviour
         instance.TreeFp.c_exeDelegate = TreeFpMove;
         instance.JumpTp.c_exeDelegate = JumpTpMove;
         instance.StringTp.c_exeDelegate = TreeTpMove;
-        g_distance = Vector3.Distance(transform.position, Camera.main.transform.position) * 1.1f;
+        instance.Falling.c_exeDelegate = TreeTpMove;
+        g_distance = Vector3.Distance(transform.position, Camera.main.transform.position);
         t_distance = g_distance * 2f;
     }
 
@@ -38,20 +39,24 @@ public class CameraMove : MonoBehaviour
         //自機基準回転
         if (Input.GetKey(KeyCode.E))
         {
-            transform.RotateAround(target_pos, transform.up, rotate_Speed * Time.deltaTime);
+            transform.RotateAround(target_pos, Vector3.up, rotate_Speed * Time.deltaTime);
         }
         if (Input.GetKey(KeyCode.Q))
         {
-            transform.RotateAround(target_pos, transform.up, -rotate_Speed * Time.deltaTime);
+            transform.RotateAround(target_pos, Vector3.up, -rotate_Speed * Time.deltaTime);
         }
-        //if (Input.GetKey(KeyCode.Z))
-        //{
-        //    transform.RotateAround(target_pos, transform.right, rotate_Speed * Time.deltaTime);
-        //}
-        //if (Input.GetKey(KeyCode.X))
-        //{
-        //    transform.RotateAround(target_pos, transform.right, -rotate_Speed * Time.deltaTime);
-        //}
+        if (Input.GetKey(KeyCode.Z))
+        {
+            transform.RotateAround(target_pos, transform.right, rotate_Speed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.X))
+        {
+            transform.RotateAround(target_pos, transform.right, -rotate_Speed * Time.deltaTime);
+        }
+        //コントローラ用
+        transform.RotateAround(target_pos, Vector3.up, Input.GetAxis("Horizontal2") * rotate_Speed * Time.deltaTime);
+        transform.RotateAround(target_pos, transform.right, Input.GetAxis("Vertical2") * rotate_Speed * Time.deltaTime);
+
         Color current_color = m_target.transform.GetChild(0).GetComponent<Renderer>().material.color;
         m_target.transform.GetChild(0).GetComponent<Renderer>().material.color 
             = new Color(current_color.r, current_color.g, current_color.b, Mathf.Lerp(current_color.a, 1f, 0.2f));
@@ -59,12 +64,8 @@ public class CameraMove : MonoBehaviour
 
     void GroundMove()
     {
-        if (Vector3.Distance(transform.position, Camera.main.transform.position) > g_distance)
-        {
-            Vector3 to_pos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z - g_distance);
-            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, to_pos, 0.2f);
-            //Camera.main.transform.LookAt(transform.position);
-        }
+        Vector3 to_pos = new Vector3(transform.position.x, transform.position.y, transform.position.z) - transform.forward * g_distance;
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, to_pos, 0.3f);
     }
 
     void TreeTpMove()
