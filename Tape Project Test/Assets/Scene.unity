@@ -158,6 +158,11 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114732560804778798, guid: f9a00322726bdb54c8bf812635834447,
+        type: 2}
+      propertyPath: m_MaxCost
+      value: 50
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9a00322726bdb54c8bf812635834447, type: 2}
   m_IsPrefabParent: 0
@@ -324,6 +329,7 @@ MonoBehaviour:
   m_SideNumber: 1
   m_MaxCost: 200
   m_Cost: 0
+  m_Strings: []
 --- !u!1 &221113345
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,7 +1718,7 @@ GameObject:
   - component: {fileID: 1736305915}
   m_Layer: 0
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1772,7 +1778,7 @@ BoxCollider:
   m_GameObject: {fileID: 1736305912}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.15, y: 0.0567003, z: 0.15}
   m_Center: {x: 0, y: 0.02, z: -0.01}
