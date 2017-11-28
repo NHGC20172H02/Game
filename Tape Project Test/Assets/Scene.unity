@@ -1357,6 +1357,21 @@ Prefab:
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 114056484137154740, guid: 01833b926f4df474a98f2b05000303c4,
+        type: 2}
+      propertyPath: m_GroundLayer.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 114056484137154740, guid: 01833b926f4df474a98f2b05000303c4,
+        type: 2}
+      propertyPath: m_StringLayer.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 114056484137154740, guid: 01833b926f4df474a98f2b05000303c4,
+        type: 2}
+      propertyPath: m_TreeLayer.m_Bits
+      value: 1024
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 01833b926f4df474a98f2b05000303c4, type: 2}
   m_IsPrefabParent: 0

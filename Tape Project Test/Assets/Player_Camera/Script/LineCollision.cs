@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//予測線のCollision
 public class LineCollision : MonoBehaviour {
 
     private PredictionLine m_Parent;
