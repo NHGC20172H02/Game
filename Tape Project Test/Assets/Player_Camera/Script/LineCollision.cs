@@ -19,6 +19,7 @@ public class LineCollision : MonoBehaviour {
     void OnCollisionExit(Collision collision)
     {
         m_Parent.m_HitString = null;
+        m_Parent.m_HitStringPoint = new ContactPoint();
     }
 
     void Update () {
