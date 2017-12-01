@@ -9,11 +9,11 @@ public class StringShooter : MonoBehaviour {
 	public int m_SideNumber;
 	public int m_MaxCost = 200;
 	public int m_Cost;
-	public Queue<StringUnit> m_Strings;
+	public List<StringUnit> m_Strings;
 
 	// Use this for initialization
 	void Start () {
-		m_Strings = new Queue<StringUnit>();
+		m_Strings = new List<StringUnit>();
 	}
 	
 	// Update is called once per frame
@@ -30,15 +30,17 @@ public class StringShooter : MonoBehaviour {
 		Connecter endConnecter = GetConnecter(end);
 		Quaternion look = Quaternion.LookRotation(end - start);
 		StringUnit stringUnit = Instantiate(m_Prefab, start, look).GetComponent<StringUnit>();
-		stringUnit.SetLine(start, end);
-		stringUnit.SetConnecter(startConnecter, endConnecter);
-		stringUnit.SetSide(m_SideNumber);
 		stringUnit.m_StringShooter = this;
-		m_Strings.Enqueue(stringUnit);
+		stringUnit.SetLine(start, end);
+		stringUnit.SetCost((int)Vector3.Distance(start, end));
+		stringUnit.SetSide(m_SideNumber);
+		stringUnit.SetConnecter(startConnecter, endConnecter);
+		m_Strings.Add(stringUnit);
 		m_Cost += stringUnit.m_Cost;
 		while (m_Cost>m_MaxCost)
 		{
-			StringUnit firstStringUnit = m_Strings.Dequeue();
+			StringUnit firstStringUnit = m_Strings[0];
+			m_Strings.RemoveAt(0);
 			firstStringUnit.Delete();
 		}
 	}
