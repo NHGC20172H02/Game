@@ -13,7 +13,10 @@ public class EnemyAI3 : Character
         E = 1 << 4,
         F = 1 << 5,
         G = 1 << 6,
-        H = 1 << 7
+        H = 1 << 7,
+        I = 1 << 8,
+        J = 1 << 9,
+        K = 1 << 10
     }
     State state = State.A;
 
@@ -41,11 +44,14 @@ public class EnemyAI3 : Character
 
     int number;
 
+    float dist40;
     float dist50;
 
     int m_moveCount;
     float m_moveTimer;
     bool m_moveStart = false;
+
+    float angle;
 
     int m_number;
     int sidenumber;
@@ -104,13 +110,6 @@ public class EnemyAI3 : Character
         stringObj = GetComponent<NearObj>().m_stringObj;
 
         
-        if (stringObj != null)
-        {
-            //糸のジャンプするポジション
-            m_stringPos = GetStringPosition() + stringObj.transform.forward * Random.Range(
-                0, stringObj.GetComponent<CapsuleCollider>().height);
-        }
-
 
         if (treeObj == 1)//１つ前にいた木を保持
         {
@@ -135,8 +134,7 @@ public class EnemyAI3 : Character
 
         //下にRayを飛ばしす
         RaycastHit hit;
-        Ray ray = new Ray(transform.position, -transform.up);
-        if (Physics.SphereCast(ray, 0.3f, out hit, 0.7f))
+        if (Physics.SphereCast(transform.position, 0.3f, -transform.up, out hit, 0.7f))
         {
 
             if (hit.transform.tag == "Tree")
@@ -147,18 +145,17 @@ public class EnemyAI3 : Character
 
                 nearObj = hit.collider.gameObject;
             }
-
+            if (hit.transform.tag == "String")
+            {
+                transform.position = hit.point;
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Cross(Vector3.right, hit.normal), hit.normal);
+            }
         }
         //前にRayを出す
         RaycastHit hit2;
         if (Physics.SphereCast(transform.position, 0.7f, transform.forward, out hit2, 0.4f))
         {
-            //if (stringObj != null)
-            //{
-            //    m_number = stringObj.GetComponent<StringUnit>().m_SideNumber;
-            //    sidenumber = GetComponent<StringShooter>().m_SideNumber;
-            //}
-
             if (hit2.transform.tag == "Tree")
             {
                 transform.position = hit2.point;
@@ -175,12 +172,14 @@ public class EnemyAI3 : Character
 
                 anim.SetBool("jump", false);
             }
-            //if (hit2.transform.tag == "String")
-            //{
-            //    transform.position = hit2.point;
-            //    transform.rotation = Quaternion.LookRotation(
-            //        Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
-            //}
+
+            if (hit2.transform.tag == "String")
+            {
+                anim.SetBool("string_wait", true);
+                transform.position = hit2.point;
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
+            }
 
             state = State.B;
         }
@@ -264,8 +263,10 @@ public class EnemyAI3 : Character
         //自分の陣地ではない木を判断
         if (state == State.C)
         {
-            Debug.Log("C");
-            float dist40 = Vector3.Distance(nearObj40.transform.position, this.transform.position);
+            if (nearObj40 != null)
+            {
+                dist40 = Vector3.Distance(nearObj40.transform.position, this.transform.position);
+            }
             if (nearObj50 != null)
             {
                 dist50 = Vector3.Distance(nearObj50.transform.position, this.transform.position);
@@ -291,7 +292,7 @@ public class EnemyAI3 : Character
                 }
                 else
                 {
-                    state = State.D;
+                    state = State.I;
                 }
             }
             if (m_treeLeave == 5)
@@ -316,7 +317,7 @@ public class EnemyAI3 : Character
                 }
                 else
                 {
-                    state = State.D;
+                    state = State.I;
                 }
             }
         }
@@ -358,6 +359,21 @@ public class EnemyAI3 : Character
             }
         }
 
+        //糸へのジャンプ
+        if(state == State.I)
+        {
+            if (stringObj != null)
+            {
+                //糸のジャンプするポジション
+                m_stringPos = GetStringPosition() + stringObj.transform.forward * Random.Range(
+                    1, stringObj.GetComponent<CapsuleCollider>().height - 1);
+
+                m_targetPos = m_stringPos;
+
+                state = State.E;
+            }
+        }
+
         //空中移動の瞬間
         if (state == State.E)
         {
@@ -395,6 +411,7 @@ public class EnemyAI3 : Character
                 {
                     m_treeLeave = 0;
                     anim.SetBool("jump", true);
+                    anim.SetBool("string_wait", true);
                     state = State.F;
                 }
 
@@ -467,14 +484,90 @@ public class EnemyAI3 : Character
 
                 if (m_moveTimer >= 2)
                 {
+                    m_moveCount = 0;
+
                     anim.SetBool("move_front", false);
                     anim.SetBool("move_back", false);
                     anim.SetBool("move_left", false);
-                    anim.SetBool("move_right", false);
-
-                    m_moveCount = 0;
+                    anim.SetBool("move_right", false); 
                 }
                 if(m_moveTimer >= 3)
+                {
+                    m_moveStart = false;
+                    randamStart = true;
+                    m_moveTimer = 0;
+
+                    state = State.D;
+                }
+            }
+        }
+
+
+        //糸の移動
+        if(state == State.J)
+        {
+            //糸との角度
+            angle = Vector3.Angle(stringObj.transform.forward, transform.forward);
+
+            bool randamStart = true;
+
+            if (randamStart == true)
+            {
+                if (m_moveCount != 1 && m_moveCount != 2 && m_moveCount != 3 && m_moveCount != 4)
+                    m_moveCount = Random.Range(1, 5);
+
+                randamStart = false;
+            }
+
+            if (angle <= 10)
+            {
+                if (randamStart == true)
+                {
+                    if (m_moveCount != 1 && m_moveCount != 2)
+                        m_moveCount = Random.Range(1, 3);
+
+                    randamStart = false;
+                }
+
+                if (m_moveCount == 1) //前移動
+                {
+
+                    transform.Translate(Vector3.forward * m_speed * Time.deltaTime);
+                    m_moveStart = true;
+                }
+                if (m_moveCount == 2) //後ろ移動
+                {
+
+                    transform.Translate(-Vector3.forward * m_speed * Time.deltaTime);
+                    m_moveStart = true;
+                }
+            }
+
+            if (m_moveCount == 3) //右移動
+            {
+                
+                transform.Translate(Vector3.right * m_speed * Time.deltaTime);
+                m_moveStart = true;
+            }
+            if (m_moveCount == 4) //左移動
+            {
+                
+                transform.Translate(Vector3.left * m_speed * Time.deltaTime);
+                m_moveStart = true;
+            }
+
+
+            if (m_moveStart == true)
+            {
+                m_moveTimer += Time.deltaTime * 1;
+
+                if (m_moveTimer >= 2)
+                {
+                    m_moveCount = 0;
+
+
+                }
+                if (m_moveTimer >= 3)
                 {
                     m_moveStart = false;
                     randamStart = true;
