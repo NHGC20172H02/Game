@@ -6,7 +6,7 @@ public class EnemyAI3 : Character
 {
     enum State
     {
-        A = 1 << 0,
+        A = 1 << 0, 
         B = 1 << 1,
         C = 1 << 2,
         D = 1 << 3,
@@ -29,15 +29,14 @@ public class EnemyAI3 : Character
     private Vector3 jump_end;
     private RaycastHit jump_target;         //ジャンプの対象
     [Header("地面から跳べる木の探知範囲")]
-    public float m_detection = 13.0f;
+    public float m_detection = 30.0f;
 
     [Header("木の探知範囲")]
-    public float m_treeDetection = 50.0f;
+    public float m_treeDetection = 150.0f;
 
 
     int m_treeLeave;
     float wait_time;
-    int one;
     int startRan;
     int treeObj = 0;
     bool ground_jump;
@@ -68,6 +67,7 @@ public class EnemyAI3 : Character
 
     [System.NonSerialized]
     public GameObject reObj;
+    GameObject reObj2;
 
     Vector3 m_targetPos;
     Vector3 m_stringPos;
@@ -81,8 +81,6 @@ public class EnemyAI3 : Character
         startRan = Random.Range(1, 3);
 
         anim = GetComponent<Animator>();
-
-        one = 0;
     }
 
 
@@ -111,14 +109,18 @@ public class EnemyAI3 : Character
 
         
 
-        if (treeObj == 1)//１つ前にいた木を保持
+        if (treeObj == 1 && reObj == null)//１つ前にいた木を保持
         {
             reObj = nearObj;
-            treeObj = +1;
+        }
+        if (treeObj >= 2)
+        {
+            reObj2 = nearObj;
         }
         if (treeObj >= 3)
         {
-            treeObj = 0;
+            reObj = reObj2;
+            treeObj = 2;
         }
 
         if (startRan == 1)
@@ -163,7 +165,7 @@ public class EnemyAI3 : Character
                     Vector3.Cross(Vector3.right, hit2.normal), hit2.normal);
 
                 nearObj = hit2.collider.gameObject;
-                treeObj += 1;
+                reObj2 = hit2.collider.gameObject;
 
                 if (ground_jump == true)
                 {
@@ -229,7 +231,7 @@ public class EnemyAI3 : Character
                 state = State.G;
             }
 
-            if (nearObj40 == null || nearObj50 == null || one == 0)
+            if (nearObj40 == null || nearObj50 == null)
             {
                 state = State.D;
             }
@@ -378,29 +380,19 @@ public class EnemyAI3 : Character
         if (state == State.E)
         {
             wait_time = 0;
-            tmp = m_targetPos;
-
-            if (one < 1)
-                one = 1;
-
+            //tmp = m_targetPos;
 
             //移動先と自分の間のray
-            if (Physics.Raycast(m_targetPos, this.transform.position - m_targetPos, out hit))
+            RaycastHit Treehit;
+            Ray ray10 = new Ray(transform.position + transform.up * 0.5f ,m_targetPos);
+            if(Physics.Raycast(ray10, out Treehit, 1 << 10))
             {
-
-                //ヒットした場所のポイント
-                if (hit.transform.gameObject == nearObj2.transform.gameObject)
-                {
-                    tmp = hit.point;
-                    jump_target.point = tmp;
-                }
-                if (hit.transform.gameObject == nearObj3.transform.gameObject)
-                {
-                    tmp = hit.point;
-                    jump_target.point = tmp;
-                }
-
-
+                tmp = Treehit.point;
+                jump_target.point = tmp;
+            }
+            if (Physics.Raycast(transform.position, m_targetPos, out hit, 1 << 10))
+            {
+              
                 if (hit.transform != gameObject.transform)
                 {
                     m_treeLeave = 0;
@@ -519,7 +511,7 @@ public class EnemyAI3 : Character
                 randamStart = false;
             }
 
-            if (angle <= 10)
+            if (angle <= 10 || angle >= 170)
             {
                 if (randamStart == true)
                 {
