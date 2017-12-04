@@ -65,6 +65,14 @@ namespace EnemyState
         }
     }
 
+    public class ColorlessTree : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "ColorlessTree";
+        }
+    }
+
     public class SearchTree : EnemyState
     {
         public override string getStateName()
@@ -81,11 +89,27 @@ namespace EnemyState
         }
     }
 
+    public class ThreadJump : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "ThreadJump";
+        }
+    } 
+
     public class Jumping : EnemyState
     {
         public override string getStateName()
         {
             return "Jumping";
+        }
+    }
+
+    public class GroundJumping : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "GroundJumping";
         }
     }
 

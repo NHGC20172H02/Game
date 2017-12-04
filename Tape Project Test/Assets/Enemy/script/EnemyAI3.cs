@@ -36,7 +36,7 @@ public class EnemyAI3 : Character
 
 
     int m_treeLeave;
-    float wait_time;
+    
     int startRan;
     int treeObj = 0;
     bool ground_jump;
@@ -47,6 +47,7 @@ public class EnemyAI3 : Character
     float dist50;
 
     int m_moveCount;
+    float wait_time;
     float m_moveTimer;
     bool m_moveStart = false;
 
@@ -145,7 +146,7 @@ public class EnemyAI3 : Character
                 Quaternion qu = Quaternion.FromToRotation(transform.up, hit.normal);
                 transform.rotation *= qu;
 
-                nearObj = hit.collider.gameObject;
+                //nearObj = hit.collider.gameObject;
             }
             if (hit.transform.tag == "String")
             {
@@ -384,13 +385,13 @@ public class EnemyAI3 : Character
 
             //移動先と自分の間のray
             RaycastHit Treehit;
-            Ray ray10 = new Ray(transform.position + transform.up * 0.5f ,m_targetPos);
-            if(Physics.Raycast(ray10, out Treehit, 1 << 10))
+            Ray ray10 = new Ray(transform.position + transform.up * 0.5f ,m_targetPos - transform.position);
+            if(Physics.Raycast(ray10, out Treehit, m_treeDetection, 1 << 10))
             {
                 tmp = Treehit.point;
                 jump_target.point = tmp;
             }
-            if (Physics.Raycast(transform.position, m_targetPos, out hit, 1 << 10))
+            if (Physics.Raycast(transform.position, m_targetPos - transform.position, out hit, 1 << 10))
             {
               
                 if (hit.transform != gameObject.transform)
