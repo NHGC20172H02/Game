@@ -1,0 +1,244 @@
+fileFormatVersion: 2
+guid: ccaef7b465951164c86da8029620735b
+timeCreated: 1511251679
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: 0.!joint_bone1
+    100002: 1.joint_bone2
+    100004: 10.joint_bone15
+    100006: 11.joint_bone16
+    100008: 12.joint_bone17
+    100010: 13.joint_bone18
+    100012: 14.joint_bone19
+    100014: 15.joint_bone20
+    100016: 16.joint_bone21
+    100018: 17.joint_bone22
+    100020: 18.joint_bone23
+    100022: 19.joint_bone24
+    100024: 2.joint_bone57
+    100026: 20.joint_bone25
+    100028: 21.joint_bone26
+    100030: 22.joint_bone27
+    100032: 23.joint_bone28
+    100034: 24.joint_bone29
+    100036: 25.!joint_bone25_end
+    100038: 26.!joint_bone26_end
+    100040: 27.!joint_bone27_end
+    100042: 28.!joint_bone28_end
+    100044: 29.!joint_bone29_end
+    100046: 3.joint_bone4
+    100048: 30.joint_bone31
+    100050: 31.!joint_bone31_end
+    100052: 32.joint_bone37
+    100054: 33.joint_bone38
+    100056: 34.joint_bone39
+    100058: 35.joint_bone40
+    100060: 36.joint_bone41
+    100062: 37.joint_bone42
+    100064: 38.joint_bone43
+    100066: 39.joint_bone44
+    100068: 4.!joint_bone4_end
+    100070: 40.joint_bone45
+    100072: 41.joint_bone46
+    100074: 42.joint_bone47
+    100076: 43.joint_bone48
+    100078: 44.joint_bone49
+    100080: 45.joint_bone50
+    100082: 46.joint_bone51
+    100084: 47.joint_bone52
+    100086: 48.joint_bone53
+    100088: 49.joint_bone54
+    100090: 5.joint_bone10
+    100092: 50.joint_bone55
+    100094: 51.joint_bone56
+    100096: 52.!joint_bone52_end
+    100098: 53.!joint_bone53_end
+    100100: 54.!joint_bone54_end
+    100102: 55.!joint_bone55_end
+    100104: 56.!joint_bone56_end
+    100106: 57.!joint_bone57_end
+    100108: 58.!Root
+    100110: 6.joint_bone11
+    100112: 7.joint_bone12
+    100114: 8.joint_bone13
+    100116: 9.joint_bone14
+    100118: //RootNode
+    100120: U_Char
+    400000: 0.!joint_bone1
+    400002: 1.joint_bone2
+    400004: 10.joint_bone15
+    400006: 11.joint_bone16
+    400008: 12.joint_bone17
+    400010: 13.joint_bone18
+    400012: 14.joint_bone19
+    400014: 15.joint_bone20
+    400016: 16.joint_bone21
+    400018: 17.joint_bone22
+    400020: 18.joint_bone23
+    400022: 19.joint_bone24
+    400024: 2.joint_bone57
+    400026: 20.joint_bone25
+    400028: 21.joint_bone26
+    400030: 22.joint_bone27
+    400032: 23.joint_bone28
+    400034: 24.joint_bone29
+    400036: 25.!joint_bone25_end
+    400038: 26.!joint_bone26_end
+    400040: 27.!joint_bone27_end
+    400042: 28.!joint_bone28_end
+    400044: 29.!joint_bone29_end
+    400046: 3.joint_bone4
+    400048: 30.joint_bone31
+    400050: 31.!joint_bone31_end
+    400052: 32.joint_bone37
+    400054: 33.joint_bone38
+    400056: 34.joint_bone39
+    400058: 35.joint_bone40
+    400060: 36.joint_bone41
+    400062: 37.joint_bone42
+    400064: 38.joint_bone43
+    400066: 39.joint_bone44
+    400068: 4.!joint_bone4_end
+    400070: 40.joint_bone45
+    400072: 41.joint_bone46
+    400074: 42.joint_bone47
+    400076: 43.joint_bone48
+    400078: 44.joint_bone49
+    400080: 45.joint_bone50
+    400082: 46.joint_bone51
+    400084: 47.joint_bone52
+    400086: 48.joint_bone53
+    400088: 49.joint_bone54
+    400090: 5.joint_bone10
+    400092: 50.joint_bone55
+    400094: 51.joint_bone56
+    400096: 52.!joint_bone52_end
+    400098: 53.!joint_bone53_end
+    400100: 54.!joint_bone54_end
+    400102: 55.!joint_bone55_end
+    400104: 56.!joint_bone56_end
+    400106: 57.!joint_bone57_end
+    400108: 58.!Root
+    400110: 6.joint_bone11
+    400112: 7.joint_bone12
+    400114: 8.joint_bone13
+    400116: 9.joint_bone14
+    400118: //RootNode
+    400120: U_Char
+    4300000: U_Char
+    7400000: nephila_groundwalkright_vmd
+    9500000: //RootNode
+    13700000: U_Char
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 0.nephila.png
+    second: {fileID: 2100000, guid: 4d036617e4fff2c4990b1fc2467eb825, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: nephila_groundwalkright_vmd
+      takeName: nephila_groundwalkright_vmd
+      firstFrame: 0
+      lastFrame: 20
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
