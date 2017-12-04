@@ -28,6 +28,7 @@ public class EnemyAI4 : Character
 
     int number;
 
+    float distThread;
     float dist40;
     float dist50;
 
@@ -102,9 +103,6 @@ public class EnemyAI4 : Character
     {
         //誰の陣地でもない近くの木
         nearObj0 = GetComponent<NearObj>().m_nearObj0;
-
-        //今いる木
-        nearObj = GetComponent<NearObj>().m_nearObj;
 
         //近かったオブジェクト（木）を取得
         nearObj2 = GetComponent<NearObj>().m_nearObj2;
@@ -230,25 +228,37 @@ public class EnemyAI4 : Character
     {
         anim.SetBool("jump", false);
 
-        //近くの糸との距離
-        float dist = Vector3.Distance(stringObj.transform.position, this.transform.position);
-        //近くの自分の陣地ではない木との距離
-        float nearDist40 = Vector3.Distance(nearObj40.transform.position, this.transform.position);
-        //2番目に近い自分の陣地ではない木との距離
-        float nearDist50 = Vector3.Distance(nearObj50.transform.position, this.transform.position);
-
-        //ジャンプ距離内に糸があり、自分の陣地ではない木がない場合
-        if (dist <= m_treeDetection && nearDist40 >= m_treeDetection && nearDist50 >= m_treeDetection)
+        if(stringObj != null)
         {
-            m_StateProcessor.State = m_ThreadJump;
+            //近くの糸との距離
+            distThread = Vector3.Distance(stringObj.transform.position, this.transform.position);
         }
+        if (nearObj40 != null)
+        {
+            //近くの自分の陣地ではない木との距離
+            dist40 = Vector3.Distance(nearObj40.transform.position, this.transform.position);
+        }
+        if (nearObj50 != null)
+        {
+            //2番目に近い自分の陣地ではない木との距離
+            dist50 = Vector3.Distance(nearObj50.transform.position, this.transform.position);
+        }
+
+
+        
 
         if (nearObj0 != null)
         {
             m_StateProcessor.State = m_ColorlessTree;
         }
 
-        if (nearObj40 == null || nearObj50 == null)
+        //ジャンプ距離内に糸があり、自分の陣地ではない木がない場合
+        if (nearObj0 == null && distThread <= m_treeDetection &&
+            dist40 >= m_treeDetection && dist50 >= m_treeDetection)
+        {
+            m_StateProcessor.State = m_ThreadJump;
+        }
+        else if (nearObj40 == null || nearObj50 == null)
         {
             m_StateProcessor.State = m_SearchRandom;
         }

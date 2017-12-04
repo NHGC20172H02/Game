@@ -31,7 +31,7 @@ public class NearObj : MonoBehaviour {
 	void Update () {
 
         //今いる木
-        m_nearObj = GetComponent<EnemyAI3>().nearObj;
+        m_nearObj = GetComponent<EnemyAI4>().nearObj;
 
         //近かったオブジェクト（木）を取得
         m_nearObj2 = serchTag(this.gameObject, "Tree");
@@ -50,7 +50,7 @@ public class NearObj : MonoBehaviour {
         m_stringObj = stringTag0(this.gameObject, "String");
 
         //１つ前にいた木を保持
-        m_reObj = GetComponent<EnemyAI3>().reObj;
+        m_reObj = GetComponent<EnemyAI4>().reObj;
     }
 
 
