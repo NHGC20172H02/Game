@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//予測線のCollision
 public class LineCollision : MonoBehaviour {
 
     private PredictionLine m_Parent;
@@ -19,6 +20,7 @@ public class LineCollision : MonoBehaviour {
     void OnCollisionExit(Collision collision)
     {
         m_Parent.m_HitString = null;
+        m_Parent.m_HitStringPoint = new ContactPoint();
     }
 
     void Update () {

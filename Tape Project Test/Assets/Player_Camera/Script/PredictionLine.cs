@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//予測線
 public class PredictionLine : MonoBehaviour {
 
     public LineRenderer m_LineRenderer;
     public ContactPoint m_HitStringPoint;
     public int m_HitStringSide = 0;
     public StringUnit m_HitString;
-    public Collision m_StringCollision;
     public GameObject m_Collision;
 
     private Vector3 m_start;             //始点
@@ -115,7 +115,6 @@ public class PredictionLine : MonoBehaviour {
             m_HitString = collision.transform.GetComponent<StringUnit>();
             m_HitStringSide = m_HitString.m_SideNumber;
             m_HitStringPoint = point;
-            m_StringCollision = collision;
         }
     }
 }

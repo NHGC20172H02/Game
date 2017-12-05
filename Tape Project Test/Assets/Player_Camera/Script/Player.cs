@@ -4,43 +4,51 @@ using UnityEngine;
 
 public class Player : Character
 {
+    [Header("移動速度")]
     public float m_Speed = 1f;
+    [Header("ジャンプの限界距離")]
     public float m_JumpLimit = 50f;
+    [Header("ジャンプの射角")]
     public float m_Angle = 30f;
+    public LayerMask m_GroundLayer;
+    public LayerMask m_TreeLayer;
+    public LayerMask m_StringLayer;
     public PredictionLine m_Prediction;
     public Animator m_Animator;
 
-    private RaycastHit m_hitinfo;
-    private Vector3 move_start;
-    private Vector3 move_end;
-    private RaycastHit jump_target;         //ジャンプの対象
+    private PlayerStateManager m_StateManager;       //Player状態管理
+    private RaycastHit m_hitinfo;                    //足元の情報
+    private Vector3 move_start;                      //ジャンプ始点
+    private Vector3 move_end;                        //ジャンプ終点
+    private RaycastHit jump_target;
     private bool is_escape = false;
 
     public StringShooter m_Shooter;
     protected override void Start()
     {
-        var instance = PlayerStateManager.GetInstance;
-        instance.GroundTp.p_exeDelegate = GroundMove;
-        instance.TreeTp.p_exeDelegate = TreeTpMove;
-        instance.TreeFp.p_exeDelegate = TreeFpMove;
-        instance.JumpTp.p_exeDelegate = JumpTpMove;
-        instance.StringTp.p_exeDelegate = StringTpMove;
-        instance.Falling.p_exeDelegate = FallingMove;
+        m_StateManager = PlayerStateManager.GetInstance;
+        m_StateManager.GroundTp.p_exeDelegate = GroundMove;
+        m_StateManager.TreeTp.p_exeDelegate = TreeTpMove;
+        m_StateManager.TreeFp.p_exeDelegate = TreeFpMove;
+        m_StateManager.JumpTp.p_exeDelegate = JumpTpMove;
+        m_StateManager.StringTp.p_exeDelegate = StringTpMove;
+        m_StateManager.Falling.p_exeDelegate = FallingMove;
         m_Prediction.gameObject.SetActive(true);
     }
 
     protected override void Update()
     {
-
     }
 
     //地面にいる場合の移動
     void GroundMove()
     {
+        m_Animator.SetBool("IsString", false);
         m_Prediction.gameObject.SetActive(false);
         Vector3 start = transform.position + transform.up * 0.5f;
-        int layerMask = LayerMask.GetMask(new string[] { "Ground" });
-        Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, layerMask);
+        //足元の情報取得（地面優先）
+        if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_GroundLayer))
+            Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_TreeLayer);
 
         Move(Camera.main.transform.right, m_hitinfo.normal);
 
@@ -49,31 +57,29 @@ public class Player : Character
         {
             transform.position = m_hitinfo.point;
             transform.rotation = Quaternion.LookRotation(Vector3.Cross(transform.right, m_hitinfo.normal), m_hitinfo.normal);
-            var instance = PlayerStateManager.GetInstance;
-            instance.StateProcassor.State = instance.TreeTp;
+            m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
         }
     }
 
     //木の上の俯瞰カメラ状態での移動
     void TreeTpMove()
     {
+        m_Animator.SetBool("IsString", false);
         Vector3 start = transform.position + transform.up * 0.5f;
-        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
-        if(!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, treeLayer))
-        {
-            Physics.Raycast(start, -transform.up, out m_hitinfo, 1f);
-        }
+        //足元の情報取得（木を優先）
+        if(!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_TreeLayer))
+            Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_GroundLayer);
 
-        var instance = PlayerStateManager.GetInstance;
-        if (m_hitinfo.transform.tag == "Ground")
-            instance.StateProcassor.State = instance.GroundTp;
+        if (m_hitinfo.collider.tag == "Ground")
+            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
 
+        //位置補正
         transform.position = Vector3.Lerp(transform.position, m_hitinfo.point, 0.2f);
         Move(Camera.main.transform.right, m_hitinfo.normal);
 
         //一人称視点変更
         if (Input.GetKeyDown(KeyCode.L))
-            instance.StateProcassor.State = instance.TreeFp;
+            m_StateManager.StateProcassor.State = m_StateManager.TreeFp;
 
         Ray ray = new Ray(start, Camera.main.transform.forward);
         Jump(ray, m_hitinfo);
@@ -83,13 +89,12 @@ public class Player : Character
     void TreeFpMove()
     {
         Vector3 start = transform.position + transform.up * 0.5f;
-        var instance = PlayerStateManager.GetInstance;
         if (Input.GetKeyDown(KeyCode.L))
         {
             if (m_hitinfo.collider.tag == "Tree")
-                instance.StateProcassor.State = instance.TreeTp;
+                m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
             else if (m_hitinfo.collider.tag == "String")
-                instance.StateProcassor.State = instance.StringTp;
+                m_StateManager.StateProcassor.State = m_StateManager.StringTp;
         }
 
         Ray ray = new Ray(start, Camera.main.transform.forward);
@@ -104,21 +109,23 @@ public class Player : Character
             transform.position = jump_target.point;
             transform.rotation = Quaternion.LookRotation(Vector3.Cross(Camera.main.transform.right, jump_target.normal), jump_target.normal);
             m_Shooter.StringShoot(move_start, move_end);
-            var instance = PlayerStateManager.GetInstance;
-            if (jump_target.transform.tag == "String")
+            m_Animator.SetTrigger("Landing");
+            if (jump_target.collider.tag == "String")
             {
                 is_escape = false;
                 m_hitinfo = jump_target;
-                instance.StateProcassor.State = instance.StringTp;
+                m_StateManager.StateProcassor.State = m_StateManager.StringTp;
+                m_Animator.SetBool("IsString", true);
                 return;
             }
-            instance.StateProcassor.State = instance.TreeTp;
+            m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
+            m_Animator.SetBool("IsString", false);
         }
 
         int playerLayer = LayerMask.GetMask(new string[] { "Player" });
-        if (jump_target.transform.tag == "String")
+        if (jump_target.collider.tag == "String")
         {
-            int side = jump_target.transform.GetComponent<StringUnit>().m_SideNumber;
+            int side = jump_target.collider.GetComponent<StringUnit>().m_SideNumber;
             if (side == 1) return;
             //回避可能範囲
             if(Physics.CheckSphere(move_end, 3f, playerLayer))
@@ -126,11 +133,7 @@ public class Player : Character
                 //回避失敗
                 if (Physics.CheckSphere(move_end, 1f, playerLayer) && !is_escape)
                 {
-                    int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
-                    Ray ray = new Ray(transform.position, -Vector3.up);
-                    Physics.Raycast(ray, out m_hitinfo, 100f, groundLayer);
-                    var instance = PlayerStateManager.GetInstance;
-                    instance.StateProcassor.State = instance.Falling;
+                    Fall();
                     return;
                 }
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -139,59 +142,65 @@ public class Player : Character
                 }
             }
         }
-        //else if (m_Prediction.m_HitStringPoint.point != Vector3.zero)
-        //{
-        //    if (m_Prediction.m_HitStringSide == 1) return;
-        //    if (Physics.CheckSphere(m_Prediction.m_HitStringPoint.point, 3f, playerLayer))
-        //    {
-        //        if (Physics.CheckSphere(m_Prediction.m_HitStringPoint.point, 0.5f, playerLayer) && !is_escape)
-        //        {
-        //            int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
-        //            Ray ray = new Ray(transform.position, -Vector3.up);
-        //            Physics.Raycast(ray, out m_hitinfo, 100f, groundLayer);
-        //            var instance = PlayerStateManager.GetInstance;
-        //            instance.StateProcassor.State = instance.Falling;
-        //            return;
-        //        }
-        //        if (Input.GetKeyDown(KeyCode.Space))
-        //        {
-        //            move_end = m_Prediction.m_HitStringPoint.point;
-        //            jump_target.normal = m_Prediction.m_HitStringPoint.normal;
-        //            Escape(false);
-        //        }
-        //    }
-        //}
+        else if (m_Prediction.m_HitStringPoint.point != Vector3.zero)
+        {
+            if (m_Prediction.m_HitStringSide == 1) return;
+            if (Physics.CheckSphere(m_Prediction.m_HitStringPoint.point, 3f, playerLayer))
+            {
+                if (Physics.CheckSphere(m_Prediction.m_HitStringPoint.point, 0.5f, playerLayer) && !is_escape)
+                {
+                    Fall();
+                    return;
+                }
+                //回避行動
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Vector3 dir = (m_Prediction.m_HitStringPoint.point - transform.position).normalized;
+                    Ray ray = new Ray(transform.position, dir);
+                    Physics.Raycast(ray, out jump_target);
+                    move_end = jump_target.point;
+                    Escape(false);
+                }
+            }
+        }
     }
 
     //糸の上での移動
     void StringTpMove()
     {
-        var instance = PlayerStateManager.GetInstance;
+        m_Animator.SetBool("IsString", true);
         if (m_hitinfo.collider == null)
-            instance.StateProcassor.State = instance.Falling;
+            m_StateManager.StateProcassor.State = m_StateManager.Falling;
         var line = m_hitinfo.collider.GetComponent<LineRenderer>();
+        //糸のベクトル
         Vector3 stringVec = (line.GetPosition(1) - line.GetPosition(0)).normalized;
+        //糸のベクトルを90度回転したベクトル
         Vector3 stringVertical = Quaternion.Euler(0, 90, 0) * stringVec;
+        //上方向ベクトル
         Vector3 up = Vector3.Cross(Camera.main.transform.right, stringVec);
         float angle = Vector3.Angle(Camera.main.transform.right, stringVec);
         Vector3 vec = Vector3.zero;
         Vector3 move = Vector3.zero;
+        //４方向に向きを変えていく
         if (angle > 45f && angle < 135f)
         {
             if (up.y > 0)
                 stringVec = -stringVec;
             vec = stringVec;
             move = stringVec * Input.GetAxis("Vertical");
+            m_Animator.SetFloat("StringMoveZ", Input.GetAxis("Vertical"));
         }
         else if(angle < 45f)
         {
             vec = -stringVertical;
             move = stringVec * Input.GetAxis("Horizontal");
+            m_Animator.SetFloat("StringMoveX", Input.GetAxis("Horizontal"));
         }
         else if(angle > 135f)
         {
             vec = stringVertical;
             move = -stringVec * Input.GetAxis("Horizontal");
+            m_Animator.SetFloat("StringMoveX", Input.GetAxis("Horizontal"));
         }
         transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, vec, 0.2f));
         transform.Translate(move * m_Speed * Time.deltaTime, Space.World);
@@ -199,7 +208,7 @@ public class Player : Character
         //一人称視点変更
         if (Input.GetKeyDown(KeyCode.L))
         {
-            instance.StateProcassor.State = instance.TreeFp;
+            m_StateManager.StateProcassor.State = m_StateManager.TreeFp;
         }
 
         Vector3 start = transform.position + transform.up * 0.5f;
@@ -233,17 +242,14 @@ public class Player : Character
     private void Jump(Ray ray, RaycastHit hit)
     {
         bool jump;
-        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
-        int stringLayer = LayerMask.GetMask(new string[] { "String" });
         //糸を狙うのかどうか
         if (Input.GetKey(KeyCode.K))
-            jump = Physics.SphereCast(ray, 2f, out jump_target, m_JumpLimit, stringLayer);
+            jump = Physics.SphereCast(ray, 2f, out jump_target, m_JumpLimit, m_StringLayer);
         else
-            jump = Physics.SphereCast(ray, 2f, out jump_target, m_JumpLimit, treeLayer);
-
+            jump = Physics.SphereCast(ray, 2f, out jump_target, m_JumpLimit, m_TreeLayer);
         if (jump)
         {
-            if (hit.transform == jump_target.transform) return;
+            if (hit.collider == jump_target.collider) return;
 
             //予測線、カーソル表示
             m_Prediction.gameObject.SetActive(true);
@@ -256,8 +262,7 @@ public class Player : Character
                 move_start = transform.position;
                 move_end = jump_target.point;
                 m_Animator.SetTrigger("Jump");
-                var instance = PlayerStateManager.GetInstance;
-                instance.StateProcassor.State = instance.JumpTp;
+                m_StateManager.StateProcassor.State = m_StateManager.JumpTp;
             }
             return;
         }
@@ -267,23 +272,30 @@ public class Player : Character
     //回避
     private void Escape(bool targetString)
     {
-        if (targetString)
-            jump_target.collider.GetComponent<StringUnit>().SetSide(1);
-        else
-            m_Prediction.m_HitString.SetSide(1);
         elapse_time = 0;
         is_escape = true;
+    }
+
+    //落下
+    private void Fall()
+    {
+        //落下先情報取得（木を優先）
+        Ray ray = new Ray(transform.position, -Vector3.up);
+        if(!Physics.Raycast(ray, out m_hitinfo, 100f, m_TreeLayer))
+            Physics.Raycast(ray, out m_hitinfo, 100f, m_GroundLayer);
+        m_StateManager.StateProcassor.State = m_StateManager.Falling;
     }
 
     void OnTriggerEnter(Collider other)
     {
         //地面着地
-        var instance = PlayerStateManager.GetInstance;
-        if (instance.StateProcassor.State != instance.Falling) return;
+        if (m_StateManager.StateProcassor.State != m_StateManager.Falling) return;
         if (other.transform.tag == "Ground")
         {
             elapse_time = 0;
-            instance.StateProcassor.State = instance.GroundTp;
+            m_Animator.SetTrigger("Landing");
+            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
         }
+
     }
 }
