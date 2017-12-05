@@ -16,18 +16,16 @@ public class StringUnit : Connecter {
 	public Vector3 m_PointA;
 	public Vector3 m_PointB;
 
-	public void SetLine(Vector3 Start, Vector3 End)
+	public void Create(StringShooter stringShooter, Vector3 start, Vector3 end)
 	{
-		m_PointA = Start;
-		m_PointB = End;
-		m_LineRenderer.SetPositions(new Vector3[] { Start, End });
-		m_Collider.height = Vector3.Distance(Start, End);
-		m_Collider.center = new Vector3(0, 0, m_Collider.height * 0.5f);
-	}
-
-	public void SetCost(int Cost)
-	{
-		m_Cost = Cost;
+		m_StringShooter = stringShooter;
+		m_PointA = start;
+		m_PointB = end;
+		StretchReturn();
+		float distance = Vector3.Distance(start, end);
+		m_Cost = (int)(distance * 0.1f);
+		m_Collider.height = distance;
+		m_Collider.center = new Vector3(0, 0, distance * 0.5f);
 	}
 
 	public void SetConnecter(Connecter Start,Connecter End)
@@ -69,6 +67,11 @@ public class StringUnit : Connecter {
 		{
 			SideUpdate(other.GetComponentInParent<StringShooter>().m_SideNumber);
 		}
+	}
+	public Transform m_point;
+	private void Update()
+	{
+		Stretch(m_point.position);
 	}
 	public void Stretch(Vector3 point)
 	{
