@@ -11,8 +11,6 @@ public class StringShooter : MonoBehaviour
 	public int m_MaxCost = 200;
 	public int m_Cost;
 	public List<StringUnit> m_Strings;
-	private Vector3 m_PreStartPoint;
-	private Vector3 m_PreEndPoint;
 	public GameObject m_Net;
 	public float m_NetAngleLimit = 40;
 	public float m_NetDistanceLimit = 0.01f;
@@ -49,16 +47,51 @@ public class StringShooter : MonoBehaviour
 			m_Strings.RemoveAt(0);
 			firstStringUnit.Delete();
 		}
-		if (Vector3.Distance(start, m_PreEndPoint) < m_NetDistanceLimit && Vector3.Angle(end - start, m_PreStartPoint - start) < m_NetAngleLimit)
+
+		List<Collider> colliders = new List<Collider>(Physics.OverlapSphere(start, m_Radius, layerMask.value));
+		foreach (var item in colliders)
 		{
-			Net net = Instantiate(m_Net).GetComponent<Net>();
-			net.m_StringShooter = this;
-			net.SetTriangle(m_PreStartPoint, end, start);
-			net.SetSide(m_SideNumber);
-			net.SetConnecter(m_Strings[m_Strings.Count - 1], stringUnit);
+			var SU = item.GetComponent<StringUnit>();
+			if (SU == null) continue;
+			if (Vector3.Distance(start, SU.m_PointB) < m_NetDistanceLimit && Vector3.Angle(end - start, SU.m_PointA - start) < m_NetAngleLimit)
+			{
+				Net net = Instantiate(m_Net).GetComponent<Net>();
+				net.m_StringShooter = this;
+				net.SetTriangle(SU.m_PointA, end, start);
+				net.SetSide(m_SideNumber);
+				net.SetConnecter(SU, stringUnit);
+			}
+			if (Vector3.Distance(start, SU.m_PointA) < m_NetDistanceLimit && Vector3.Angle(end - start, SU.m_PointB - start) < m_NetAngleLimit)
+			{
+				Net net = Instantiate(m_Net).GetComponent<Net>();
+				net.m_StringShooter = this;
+				net.SetTriangle(SU.m_PointB, end, start);
+				net.SetSide(m_SideNumber);
+				net.SetConnecter(SU, stringUnit);
+			}
 		}
-		m_PreEndPoint = end;
-		m_PreStartPoint = start;
+		colliders = new List<Collider>(Physics.OverlapSphere(end, m_Radius, layerMask.value));
+		foreach (var item in colliders)
+		{
+			var SU = item.GetComponent<StringUnit>();
+			if (SU == null) continue;
+			if (Vector3.Distance(end, SU.m_PointB) < m_NetDistanceLimit && Vector3.Angle(start - end, SU.m_PointA - end) < m_NetAngleLimit)
+			{
+				Net net = Instantiate(m_Net).GetComponent<Net>();
+				net.m_StringShooter = this;
+				net.SetTriangle(SU.m_PointA, start, end);
+				net.SetSide(m_SideNumber);
+				net.SetConnecter(SU, stringUnit);
+			}
+			if (Vector3.Distance(end, SU.m_PointA) < m_NetDistanceLimit && Vector3.Angle(start - end, SU.m_PointB - end) < m_NetAngleLimit)
+			{
+				Net net = Instantiate(m_Net).GetComponent<Net>();
+				net.m_StringShooter = this;
+				net.SetTriangle(SU.m_PointB, start, end);
+				net.SetSide(m_SideNumber);
+				net.SetConnecter(SU, stringUnit);
+			}
+		}
 	}
 
 	private Connecter GetConnecter(Vector3 position)
@@ -82,5 +115,8 @@ public class StringShooter : MonoBehaviour
 		}
 
 		return (result == position + Vector3.forward * m_Radius) ? position : result;
+	}
+	private void CreateNet(Vector3 start, Vector3 end)
+	{
 	}
 }
