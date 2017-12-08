@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,49 +47,51 @@ public class StringShooter : MonoBehaviour
 			m_Strings.RemoveAt(0);
 			firstStringUnit.Delete();
 		}
-
-		List<Collider> colliders = new List<Collider>(Physics.OverlapSphere(start, m_Radius, layerMask.value));
-		foreach (var item in colliders)
+		if(stringUnit.m_StartConnecter is Tree || stringUnit.m_EndConnecter is Tree || true)
 		{
-			var SU = item.GetComponent<StringUnit>();
-			if (SU == null) continue;
-			if (Vector3.Distance(start, SU.m_PointB) < m_NetDistanceLimit && Vector3.Angle(end - start, SU.m_PointA - start) < m_NetAngleLimit)
+			List<Collider> colliders = new List<Collider>(Physics.OverlapSphere(start, m_Radius, layerMask.value));
+			foreach (var item in colliders)
 			{
-				Net net = Instantiate(m_Net).GetComponent<Net>();
-				net.m_StringShooter = this;
-				net.SetTriangle(SU.m_PointA, end, start);
-				net.SetSide(m_SideNumber);
-				net.SetConnecter(SU, stringUnit);
+				var SU = item.GetComponent<StringUnit>();
+				if (SU == null) continue;
+				if (/*Vector3.Distance(start, SU.m_PointB) < m_NetDistanceLimit &&*/ Vector3.Angle(end - start, SU.m_PointA - start) < m_NetAngleLimit)
+				{
+					Net net = Instantiate(m_Net).GetComponent<Net>();
+					net.m_StringShooter = this;
+					net.SetTriangle(SU.m_PointA, end, start);
+					net.SetSide(m_SideNumber);
+					net.SetConnecter(SU, stringUnit);
+				}
+				if (/*Vector3.Distance(start, SU.m_PointA) < m_NetDistanceLimit &&*/ Vector3.Angle(end - start, SU.m_PointB - start) < m_NetAngleLimit)
+				{
+					Net net = Instantiate(m_Net).GetComponent<Net>();
+					net.m_StringShooter = this;
+					net.SetTriangle(SU.m_PointB, end, start);
+					net.SetSide(m_SideNumber);
+					net.SetConnecter(SU, stringUnit);
+				}
 			}
-			if (Vector3.Distance(start, SU.m_PointA) < m_NetDistanceLimit && Vector3.Angle(end - start, SU.m_PointB - start) < m_NetAngleLimit)
+			colliders = new List<Collider>(Physics.OverlapSphere(end, m_Radius, layerMask.value));
+			foreach (var item in colliders)
 			{
-				Net net = Instantiate(m_Net).GetComponent<Net>();
-				net.m_StringShooter = this;
-				net.SetTriangle(SU.m_PointB, end, start);
-				net.SetSide(m_SideNumber);
-				net.SetConnecter(SU, stringUnit);
-			}
-		}
-		colliders = new List<Collider>(Physics.OverlapSphere(end, m_Radius, layerMask.value));
-		foreach (var item in colliders)
-		{
-			var SU = item.GetComponent<StringUnit>();
-			if (SU == null) continue;
-			if (Vector3.Distance(end, SU.m_PointB) < m_NetDistanceLimit && Vector3.Angle(start - end, SU.m_PointA - end) < m_NetAngleLimit)
-			{
-				Net net = Instantiate(m_Net).GetComponent<Net>();
-				net.m_StringShooter = this;
-				net.SetTriangle(SU.m_PointA, start, end);
-				net.SetSide(m_SideNumber);
-				net.SetConnecter(SU, stringUnit);
-			}
-			if (Vector3.Distance(end, SU.m_PointA) < m_NetDistanceLimit && Vector3.Angle(start - end, SU.m_PointB - end) < m_NetAngleLimit)
-			{
-				Net net = Instantiate(m_Net).GetComponent<Net>();
-				net.m_StringShooter = this;
-				net.SetTriangle(SU.m_PointB, start, end);
-				net.SetSide(m_SideNumber);
-				net.SetConnecter(SU, stringUnit);
+				var SU = item.GetComponent<StringUnit>();
+				if (SU == null) continue;
+				if (/*Vector3.Distance(end, SU.m_PointB) < m_NetDistanceLimit &&*/ Vector3.Angle(start - end, SU.m_PointA - end) < m_NetAngleLimit)
+				{
+					Net net = Instantiate(m_Net).GetComponent<Net>();
+					net.m_StringShooter = this;
+					net.SetTriangle(SU.m_PointA, start, end);
+					net.SetSide(m_SideNumber);
+					net.SetConnecter(SU, stringUnit);
+				}
+				if (/*Vector3.Distance(end, SU.m_PointA) < m_NetDistanceLimit &&*/ Vector3.Angle(start - end, SU.m_PointB - end) < m_NetAngleLimit)
+				{
+					Net net = Instantiate(m_Net).GetComponent<Net>();
+					net.m_StringShooter = this;
+					net.SetTriangle(SU.m_PointB, start, end);
+					net.SetSide(m_SideNumber);
+					net.SetConnecter(SU, stringUnit);
+				}
 			}
 		}
 	}
