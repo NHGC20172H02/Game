@@ -192,4 +192,12 @@ namespace EnemyState
             return "FallGroundMove";
         }
     }
+
+    public class PredominanceDecision : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "PredominanceDecision";
+        }
+    }
 }

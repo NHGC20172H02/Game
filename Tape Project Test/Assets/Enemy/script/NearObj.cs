@@ -279,8 +279,6 @@ public class NearObj : MonoBehaviour {
 
         foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
         {
-
-
             int number = obs.GetComponent<Connecter>().m_SideNumber;
             int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
