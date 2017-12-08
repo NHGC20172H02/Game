@@ -50,6 +50,7 @@ public class StringShooter : MonoBehaviour
 		if(stringUnit.m_StartConnecter is Tree || stringUnit.m_EndConnecter is Tree || true)
 		{
 			List<Collider> colliders = new List<Collider>(Physics.OverlapSphere(start, m_Radius, layerMask.value));
+			colliders.Remove(stringUnit.m_Collider);
 			foreach (var item in colliders)
 			{
 				var SU = item.GetComponent<StringUnit>();
@@ -72,6 +73,7 @@ public class StringShooter : MonoBehaviour
 				}
 			}
 			colliders = new List<Collider>(Physics.OverlapSphere(end, m_Radius, layerMask.value));
+			colliders.Remove(stringUnit.m_Collider);
 			foreach (var item in colliders)
 			{
 				var SU = item.GetComponent<StringUnit>();
