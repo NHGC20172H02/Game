@@ -1,9 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Tree : Connecter {
-
+	private void Start()
+	{
+		TerritoryManager.Instance.m_Trees.Add(this);
+	}
 	public override void ChildUpdate()
 	{
 		List<int> count = new List<int> { 0, 0, 0 };
