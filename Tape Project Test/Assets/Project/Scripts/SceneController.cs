@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,23 +27,19 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 	[HideInInspector]
 	public bool m_IsLoadingAnimation;
 
-	public bool m_Build;
 	IEnumerator Start()
 	{
-		if (m_Build)
+
+#if UNITY_EDITOR
+#else
+		foreach (var scene in m_SceneListTable.m_Table[0].Scenes)
 		{
-			foreach (var scene in m_SceneListTable.m_Table[0].Scenes)
+			if (scene != m_CoreSceneName)
 			{
-				if (scene != m_CoreSceneName)
-				{
-					m_Async = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
-					while (!m_Async.isDone)
-					{
-						yield return null;
-					}
-				}
+				yield return SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
 			}
 		}
+#endif
 
 		m_Core = SceneManager.GetActiveScene();
 		m_IsLoading = false;
@@ -51,7 +47,7 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 		{
 			m_LoadedScenes.Add(SceneManager.GetSceneAt(i).name);
 		}
-
+		return null;
 	}
 
 	// マルチシーン切り替え
