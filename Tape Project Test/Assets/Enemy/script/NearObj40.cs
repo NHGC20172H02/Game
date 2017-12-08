@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NearObj : MonoBehaviour {
+public class NearObj40 : MonoBehaviour {
     [System.NonSerialized]
     public GameObject m_nearObj0;
     [System.NonSerialized]
@@ -25,15 +25,17 @@ public class NearObj : MonoBehaviour {
     public GameObject m_reObj;
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         //今いる木
-        m_nearObj = GetComponent<EnemyAI4>().nearObj;
+        m_nearObj = GetComponent<EnemyAI40>().nearObj;
 
         //近かったオブジェクト（木）を取得
         m_nearObj2 = serchTag(this.gameObject, "Tree");
@@ -55,7 +57,7 @@ public class NearObj : MonoBehaviour {
         m_stringNet = stringNet(this.gameObject, "Net");
 
         //１つ前にいた木を保持
-        m_reObj = GetComponent<EnemyAI4>().reObj;
+        m_reObj = GetComponent<EnemyAI40>().reObj;
     }
 
 
@@ -252,7 +254,7 @@ public class NearObj : MonoBehaviour {
         {
 
 
-            int number = obs.GetComponent<Connecter>().m_SideNumber;
+            int number = obs.GetComponent<StringUnit>().m_SideNumber;
             int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
             if (number == sidenumber)
