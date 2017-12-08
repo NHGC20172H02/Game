@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +16,10 @@ public class StringUnit : Connecter {
 	public Vector3 m_PointA;
 	public Vector3 m_PointB;
 
+	private void Start()
+	{
+		TerritoryManager.Instance.m_Strings.Add(this);
+	}
 	public void Create(StringShooter stringShooter, Vector3 start, Vector3 end)
 	{
 		m_StringShooter = stringShooter;
@@ -59,6 +63,7 @@ public class StringUnit : Connecter {
 		m_EndConnecter.RemoveString(this);
 		m_StringShooter.m_Cost -= m_Cost;
 		Destroy(gameObject);
+		TerritoryManager.Instance.m_Strings.Remove(this);
 	}
 
 	private void OnTriggerEnter(Collider other)
