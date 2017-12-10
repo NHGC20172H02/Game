@@ -200,4 +200,36 @@ namespace EnemyState
             return "PredominanceDecision";
         }
     }
+
+    public class PredominanceStringCount : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "PredominanceStringCount";
+        }
+    }
+
+    public class PredominanceMyTree : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "PredominanceMyTree";
+        }
+    }
+
+    public class PredominanceJump : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "PredominanceJump";
+        }
+    }
+
+    public class PredominanceJumpMove : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "PredominanceJumpMove";
+        }
+    }
 }

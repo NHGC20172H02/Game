@@ -106,7 +106,7 @@ public class EnemyAI3 : Character
         nearObj50 = GetComponent<NearObj>().m_nearObj50;
 
         //近くの自分の糸
-        stringObj = GetComponent<NearObj>().m_stringObj;
+        stringObj = GetComponent<NearObj>().m_myStringObj;
 
         
 
