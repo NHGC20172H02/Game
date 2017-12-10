@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +12,10 @@ public class Net : Connecter {
 
 	public StringShooter m_StringShooter;
 
+	private void Start()
+	{
+		TerritoryManager.Instance.m_Nets.Add(this);
+	}
 	public void SetTriangle(Vector3 A, Vector3 B, Vector3 Corner)
 	{
 		var mesh = new Mesh();
@@ -69,6 +73,7 @@ public class Net : Connecter {
 		m_StartConnecter.RemoveString(this);
 		m_EndConnecter.RemoveString(this);
 		Destroy(gameObject);
+		TerritoryManager.Instance.m_Nets.Remove(this);
 	}
 
 	private void OnTriggerEnter(Collider other)
