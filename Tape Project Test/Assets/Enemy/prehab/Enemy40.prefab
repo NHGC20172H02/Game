@@ -3832,6 +3832,7 @@ MonoBehaviour:
   m_Shooter: {fileID: 114465954249624788}
   m_detection: 30
   tree_Detection: 150
+  latter_half_time: 45
 --- !u!124 &124216028360915816
 Behaviour:
   m_ObjectHideFlags: 1
