@@ -38,22 +38,22 @@ public class Fade : MonoBehaviour
 
     void StartFadeIn()
     {
-        alpha -= fadeSpeed;                //a)不透明度を徐々に下げる
-        SetAlpha();                      //b)変更した不透明度パネルに反映する
+        alpha -= fadeSpeed;                
+        SetAlpha();                      
         if (alpha <= 0)
-        {                    //c)完全に透明になったら処理を抜ける
+        {                    
             isFadeIn = false;
-            fadeImage.enabled = false;    //d)パネルの表示をオフにする
+            fadeImage.enabled = false;    
         }
     }
 
     void StartFadeOut()
     {
-        fadeImage.enabled = true;  // a)パネルの表示をオンにする
-        alpha += fadeSpeed;         // b)不透明度を徐々にあげる
-        SetAlpha();               // c)変更した透明度をパネルに反映する
+        fadeImage.enabled = true;  
+        alpha += fadeSpeed;         
+        SetAlpha();               
         if (alpha >= 1)
-        {             // d)完全に不透明になったら処理を抜ける
+        {             
             isFadeOut = false;
         }
     }
