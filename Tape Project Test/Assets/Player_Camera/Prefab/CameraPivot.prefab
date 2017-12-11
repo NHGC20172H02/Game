@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a89d92cf2c8f67041840238599615e50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_target: {fileID: 0}
+  m_target: {fileID: 1429719002570434, guid: 01833b926f4df474a98f2b05000303c4, type: 2}
   m_Camera: {fileID: 4257887091800482}
   rotate_Speed: 100
   minAngle: -60
