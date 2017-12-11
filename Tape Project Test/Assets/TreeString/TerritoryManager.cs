@@ -28,4 +28,34 @@ public class TerritoryManager : SingletonMonoBehaviour<TerritoryManager> {
 		}
 		return count;
 	}
+
+	public int GetNetCount(int sideNumber)
+	{
+		int count = 0;
+		foreach (var item in m_Nets)
+		{
+			count += item.m_SideNumber == sideNumber ? 1 : 0;
+		}
+		return count;
+	}
+
+	public int GetStringCount(int sideNumber)
+	{
+		int count = 0;
+		foreach (var item in m_Strings)
+		{
+			count += item.m_SideNumber == sideNumber ? 1 : 0;
+		}
+		return count;
+	}
+
+	public int GetStringLenth(int sideNumber)
+	{
+		int count = 0;
+		foreach (var item in m_Strings)
+		{
+			count += item.m_SideNumber == sideNumber ? item.m_Cost : 0;
+		}
+		return count;
+	}
 }
