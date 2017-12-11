@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using EnemyState;
@@ -50,6 +50,7 @@ public class EnemyAI40 : Character
     GameObject eyeObj;
 
     GameObject stringObj;
+	GameObject stringNet;
 
     [System.NonSerialized]
     public GameObject reObj;
@@ -138,7 +139,7 @@ public class EnemyAI40 : Character
         stringObj = GetComponent<NearObj40>().m_stringObj;
 
         //近くの相手のネット
-        stringNet = GetComponent<NearObj>().m_stringNet;
+        stringNet = GetComponent<NearObj40>().m_stringNet;
 
 
         if (nearObj2 == null) return;
