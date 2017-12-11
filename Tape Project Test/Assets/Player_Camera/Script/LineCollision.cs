@@ -12,14 +12,16 @@ public class LineCollision : MonoBehaviour {
         m_Parent = parent.GetComponent<PredictionLine>();
 	}
 	
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionStay(Collision collision)
     {
+        if (m_Parent == null) return;
         m_Parent.ReceiveChildCollision(collision);
     }
 
     void OnCollisionExit(Collision collision)
     {
         m_Parent.m_HitString = null;
+        m_Parent.m_HitNet = null;
         m_Parent.m_HitStringPoint = new ContactPoint();
     }
 

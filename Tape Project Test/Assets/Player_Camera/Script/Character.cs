@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    protected float elapse_time = 0;      //ジャンプの経過時間
+    protected float elapse_time = 0;        //ジャンプの経過時間
+    protected float flightDuration = 0;     //ジャンプの滞空時間
 
     protected virtual void Start () {
 		
@@ -25,8 +26,7 @@ public class Character : MonoBehaviour {
         float Vx = Mathf.Sqrt(V0) * Mathf.Cos(angle * Mathf.Deg2Rad);
         float Vy = Mathf.Sqrt(V0) * Mathf.Sin(angle * Mathf.Deg2Rad);
 
-        //滞空時間
-        float flightDuration = target_Distance / Vx;
+        flightDuration = target_Distance / Vx;
 
         Vector3 forward = (end - start).normalized;
         var z = forward * Vx * Time.deltaTime;
@@ -37,8 +37,9 @@ public class Character : MonoBehaviour {
         //前方向、上方向の設定
         if(transform.tag == "Player")
         {
-            transform.rotation 
-                = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, normal), 0.2f), normal);
+            if (elapse_time > 0.3f)
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, normal), 0.5f), normal);
         }
         else
         {
@@ -49,6 +50,7 @@ public class Character : MonoBehaviour {
         if (elapse_time > flightDuration)
         {
             elapse_time = 0;
+            flightDuration = 0;
             return true;
         }
         return false;

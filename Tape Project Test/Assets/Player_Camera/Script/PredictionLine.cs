@@ -7,8 +7,9 @@ public class PredictionLine : MonoBehaviour {
 
     public LineRenderer m_LineRenderer;
     public ContactPoint m_HitStringPoint;
-    public int m_HitStringSide = 0;
     public StringUnit m_HitString;
+    public Net m_HitNet;
+    public bool m_IsString = false;
     public GameObject m_Collision;
 
     private Vector3 m_start;             //始点
@@ -17,11 +18,12 @@ public class PredictionLine : MonoBehaviour {
     private Vector3 m_top;              //曲線の頂点
     private Transform m_Cursor;
     private Vector3 m_forward;          //予測線の方向
+    private int m_HitNumber = 0;
     private List<GameObject> m_Collisions;
 
     void Start () {
         m_Collisions = new List<GameObject>();
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 9; i++)
         {
             m_Collisions.Add(Instantiate(m_Collision, transform));
         }
@@ -94,12 +96,13 @@ public class PredictionLine : MonoBehaviour {
         {
             len += 0.1f;
             posList.Add(BezierCurve(len));
+            if (i > 9) continue;
             //予測線のCollision設定
             Vector3 dir = (posList[i - 1] - posList[i]).normalized;
             float dis = Vector3.Distance(posList[i], posList[i - 1]);
             m_Collisions[i - 1].transform.position = posList[i] - dir * dis / 2;
             m_Collisions[i - 1].transform.rotation = Quaternion.LookRotation(dir);
-            m_Collisions[i - 1].GetComponent<BoxCollider>().size = new Vector3(0.8f, 0.8f, dis);
+            m_Collisions[i - 1].GetComponent<BoxCollider>().size = new Vector3(1f, 1f, dis);
         }
 
         m_LineRenderer.positionCount = posList.Count;
@@ -109,11 +112,21 @@ public class PredictionLine : MonoBehaviour {
     //子のCollision情報受け取り
     public void ReceiveChildCollision(Collision collision)
     {
-        if (collision.transform.tag != "String") return;
         foreach (ContactPoint point in collision.contacts)
         {
-            m_HitString = collision.transform.GetComponent<StringUnit>();
-            m_HitStringSide = m_HitString.m_SideNumber;
+            if (collision.transform.tag == "Net")
+            {
+                m_HitNet = collision.transform.GetComponent<Net>();
+                m_IsString = false;
+                m_HitNumber = m_HitNet.m_SideNumber;
+            }
+            else
+            {
+                m_HitString = collision.transform.GetComponent<StringUnit>();
+                m_IsString = true;
+                m_HitNumber = m_HitString.m_SideNumber;
+            }
+            if (m_HitNumber == 1) return;
             m_HitStringPoint = point;
         }
     }
