@@ -27,7 +27,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1233222201139088
 GameObject:
   m_ObjectHideFlags: 1
@@ -137,8 +137,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LineRenderer: {fileID: 120423032746623310}
-  m_HitStringSide: 0
   m_HitString: {fileID: 0}
+  m_HitNet: {fileID: 0}
+  m_IsString: 0
   m_Collision: {fileID: 1449203891991992, guid: ce0bd3666db87844e9d3683332d63656,
     type: 2}
 --- !u!114 &114787406124391840
