@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 
 public class MyButtons : MonoBehaviour {
@@ -13,8 +15,6 @@ public class MyButtons : MonoBehaviour {
 
     public Animator animstop;
 
-    
-
     // Use this for initialization
     void Start ()
     {
@@ -26,7 +26,6 @@ public class MyButtons : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {   
-
         AnimatorStateInfo a = animstop.GetCurrentAnimatorStateInfo(0);
 
         if (a.fullPathHash == Animator.StringToHash("Base Layer.PressButtonAnimation"))
@@ -34,12 +33,14 @@ public class MyButtons : MonoBehaviour {
             if(a.normalizedTime >= 1.0f)
             {
                 m_Button.SetActive(true);
+                m_Button.GetComponent<Button>().Select();
                 m_Button2.SetActive(true);
                 m_Button3.SetActive(true);
-
+                
                 s_Text.SetActive(false);
                 
             }   
         }
+
 	}
 }
