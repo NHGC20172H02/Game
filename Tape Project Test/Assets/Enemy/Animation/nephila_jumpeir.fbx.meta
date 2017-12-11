@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 1529d17101a52954e895057b72638cd4
-timeCreated: 1511251671
+guid: 2529f2ff665742a4f91914f1f3ccb82c
+timeCreated: 1512896782
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -128,7 +128,7 @@ ModelImporter:
     400118: //RootNode
     400120: U_Char
     4300000: U_Char
-    7400000: nephila_dead_vmd
+    7400000: nephila_jumpair_vmd
     9500000: //RootNode
     13700000: U_Char
   externalObjects:
@@ -164,10 +164,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: nephila_dead_vmd
-      takeName: nephila_dead_vmd
+      name: nephila_jumpair_vmd
+      takeName: nephila_jumpair_vmd
       firstFrame: 0
-      lastFrame: 19
+      lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -232,4 +232,36 @@ namespace EnemyState
             return "PredominanceJumpMove";
         }
     }
+
+    public class LatterHalfDecision : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "LatterHalfDecision";
+        }
+    }
+
+    public class LatterHalfColorlessTree : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "LatterHalfColorlessTree";
+        }
+    }
+
+    public class AttackJump : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "AttackJump";
+        }
+    }
+
+    public class AttackJumpMove : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "AttackJumpMove";
+        }
+    }
 }

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 1529d17101a52954e895057b72638cd4
-timeCreated: 1511251671
+guid: 56de030876abb8344a339202dbaed305
+timeCreated: 1512896782
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -128,7 +128,7 @@ ModelImporter:
     400118: //RootNode
     400120: U_Char
     4300000: U_Char
-    7400000: nephila_dead_vmd
+    7400000: nephila_tackle_vmd
     9500000: //RootNode
     13700000: U_Char
   externalObjects:
@@ -162,35 +162,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: nephila_dead_vmd
-      takeName: nephila_dead_vmd
-      firstFrame: 0
-      lastFrame: 19
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []

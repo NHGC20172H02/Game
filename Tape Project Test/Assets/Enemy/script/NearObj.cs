@@ -58,7 +58,7 @@ public class NearObj : MonoBehaviour {
         //近くの自分の陣地の木
         m_myTreeObj = MyTreeSerch(this.gameObject, "Tree");
 
-        //近くの自分の陣地の木
+        //2番目に近くの自分の陣地の木
         m_myTreeObj2 = MyTreeSerch2(this.gameObject, "Tree");
 
         //近くの自分の糸
@@ -290,7 +290,7 @@ public class NearObj : MonoBehaviour {
         return targetObj;
     }
 
-    //近くの自分の陣地の木
+    //2番目に近くの自分の陣地の木
     public GameObject MyTreeSerch2(GameObject nowObj, string tagName)
     {
         GameObject targetObj = null;
@@ -339,7 +339,7 @@ public class NearObj : MonoBehaviour {
         {
 
 
-            int number = obs.GetComponent<Connecter>().m_SideNumber;
+            int number = obs.GetComponent<StringUnit>().m_SideNumber;
             int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
             if (number == sidenumber)
@@ -368,7 +368,7 @@ public class NearObj : MonoBehaviour {
         {
 
 
-            int number = obs.GetComponent<Connecter>().m_SideNumber;
+            int number = obs.GetComponent<StringUnit>().m_SideNumber;
             int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
             if (number != sidenumber)
