@@ -66,13 +66,13 @@ public class StringUnit : Connecter {
 		TerritoryManager.Instance.m_Strings.Remove(this);
 	}
 
-	private void OnTriggerEnter(Collider other)
-	{
-		if(other.tag == "Player")
-		{
-			SideUpdate(other.GetComponentInParent<StringShooter>().m_SideNumber);
-		}
-	}
+	//private void OnTriggerEnter(Collider other)
+	//{
+	//	if(other.tag == "Player")
+	//	{
+	//		SideUpdate(other.GetComponentInParent<StringShooter>().m_SideNumber);
+	//	}
+	//}
 	public Transform m_point;
 	private void Update()
 	{
