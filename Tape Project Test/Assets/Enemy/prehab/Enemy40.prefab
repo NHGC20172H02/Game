@@ -3805,11 +3805,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Radius: 1
-  m_Prefab: {fileID: 1173252171523702, guid: 5cbbee2f3f2f26e449662ca8f86992ee, type: 2}
+  m_StringUnit: {fileID: 1173252171523702, guid: 5cbbee2f3f2f26e449662ca8f86992ee,
+    type: 2}
   m_SideNumber: 1
   m_MaxCost: 200
   m_Cost: 0
   m_Strings: []
+  m_Net: {fileID: 1779774980515568, guid: 119e0faa09e8d32429c12ac35bb87826, type: 2}
+  m_NetAngleLimit: 40
+  m_NetDistanceLimit: 0.01
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &114546060482419308
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3824,7 +3831,7 @@ MonoBehaviour:
   m_speed: 3
   m_Shooter: {fileID: 114465954249624788}
   m_detection: 30
-  m_treeDetection: 150
+  tree_Detection: 150
 --- !u!124 &124216028360915816
 Behaviour:
   m_ObjectHideFlags: 1

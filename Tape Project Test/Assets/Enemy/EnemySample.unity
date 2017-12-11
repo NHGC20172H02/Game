@@ -20649,8 +20649,25 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1289690082212030, guid: fa65eac7cecadee438d22a7dcc13f500, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114465954249624788, guid: fa65eac7cecadee438d22a7dcc13f500,
+        type: 2}
+      propertyPath: m_StringUnit
+      value: 
+      objectReference: {fileID: 1173252171523702, guid: 5cbbee2f3f2f26e449662ca8f86992ee,
+        type: 2}
+    - target: {fileID: 114465954249624788, guid: fa65eac7cecadee438d22a7dcc13f500,
+        type: 2}
+      propertyPath: layerMask.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 114465954249624788, guid: fa65eac7cecadee438d22a7dcc13f500,
+        type: 2}
+      propertyPath: m_Net
+      value: 
+      objectReference: {fileID: 1779774980515568, guid: 119e0faa09e8d32429c12ac35bb87826,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa65eac7cecadee438d22a7dcc13f500, type: 2}
   m_IsPrefabParent: 0
@@ -59812,7 +59829,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1482571914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59825,11 +59842,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Radius: 0
-  m_Prefab: {fileID: 1482571913}
+  m_StringUnit: {fileID: 0}
   m_SideNumber: 1
   m_MaxCost: 200
   m_Cost: 0
   m_Strings: []
+  m_Net: {fileID: 0}
+  m_NetAngleLimit: 40
+  m_NetDistanceLimit: 0.01
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!4 &1482571915
 Transform:
   m_ObjectHideFlags: 0
@@ -74576,6 +74599,23 @@ Prefab:
         type: 2}
       propertyPath: m_treeDetection
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114130872222264282, guid: f9a00322726bdb54c8bf812635834447,
+        type: 2}
+      propertyPath: m_StringUnit
+      value: 
+      objectReference: {fileID: 1173252171523702, guid: 5cbbee2f3f2f26e449662ca8f86992ee,
+        type: 2}
+    - target: {fileID: 114130872222264282, guid: f9a00322726bdb54c8bf812635834447,
+        type: 2}
+      propertyPath: m_Net
+      value: 
+      objectReference: {fileID: 1779774980515568, guid: 119e0faa09e8d32429c12ac35bb87826,
+        type: 2}
+    - target: {fileID: 114130872222264282, guid: f9a00322726bdb54c8bf812635834447,
+        type: 2}
+      propertyPath: layerMask.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9a00322726bdb54c8bf812635834447, type: 2}
