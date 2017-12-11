@@ -320,6 +320,7 @@ public class EnemyAI40 : Character
     /*** 糸から落ちた後の地面の移動 ***/
     private void FallGroundMove()
     {
+        anim.SetBool("jump", false);
         anim.SetBool("trap", false);
         anim.SetBool("jumpair", true);
         anim.SetBool("avoidance", false);
@@ -356,27 +357,28 @@ public class EnemyAI40 : Character
                 m_targetPos = GetPosition();
 
 
-                if (wait_time >= 1.0f)
+
+                float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
+
+                if (dist <= m_detection)
                 {
-                    float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
+                    anim.SetBool("move_front", false);
 
-                    if (dist <= m_detection)
+                    wait_time += Time.deltaTime * 1;
+                    if (wait_time >= 1)
                     {
-                        anim.SetBool("move_front", false);
-
-                        wait_time += Time.deltaTime * 1;
-                        if (wait_time >= 1)
-                        {
-                            dead_time = 0;
-                            m_targetPos = GetPosition3();
-                            m_StateProcessor.State = m_GroundJumping;
-                        }
+                        dead_time = 0;
+                        m_targetPos = GetPosition3();
+                        m_StateProcessor.State = m_GroundJumping;
                     }
                 }
-                transform.Translate(Vector3.forward * m_speed * Time.deltaTime);
-                //ポジションの方に向く
-                Quaternion targetRotation2 = Quaternion.LookRotation(m_targetPos - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * 5.0f);
+                else
+                {
+                    transform.Translate(Vector3.forward * m_speed * Time.deltaTime);
+                    //ポジションの方に向く
+                    Quaternion targetRotation2 = Quaternion.LookRotation(m_targetPos - transform.position);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * 5.0f);
+                }
             }
         }
     }
@@ -452,12 +454,7 @@ public class EnemyAI40 : Character
         else if (latter_half_time <= wait_time) //後半時
         {
             m_StateProcessor.State = m_LatterHalfDecision;
-        }
-        else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
-        {
-            m_targetPos = GetPlayerPosition();
-            m_StateProcessor.State = m_AttackJump;
-        }
+        } 
         else if (nearObj0 != null)
         {
             wait_time += Time.deltaTime * 1;
@@ -465,6 +462,11 @@ public class EnemyAI40 : Character
             {
                 m_StateProcessor.State = m_ColorlessTree;
             }
+        }
+        else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
+        {
+            m_targetPos = GetPlayerPosition();
+            m_StateProcessor.State = m_AttackJump;
         }
         else if (nearObj40 == null && nearObj50 == null)
         {
@@ -877,7 +879,7 @@ public class EnemyAI40 : Character
             if (jump_target.transform != playerObj.transform)
             {
                 m_randomCount = 0;
-                m_StateProcessor.State = m_TreeMove;
+                m_StateProcessor.State = m_SearchRandom;
             }
             else if (jump_target.transform == playerObj.transform) //飛びたいところの間に障害物がなければ
             {
@@ -1282,12 +1284,7 @@ public class EnemyAI40 : Character
         if (EnemyTree_Count > PlayerTree_Count)
         {
             m_StateProcessor.State = m_PredominanceDecision;
-        }
-        else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
-        {
-            m_targetPos = GetPlayerPosition();
-            m_StateProcessor.State = m_AttackJump;
-        }
+        }  
         else if (nearObj0 != null)
         {
             wait_time += Time.deltaTime * 1;
@@ -1295,6 +1292,11 @@ public class EnemyAI40 : Character
             {
                 m_StateProcessor.State = m_LatterHalfColorlessTree;
             }
+        }
+        else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
+        {
+            m_targetPos = GetPlayerPosition();
+            m_StateProcessor.State = m_AttackJump;
         }
         else
         {
