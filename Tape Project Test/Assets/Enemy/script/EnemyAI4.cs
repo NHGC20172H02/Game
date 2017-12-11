@@ -953,7 +953,6 @@ public class EnemyAI4 : Character
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         {
             transform.position = jump_end;
-            m_Shooter.StringShoot(jump_start, jump_end);
             m_StateProcessor.State = m_TreeDecision;
         }
 
