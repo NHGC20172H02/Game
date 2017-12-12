@@ -15,10 +15,13 @@ public class EnemyAI4 : Character
     private Vector3 jump_end;
     private RaycastHit jump_target;         //ジャンプの対象
     [Header("地面から跳べる木の探知範囲")]
-    public float m_detection = 30.0f;
+    public float ground_detection = 30.0f;
 
     [Header("木の探知範囲")]
     public float tree_Detection = 150.0f;
+
+    [Header("Playerの探知範囲")]
+    public float player_Detection = 50.0f;
 
     [Header("後半状態になるまでの時間(秒)")]
     public float latter_half_time = 45.0f;
@@ -119,6 +122,8 @@ public class EnemyAI4 : Character
 
     AttackJump m_AttackJump = new AttackJump();
     AttackJumpMove m_AttackJumpMove = new AttackJumpMove();
+    AttackRearJump m_AttackRearJump = new AttackRearJump();
+    AttackRearJumpMove m_AttackRearJumpMove = new AttackRearJumpMove();
 
     FallGroundMove m_FallGroundMove = new FallGroundMove();
     Fall m_Fall = new Fall();
@@ -160,6 +165,8 @@ public class EnemyAI4 : Character
 
         m_AttackJump.exeDelegate = AttackJump;
         m_AttackJumpMove.exeDelegate = AttackJumpMove;
+        m_AttackRearJump.exeDelegate = AttackRearJump;
+        m_AttackRearJumpMove.exeDelegate = AttackRearJumpMove;
 
         m_FallGroundMove.exeDelegate = FallGroundMove;
         m_Fall.exeDelegate = Fall;
@@ -257,19 +264,35 @@ public class EnemyAI4 : Character
         }
 
 
+        //経過時間
         if (latter_half_time + 1 >= time_limit)
         {
-            //経過時間
             time_limit += Time.deltaTime * 1;
         }
 
 
+        //playerとの距離
+        if (playerObj != null)
+        {
+            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
+        }
+        //近くのネットとの距離
+        if (stringNet != null)
+        {
+            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
+        }
+        //近くの相手の糸の距離
+        if (stringObj1 != null)
+        { 
+            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
+        }
 
         if (Input.GetKeyDown(KeyCode.G))
         {
             m_StateProcessor.State = m_Fall;
         }
-        Debug.Log(m_StateProcessor.State);
+        //Debug.Log(distThread);
+        //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
@@ -311,7 +334,7 @@ public class EnemyAI4 : Character
 
         float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
 
-        if (dist <= m_detection)
+        if (dist <= ground_detection)
         {
             anim.SetBool("move_front", false);
 
@@ -375,7 +398,7 @@ public class EnemyAI4 : Character
 
                 float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
 
-                if (dist <= m_detection)
+                if (dist <= ground_detection)
                 {
                     anim.SetBool("move_front", false);
 
@@ -409,11 +432,6 @@ public class EnemyAI4 : Character
         anim.SetBool("avoidance", false);
         anim.SetBool("Attack", false);
 
-        if (myStringObj != null)
-        {
-            //近くの糸との距離
-            distThread = Vector3.Distance(myStringObj.transform.position, this.transform.position);
-        }
         if (nearObj40 != null)
         {
             //近くの自分の陣地ではない木との距離
@@ -436,12 +454,6 @@ public class EnemyAI4 : Character
             //Enemyの木の本数
             EnemyTree_Count = TerritoryManager.Instance.GetTreeCount(2);
         }
-
-        if(playerObj != null)
-        {
-            //playerとの距離
-            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
-        }   
 
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
@@ -479,7 +491,7 @@ public class EnemyAI4 : Character
                 m_StateProcessor.State = m_ColorlessTree;
             }     
         }
-        else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
+        else if (playerDist >= 10 && playerDist <= player_Detection) //Playerに攻撃
         {
             wait_time += Time.deltaTime * 1;
             if (wait_time >= 2.0f)
@@ -830,22 +842,10 @@ public class EnemyAI4 : Character
             m_StateProcessor.State = m_TreeDecision;
         }
 
-
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
-        if (stringNet != null)
-        {
-            //近くのネットとの距離
-            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
-        }
-        if (stringObj1)
-        {
-            //近くの相手の糸の距離
-            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
-        }
-
         //糸を奪う
-        if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+        if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
             if (net_bool == true)
@@ -938,10 +938,7 @@ public class EnemyAI4 : Character
     /*** 攻撃ジャンプ移動中 ***/
     private void AttackJumpMove()
     {
-        //playerとの距離
-        float playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
-
-        if(playerDist <= 1)
+        if(playerDist <= 5)
         {
             anim.SetBool("Attack", true);
         }
@@ -953,25 +950,15 @@ public class EnemyAI4 : Character
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         {
             transform.position = jump_end;
-            m_StateProcessor.State = m_TreeDecision;
+            m_StateProcessor.State = m_AttackRearJump;
         }
 
 
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
-        if (stringNet != null)
-        {
-            //近くのネットとの距離
-            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
-        }
-        if (stringObj1)
-        {
-            //近くの相手の糸の距離
-            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
-        }
-
+        
         //糸を奪う
-        if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+        if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
             if (net_bool == true)
@@ -1032,6 +1019,87 @@ public class EnemyAI4 : Character
         }
     }
 
+    /*** 攻撃後のジャンプの瞬間 ***/
+    private void AttackRearJump()
+    {
+        anim.SetBool("Attack", false);
+        wait_time += Time.deltaTime * 1;
+        if (wait_time >= 1)
+        {
+            if (m_randomCount != 5 && m_randomCount != 4)
+                m_randomCount = Random.Range(4, 6);
+
+            //乱数が５になったら
+            if (m_randomCount == 5)
+            {
+                eyeObj = nearObj2;
+
+                //近い木に飛ぶ
+                m_targetPos = GetUpPosition2();
+            }
+            if (m_randomCount == 4) //乱数が４になったら
+            {
+                eyeObj = nearObj3;
+
+                //２番目の近くの木に飛ぶ
+                m_targetPos = GetUpPosition3();
+            }
+
+            int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+            //移動先と自分の間のray
+            if (Physics.Raycast(transform.position, m_targetPos - transform.position, out jump_target, tree_Detection, treeLayer))
+            {
+                net_bool = true;
+                anim.SetBool("jump", true);
+                jump_start = transform.position;
+                jump_end = jump_target.point;
+                m_StateProcessor.State = m_AttackRearJumpMove;
+            }
+        }
+    }
+
+    /*** 攻撃後のジャンプ中 ***/
+    private void AttackRearJumpMove()
+    {
+        anim.SetBool("jumpair", true);
+        if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
+        {
+            m_randomCount = 0;
+            transform.position = jump_end;
+            m_StateProcessor.State = m_TreeDecision;
+        }
+
+        int sidenumber = GetComponent<StringShooter>().m_SideNumber;
+
+
+        //糸を奪う
+        if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
+        {
+            //奪う確率
+            if (net_bool == true)
+            {
+                netCount = Random.Range(1, 11);
+                net_bool = false;
+            }
+
+            if (netCount <= 4) //失敗したとき
+            {
+                m_StateProcessor.State = m_Fall;
+            }
+            else //成功したとき
+            {
+                anim.SetBool("avoidance", true);
+
+                AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
+                if (animInfo.normalizedTime < 1.0f)
+                {
+                    anim.SetBool("avoidance", false);
+                }
+
+                stringUnit.SideUpdate(sidenumber);
+            }
+        }
+    }
 
 
 
@@ -1231,19 +1299,8 @@ public class EnemyAI4 : Character
 
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
-        if (stringNet != null)
-        {
-            //近くのネットとの距離
-            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
-        }
-        if (stringObj1 != null)
-        {
-            //近くの相手の糸の距離
-            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
-        }
-
         //糸を奪う
-        if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+        if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
             if (net_bool == true)
@@ -1331,7 +1388,7 @@ public class EnemyAI4 : Character
                 m_StateProcessor.State = m_LatterHalfColorlessTree;
             }
         }
-        else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
+        else if (playerDist >= 10 && playerDist <= player_Detection) //Playerに攻撃
         {
             wait_time += Time.deltaTime * 1;
             if (wait_time >= 1.0f)

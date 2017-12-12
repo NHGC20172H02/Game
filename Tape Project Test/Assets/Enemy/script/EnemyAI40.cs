@@ -227,7 +227,8 @@ public class EnemyAI40 : Character
         }
 
 
-        if (treeObj == 1 && reObj == null)//１つ前にいた木を保持
+        //１つ前にいた木を保持
+        if (treeObj == 1 && reObj == null)
         {
             reObj = nearObj;
         }
@@ -241,12 +242,28 @@ public class EnemyAI40 : Character
             treeObj = 2;
         }
 
+        //経過時間
         if (latter_half_time + 1 >= time_limit)
         {
-            //経過時間
             time_limit += Time.deltaTime * 1;
         }
 
+        //playerとの距離
+        if (playerObj != null)
+        {
+            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
+        }
+
+        //近くのネットとの距離
+        if (stringNet != null)
+        {
+            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
+        }
+        //近くの相手の糸の距離
+        if (stringObj1)
+        {
+            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
+        }
 
 
         if (Input.GetKeyDown(KeyCode.G))
@@ -393,11 +410,6 @@ public class EnemyAI40 : Character
         anim.SetBool("avoidance", false);
         anim.SetBool("Attack", false);
 
-        if (myStringObj != null)
-        {
-            //近くの糸との距離
-            distThread = Vector3.Distance(myStringObj.transform.position, this.transform.position);
-        }
         if (nearObj40 != null)
         {
             //近くの自分の陣地ではない木との距離
@@ -421,11 +433,7 @@ public class EnemyAI40 : Character
         }
 
 
-        if (playerObj != null)
-        {
-            //playerとの距離
-            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
-        }
+        
 
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
@@ -794,19 +802,9 @@ public class EnemyAI40 : Character
 
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
-        if (stringNet != null)
-        {
-            //近くのネットとの距離
-            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
-        }
-        if (stringObj1)
-        {
-            //近くの相手の糸の距離
-            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
-        }
 
         //糸を奪う
-        if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+        if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
             if (net_bool == true)
@@ -922,19 +920,8 @@ public class EnemyAI40 : Character
 
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
-        if (stringNet != null)
-        {
-            //近くのネットとの距離
-            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
-        }
-        if (stringObj1)
-        {
-            //近くの相手の糸の距離
-            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
-        }
-
         //糸を奪う
-        if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+        if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
             if (net_bool == true)
@@ -1193,19 +1180,9 @@ public class EnemyAI40 : Character
 
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
-        if (stringNet != null)
-        {
-            //近くのネットとの距離
-            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
-        }
-        if (stringObj1 != null)
-        {
-            //近くの相手の糸の距離
-            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
-        }
 
         //糸を奪う
-        if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+        if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
             if (net_bool == true)
@@ -1272,12 +1249,6 @@ public class EnemyAI40 : Character
         {
             //Enemyの木の本数
             EnemyTree_Count = TerritoryManager.Instance.GetTreeCount(1);
-        }
-
-        if (playerObj != null)
-        {
-            //playerとの距離
-            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
         }
 
         //自分が優勢の時
