@@ -12,6 +12,21 @@ public class Net : Connecter {
 
 	public StringShooter m_StringShooter;
 
+	static int[] TRIANGLES = new int[]
+		{
+			0,1,2,
+			3,5,4
+		};
+
+	static Vector2[] UV = new Vector2[]
+		{
+			new Vector2(0,1),
+			new Vector2(1,1),
+			new Vector2(0.5f,0),
+			new Vector2(0,1),
+			new Vector2(1,1),
+			new Vector2(0.5f,0)
+		};
 	private void Start()
 	{
 		TerritoryManager.Instance.m_Nets.Add(this);
@@ -25,20 +40,8 @@ public class Net : Connecter {
 			A,B,Corner
 
 		};
-		mesh.triangles = new int[]
-		{
-			0,1,2,
-			3,5,4
-		};
-		mesh.uv = new Vector2[]
-		{
-			new Vector2(0,1),
-			new Vector2(1,1),
-			new Vector2(0.5f,0),
-			new Vector2(0,1),
-			new Vector2(1,1),
-			new Vector2(0.5f,0)
-		};
+		mesh.triangles = TRIANGLES;
+		mesh.uv = UV;
 		mesh.RecalculateNormals();
 		m_MeshFilter.sharedMesh = mesh;
 		m_Collider.sharedMesh = mesh;
@@ -75,14 +78,4 @@ public class Net : Connecter {
 		Destroy(gameObject);
 		TerritoryManager.Instance.m_Nets.Remove(this);
 	}
-
-	//private void OnTriggerEnter(Collider other)
-	//{
-	//	if (other.tag == "Player")
-	//	{
-	//		SideUpdate(other.GetComponentInParent<StringShooter>().m_SideNumber);
-	//	}
-	//}
-
-
 }
