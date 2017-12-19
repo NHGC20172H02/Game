@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 02717847331de364e9656705e8c62c8e
-timeCreated: 1512380759
+guid: a28e15b1bb0fa7a488830c23ca5f5014
+timeCreated: 1512985413
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -128,7 +128,7 @@ ModelImporter:
     400118: //RootNode
     400120: U_Char
     4300000: U_Char
-    7400000: tarentula_tackle_vmd
+    7400000: tarentula_tackle 1_vmd
     9500000: //RootNode
     13700000: U_Char
   externalObjects:

@@ -56,9 +56,14 @@ public class PlayerStateManager : MonoBehaviour {
     {
         get { return m_falling; }
     }
+    private BodyBlow m_bodyBlow = new BodyBlow();
+    public BodyBlow BodyBlow
+    {
+        get { return m_bodyBlow; }
+    }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         m_stateProcessor.State = GroundTp;
 	}
 	

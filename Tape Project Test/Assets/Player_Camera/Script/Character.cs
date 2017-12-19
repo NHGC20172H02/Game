@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    protected float elapse_time = 0;        //ジャンプの経過時間
-    protected float flightDuration = 0;     //ジャンプの滞空時間
+    protected float elapse_time = 0;            //ジャンプの経過時間
+    protected float flightDuration = 0;         //ジャンプの滞空時間
+    protected bool isBodyblow = false;     //体当たりを食らったか
 
     protected virtual void Start () {
 		
@@ -54,5 +55,43 @@ public class Character : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+    //体当たり情報を相手に送信
+    protected void SendingBodyBlow(Collider collider)
+    {
+        Character character = null;
+        if (collider.tag == "Player")
+        {
+            character = collider.GetComponent<Player>();
+        }
+        else if (collider.tag == "Enemy")
+        {
+            //character = collider.GetComponent<EnemyAI40>();
+            collider.GetComponent<BoxCollider>().isTrigger = false;
+            collider.GetComponent<Rigidbody>().useGravity = true;
+            Vector3 reflection = Reflection(collider.transform.position - transform.position, collider.transform.up);
+            StartCoroutine(AddReflection(collider, reflection));
+        }
+
+        if (character == null) return;
+        character.isBodyblow = true;
+    }
+
+    //反射ベクトル
+    protected Vector3 Reflection(Vector3 forward, Vector3 normal)
+    {
+        return (forward - 2 * Vector3.Dot(forward, normal) * normal);
+    }
+
+    IEnumerator AddReflection(Collider collider, Vector3 force)
+    {
+        float time = 5;
+        while (true)
+        {
+            collider.GetComponent<Rigidbody>().AddForce(force * time, ForceMode.Force);
+            time -= 0.1f;
+            yield return null;
+        }
     }
 }

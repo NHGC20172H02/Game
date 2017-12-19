@@ -8,6 +8,8 @@ public class CameraMove : MonoBehaviour
     [SerializeField]
     GameObject m_target;
     [SerializeField]
+    Transform m_Spider;
+    [SerializeField]
     Transform m_Camera;
     [SerializeField]
     float rotate_Speed = 100f;
@@ -31,6 +33,7 @@ public class CameraMove : MonoBehaviour
         instance.JumpTp.c_exeDelegate = JumpTpMove;
         instance.StringTp.c_exeDelegate = TreeTpMove;
         instance.Falling.c_exeDelegate = TreeTpMove;
+        instance.BodyBlow.c_exeDelegate = TreeTpMove;
         g_distance = Vector3.Distance(transform.position, m_Camera.position);
         t_distance = g_distance * 2f;
     }
@@ -60,6 +63,7 @@ public class CameraMove : MonoBehaviour
         //コントローラ用
         transform.RotateAround(target_pos, Vector3.up, Input.GetAxis("Horizontal2") * rotate_Speed * Time.deltaTime);
         transform.RotateAround(target_pos, transform.right, Input.GetAxis("Vertical2") * rotate_Speed * Time.deltaTime);
+        //角度制限
         float rotateY = (transform.eulerAngles.y > 180) ? transform.eulerAngles.y - 360 : transform.eulerAngles.y;
         rotateY = (rotateY < 0) ? rotateY + 360 : rotateY;
         float rotateX = (transform.eulerAngles.x > 180) ? transform.eulerAngles.x - 360 : transform.eulerAngles.x;
@@ -67,8 +71,8 @@ public class CameraMove : MonoBehaviour
         angleX = (angleX < 0) ? angleX + 360 : angleX;
         transform.rotation = Quaternion.Euler(angleX, rotateY, 0);
 
-        Color current_color = m_target.transform.GetChild(0).GetComponent<Renderer>().material.color;
-        m_target.transform.GetChild(0).GetComponent<Renderer>().material.color 
+        Color current_color = m_Spider.GetComponent<Renderer>().material.color;
+        m_Spider.GetComponent<Renderer>().material.color
             = new Color(current_color.r, current_color.g, current_color.b, Mathf.Lerp(current_color.a, 1f, 0.2f));
     }
 
@@ -100,8 +104,8 @@ public class CameraMove : MonoBehaviour
         {
             m_Camera.position = Vector3.Lerp(m_Camera.position, hit.point, 0.5f);
             Move(hit.point, 1.0f, 0.2f, 0.6f);
-            Color current_color = m_target.transform.GetChild(0).GetComponent<Renderer>().material.color;
-            m_target.transform.GetChild(0).GetComponent<Renderer>().material.color
+            Color current_color = m_Spider.GetComponent<Renderer>().material.color;
+            m_Spider.GetComponent<Renderer>().material.color
                 = new Color(current_color.r, current_color.g, current_color.b, Mathf.Lerp(current_color.a, 0.0f, 0.2f));
         }
     }

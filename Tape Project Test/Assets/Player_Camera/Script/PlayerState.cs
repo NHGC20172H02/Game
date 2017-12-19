@@ -102,4 +102,12 @@ namespace PlayerState
             return "Falling";
         }
     }
+    public class BodyBlow : PlayerState
+    {
+        public override string getStateName()
+        {
+            return "BodyBlow";
+        }
+    }
+
 }

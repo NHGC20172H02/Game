@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - Undefined
   - Net
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Player
   - Prediction
   - Net
-  - 
+  - Enemy
   - 
   - 
   - 
