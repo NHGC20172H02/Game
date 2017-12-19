@@ -74,10 +74,10 @@ public class StringUnit : Connecter {
 	//	}
 	//}
 	public Transform m_point;
-	private void Update()
-	{
-		Stretch(m_point.position);
-	}
+	//private void Update()
+	//{
+	//	Stretch(m_point.position);
+	//}
 	public void Stretch(Vector3 point)
 	{
 		m_LineRenderer.positionCount = 9;
