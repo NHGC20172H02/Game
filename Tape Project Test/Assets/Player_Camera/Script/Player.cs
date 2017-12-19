@@ -10,11 +10,15 @@ public class Player : Character
     public float m_JumpLimit = 50f;
     [Header("ジャンプの射角")]
     public float m_Angle = 30f;
+    public float jumpLower = 5f;
     public Transform m_Camera;
-    public LayerMask m_GroundLayer, m_TreeLayer, m_StringLayer, m_NetLayer;
+    public LayerMask m_GroundLayer, m_TreeLayer, m_StringLayer, m_NetLayer, m_EnemyLayer;
     public PredictionLine m_Prediction;
     public Animator m_Animator;
+    public StringShooter m_Shooter;
 
+    private float MIN = -80f;
+    private float MAX = 80f;
     private PlayerStateManager m_StateManager;          //Player状態管理
     private RaycastHit m_hitinfo;                       //足元の情報
     private Vector3 m_prevPos;
@@ -22,13 +26,15 @@ public class Player : Character
     private Vector3 move_start;                         //ジャンプ始点
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
+    private bool isCursor = false;
     private bool isEscape = false;
     private int waitFrame = 0;
     private float m_failureTime = 0;
     private float m_fallElapse = 0;
+    private float m_attackTime = 0;
     private bool isLanding = false;
+    private Collider m_enemy = null;
 
-    public StringShooter m_Shooter;
     protected override void Start()
     {
         m_StateManager = PlayerStateManager.GetInstance;
@@ -38,12 +44,14 @@ public class Player : Character
         m_StateManager.JumpTp.p_exeDelegate = JumpTpMove;
         m_StateManager.StringTp.p_exeDelegate = StringTpMove;
         m_StateManager.Falling.p_exeDelegate = FallingMove;
+        m_StateManager.BodyBlow.p_exeDelegate = BodyBlowMove;
         m_Prediction.gameObject.SetActive(true);
         //Instantiate(m_Prediction);
     }
 
     protected override void Update()
     {
+        transform.position = MoveRange(transform.position, new Vector3(MIN, 0, MIN), new Vector3(MAX, 50f, MAX));
     }
 
     //地面にいる場合の移動
@@ -75,6 +83,8 @@ public class Player : Character
     void TreeTpMove()
     {
         m_Animator.SetBool("IsString", false);
+        if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Jumpair"))
+            m_Animator.SetTrigger("Landing");        
         Vector3 start = transform.position + transform.up * 0.5f;
         //足元の情報取得（優先順位 : 木->地面->糸(ネット)）
         if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_NetLayer))
@@ -86,24 +96,31 @@ public class Player : Character
             transform.position = m_prevPos;
             return;
         }
+        if (m_hitinfo.collider.tag == "Ground")
+            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
         if (IsChangedNumber())
             return;
         m_prevPos = transform.position;
         //位置補正
-        transform.position = Vector3.Lerp(transform.position, m_hitinfo.point, 0.2f);
+        transform.position = Vector3.Lerp(transform.position, m_hitinfo.point, 0.5f);
+        Vector3 move = Vector3.zero;
         if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("GroundMove"))
-            Move(m_Camera.right, m_hitinfo.normal);
+            move = Move(m_Camera.right, m_hitinfo.normal);
+
+        RaycastHit prevHit = m_hitinfo;
+        if (Physics.Raycast(start, move, out m_hitinfo, 1f, m_GroundLayer))
+            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
+        else
+            m_hitinfo = prevHit;
 
         //一人称視点変更
         if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("LB"))
             m_StateManager.StateProcassor.State = m_StateManager.TreeFp;
 
-        Vector3 origin = start + (m_Camera.position - transform.position).normalized;
+        Vector3 origin = start + (m_Camera.position - start).normalized;
         Ray ray = new Ray(origin, m_Camera.forward);
         Jump(ray, m_hitinfo);
-
-        if (m_hitinfo.collider.tag == "Ground")
-            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
+        Debug.DrawLine(ray.origin, ray.origin + ray.direction * 5f, Color.red);
     }
 
     //木の上の一人称カメラ状態での操作
@@ -120,7 +137,7 @@ public class Player : Character
                 m_StateManager.StateProcassor.State = m_StateManager.StringTp;
         }
 
-        Vector3 origin = start + (m_Camera.position - transform.position).normalized;
+        Vector3 origin = start + (m_Camera.position - start).normalized;
         Ray ray = new Ray(origin, m_Camera.forward);
         Jump(ray, m_hitinfo);
     }
@@ -213,6 +230,7 @@ public class Player : Character
                 stringVec = -stringVec;
             vec = stringVec;
             move = stringVec * Input.GetAxis("Vertical");
+            IntersectString(Input.GetAxis("Horizontal"));
             m_Animator.SetFloat("StringMoveX", 0);
             m_Animator.SetFloat("StringMoveZ", Input.GetAxis("Vertical"));
         }
@@ -220,6 +238,7 @@ public class Player : Character
         {
             vec = -stringVertical;
             move = stringVec * Input.GetAxis("Horizontal");
+            IntersectString(Input.GetAxis("Vertical"));
             m_Animator.SetFloat("StringMoveZ", 0);
             m_Animator.SetFloat("StringMoveX", Input.GetAxis("Horizontal"));
         }
@@ -227,11 +246,12 @@ public class Player : Character
         {
             vec = stringVertical;
             move = -stringVec * Input.GetAxis("Horizontal");
+            IntersectString(Input.GetAxis("Vertical"));
             m_Animator.SetFloat("StringMoveZ", 0);
             m_Animator.SetFloat("StringMoveX", Input.GetAxis("Horizontal"));
         }
         transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, vec, 0.2f));
-        transform.Translate(move * m_Speed * Time.deltaTime, Space.World);
+        transform.Translate(move * m_Speed * 1.3f * Time.deltaTime, Space.World);
         transform.position = MoveRange(transform.position, line.GetPosition(0), line.GetPosition(1));
 
         //一人称視点変更
@@ -249,7 +269,7 @@ public class Player : Character
     //落下状態での動作
     void FallingMove()
     {
-        if(m_failureTime < 0.5f)
+        if (m_failureTime < 0.5f)
         {
             m_failureTime += Time.deltaTime;
             return;
@@ -276,6 +296,46 @@ public class Player : Character
         //        m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
         //}
     }
+    //体当たり状態
+    void BodyBlowMove()
+    {
+        if (!Depression()) return;
+        if (Projection(move_start, move_end, jump_target.normal, m_Angle))
+        {
+            transform.position = move_end;
+            transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
+            if (isEscape)
+                m_Shooter.StringShoot(m_Prediction.m_HitStringPoint.point, move_end);
+            else
+                m_Shooter.StringShoot(move_start, move_end);
+            waitFrame = 0;
+            isEscape = false;
+            isLanding = false;
+            if (jump_target.collider.tag == "String")
+            {
+                m_hitinfo = jump_target;
+                m_StateManager.StateProcassor.State = m_StateManager.StringTp;
+                return;
+            }
+            m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
+            return;
+        }
+        LayerMask playerLayer = LayerMask.GetMask(new string[] { "Player" });
+        if (Physics.CheckSphere(move_end, 2f, playerLayer) && !isLanding)
+        {
+            m_Animator.SetTrigger("Tackle");
+            foreach(Collider col in Physics.OverlapSphere(move_end, 1f, m_EnemyLayer))
+            {
+                if (m_enemy != col) continue;
+                SendingBodyBlow(m_enemy);
+            }
+            isLanding = true;
+            if (jump_target.collider.tag == "String")
+                m_Animator.SetBool("IsString", true);
+            else
+                m_Animator.SetBool("IsString", false);
+        }
+    }
 
     //移動
     private Vector3 Move(Vector3 right, Vector3 up)
@@ -295,20 +355,39 @@ public class Player : Character
     {
         bool jump = false;
         //糸を狙うのかどうか
-        if (Input.GetKey(KeyCode.K) || Input.GetButton("RB"))
+        if (Input.GetKeyDown(KeyCode.K) || Input.GetButtonDown("RB"))
+            isCursor = !isCursor;
+        if (isCursor)
         {
             if (!(jump = Physics.Raycast(ray, out jump_target, m_JumpLimit, m_NetLayer)))
                 jump = Physics.SphereCast(ray, 1f, out jump_target, m_JumpLimit, m_StringLayer);
         }
         else
-            jump = Physics.SphereCast(ray, 1f, out jump_target, m_JumpLimit, m_TreeLayer);
+            //jump = Physics.SphereCast(ray, 1f, out jump_target, m_JumpLimit, m_TreeLayer);
+            jump = Physics.Raycast(ray, out jump_target, m_JumpLimit, m_TreeLayer);
+
+        if (Input.GetKey(KeyCode.K) || Input.GetButton("RB"))
+        {
+            m_attackTime += Time.deltaTime;
+            if (m_attackTime > 1f)
+                foreach(Collider col in Physics.OverlapSphere(jump_target.point, 3f, m_EnemyLayer))
+                    m_enemy = col;
+        }
+        if (Input.GetKeyUp(KeyCode.K) || Input.GetButtonUp("RB"))
+        {
+            m_attackTime = 0;
+            m_enemy = null;
+        }
 
         if (jump)
         {
             if (hit.collider.gameObject == jump_target.collider.gameObject)
             {
-                m_Prediction.gameObject.SetActive(false);
-                return;
+                if (Vector3.Distance(transform.position, jump_target.point) < jumpLower)
+                {
+                    m_Prediction.gameObject.SetActive(false);
+                    return;
+                }
             }
             if (jump_target.transform.tag == "String")
                 if (jump_target.transform.GetComponent<StringUnit>().m_SideNumber != m_Shooter.m_SideNumber)
@@ -320,6 +399,8 @@ public class Player : Character
             //予測線、カーソル表示
             m_Prediction.gameObject.SetActive(true);
             m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle);
+            if (m_enemy != null)
+                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle);
             m_Prediction.Calculation();
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
@@ -328,11 +409,19 @@ public class Player : Character
                 move_start = transform.position;
                 move_end = jump_target.point;
                 m_Animator.SetTrigger("Jump");
+                if (m_enemy != null)
+                {
+                    Physics.Raycast(m_enemy.transform.position, -m_enemy.transform.up, out jump_target, 1f, m_TreeLayer);
+                    move_end = jump_target.point;
+                    m_StateManager.StateProcassor.State = m_StateManager.BodyBlow;
+                    return;
+                }
                 m_StateManager.StateProcassor.State = m_StateManager.JumpTp;
             }
             return;
         }
         m_Prediction.gameObject.SetActive(false);
+        m_enemy = null;
     }
 
     private bool Depression()
@@ -374,19 +463,92 @@ public class Player : Character
         return targetPos;
     }
 
-    private StringUnit StringSearch(StringUnit stringUnit, GameObject hitinfo)
+    //糸の交差部分の移動
+    private void IntersectString(float axis)
     {
-        foreach(Connecter c in stringUnit.m_Child)
+        bool isCol = false;
+        var colliders = Physics.OverlapSphere(transform.position, 0.1f, m_StringLayer);
+        foreach(Collider col in colliders)
         {
-            StringUnit s = c as StringUnit;
-            if(s.gameObject == hitinfo.gameObject)
+            if (col != m_hitinfo.collider)
+                isCol = true;
+        }
+        if (!isCol) return;
+        if (axis != 0)
+        {
+            var unit = StringSearch(m_hitinfo.collider.GetComponent<StringUnit>(), colliders);
+            Physics.SphereCast(unit.position + Vector3.up, 0.5f, Vector3.down, out m_hitinfo, 1f, m_StringLayer);
+        }
+    }
+    //糸内のコネクタ検索
+    private Transform StringSearch(StringUnit stringUnit, Collider[] colliders)
+    {
+        float shortest = 100000f;
+        Transform result = null;
+        foreach(Collider col in colliders)
+        {
+            foreach (Connecter c in stringUnit.m_Child)
             {
-                return s;
+                if (col.gameObject == c.gameObject) continue;
+                if (c.tag == "String")
+                {
+                    StringUnit s = c as StringUnit;
+                    Comparision(s.m_PointA, s.transform, ref result, ref shortest);
+                    Comparision(s.m_PointB, s.transform, ref result, ref shortest);
+                }
+                else if (c.tag == "Net")
+                {
+                    foreach (Connecter c_2 in c.m_Child)
+                    {
+                        if (col.gameObject == c_2.gameObject) continue;
+                        StringUnit s_2 = c_2 as StringUnit;
+                        Comparision(s_2.m_PointA, s_2.transform, ref result, ref shortest);
+                        Comparision(s_2.m_PointB, s_2.transform, ref result, ref shortest);
+                    }
+                }
+            }
+            if (stringUnit.m_StartConnecter.tag == "String")
+                Comparision(stringUnit.m_PointA, stringUnit.m_StartConnecter.transform, ref result, ref shortest);
+            else if (stringUnit.m_StartConnecter.tag == "Net")
+            {
+                foreach (Connecter c in stringUnit.m_StartConnecter.m_Child)
+                {
+                    if (col.gameObject == c.gameObject) continue;
+                    StringUnit s = c as StringUnit;
+                    Comparision(s.m_PointA, s.transform, ref result, ref shortest);
+                    Comparision(s.m_PointB, s.transform, ref result, ref shortest);
+                }
+            }
+            if (stringUnit.m_EndConnecter.tag == "String")
+                Comparision(stringUnit.m_PointB, stringUnit.m_EndConnecter.transform, ref result, ref shortest);
+            else if (stringUnit.m_EndConnecter.tag == "Net")
+            {
+                foreach (Connecter c in stringUnit.m_EndConnecter.m_Child)
+                {
+                    if (col.gameObject == c.gameObject) continue;
+                    StringUnit s = c as StringUnit;
+                    Comparision(s.m_PointA, s.transform, ref result, ref shortest);
+                    Comparision(s.m_PointB, s.transform, ref result, ref shortest);
+                }
             }
         }
-        return null;
+        return result;
+    }
+    //一番近い位置
+    private void Comparision(Vector3 pos, Transform target, ref Transform result, ref float shortest)
+    {
+        if (target.tag == "String" || target.tag == "Net")
+        {
+            float distance = Vector3.Distance(pos, transform.position);
+            if (shortest > distance)
+            {
+                shortest = distance;
+                result = target;
+            }
+        }
     }
 
+    //乗ってる糸の番号が変更した場合
     private bool IsChangedNumber()
     {
         if(m_hitinfo.collider.tag == "Net")
@@ -408,6 +570,11 @@ public class Player : Character
         return false;
     }
 
+    public bool IsOnTree()
+    {
+        return (m_hitinfo.collider.tag == "Tree");
+    }
+
     void OnTriggerEnter(Collider other)
     {
         //地面着地
@@ -424,11 +591,9 @@ public class Player : Character
             else
                 m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
         }
-
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(m_Prediction.m_HitStringPoint.point, 1f);
     }
 }
