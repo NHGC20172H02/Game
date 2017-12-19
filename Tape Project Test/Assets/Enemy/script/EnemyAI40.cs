@@ -339,7 +339,7 @@ public class EnemyAI40 : Character
     {
         anim.SetBool("jump", false);
         anim.SetBool("trap", false);
-        anim.SetBool("jumpair", true);
+        anim.SetBool("jumpair", false);
         anim.SetBool("avoidance", false);
 
         RaycastHit hit;
@@ -827,7 +827,7 @@ public class EnemyAI40 : Character
                     anim.SetBool("avoidance", false);
                 }
 
-                stringUnit.SideUpdate(sidenumber);
+                stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
             }
         }
 
@@ -858,7 +858,7 @@ public class EnemyAI40 : Character
                         anim.SetBool("avoidance", false);
                     }
 
-                    stringUnit.SideUpdate(sidenumber);
+                    stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
                 }
             }
 
@@ -944,7 +944,7 @@ public class EnemyAI40 : Character
                     anim.SetBool("avoidance", false);
                 }
 
-                stringUnit.SideUpdate(sidenumber);
+                stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
             }
         }
 
@@ -975,7 +975,7 @@ public class EnemyAI40 : Character
                         anim.SetBool("avoidance", false);
                     }
 
-                    stringUnit.SideUpdate(sidenumber);
+                    stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
                 }
             }
 
@@ -1205,7 +1205,7 @@ public class EnemyAI40 : Character
                     anim.SetBool("avoidance", false);
                 }
 
-                stringUnit.SideUpdate(sidenumber);
+                stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
             }
         }
     }
@@ -1309,6 +1309,7 @@ public class EnemyAI40 : Character
         if (animInfo.normalizedTime < 1.0f)
         {
             anim.SetBool("dead", true);
+            anim.SetBool("jump", false);
         }
 
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });

@@ -21,7 +21,7 @@ public class EnemyAI4 : Character
     public float tree_Detection = 150.0f;
 
     [Header("Playerの探知範囲")]
-    public float player_Detection = 50.0f;
+    public float player_Detection = 100.0f;
 
     [Header("後半状態になるまでの時間(秒)")]
     public float latter_half_time = 45.0f;
@@ -54,6 +54,7 @@ public class EnemyAI4 : Character
     float m_ground_jump_time;
     bool m_moveStart = false;
     bool net_bool = false;
+    bool dead_bool = false;
 
     float angle;
 
@@ -86,8 +87,6 @@ public class EnemyAI4 : Character
 
     List<int> mytreecount1;
     List<int> mytreecount2;
-
-    StringUnit stringUnit;
 
     Animator anim;
 
@@ -287,11 +286,21 @@ public class EnemyAI4 : Character
             distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
         }
 
+        //Playerに当たった時
+        if (dead_bool == false)
+        {
+            if (playerDist >= 0.1f && playerDist <= 1)
+            {
+                m_StateProcessor.State = m_Fall;
+            }
+        }
+
+
         if (Input.GetKeyDown(KeyCode.G))
         {
             m_StateProcessor.State = m_Fall;
         }
-        //Debug.Log(distThread);
+        //Debug.Log(distNet);
         //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
@@ -468,7 +477,7 @@ public class EnemyAI4 : Character
 
                 nearObj = hit.collider.gameObject;
             }
-            else if (hit.transform == null)
+            else
             {
                 m_StateProcessor.State = m_Fall;
             }
@@ -496,8 +505,40 @@ public class EnemyAI4 : Character
             wait_time += Time.deltaTime * 1;
             if (wait_time >= 2.0f)
             {
-                m_targetPos = GetPlayerPosition();
-                m_StateProcessor.State = m_AttackJump;
+                if(playerDist <= player_Detection * 2 / 3)  //設定距離の以下の距離だったら
+                {
+                    if (m_randomCount ==0)
+                        m_randomCount = Random.Range(4, 6);
+                    if(m_randomCount == 5)
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_AttackJump;
+                    }
+                    else
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_SearchRandom;
+                    }
+                }
+                else
+                {
+                    if (m_randomCount == 0)
+                        m_randomCount = Random.Range(3, 6);
+                    if (m_randomCount == 5)
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_AttackJump;
+                    }
+                    else
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_SearchRandom;
+                    }
+                }
             }
         }
         //else if (dist40 >= tree_Detection && dist50 >= tree_Detection)
@@ -559,6 +600,10 @@ public class EnemyAI4 : Character
                 transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
                 transform.rotation = Quaternion.LookRotation(
                     Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+            }
+            if(hit.transform.gameObject == null)
+            {
+                m_StateProcessor.State = m_Fall;
             }
         }
 
@@ -778,7 +823,13 @@ public class EnemyAI4 : Character
         }
 
 
-        anim.SetBool("jumpair", true);
+        AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
+        if (animInfo.normalizedTime < 1.0f)
+        {
+            anim.SetBool("jumpair", true);
+        }
+
+
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         {
             transform.position = jump_end;
@@ -835,6 +886,7 @@ public class EnemyAI4 : Character
     private void JumpMove()
     {
         anim.SetBool("jumpair", true);
+        anim.SetBool("jump", false);
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         { 
             transform.position = jump_end;
@@ -862,13 +914,13 @@ public class EnemyAI4 : Character
             {
                 anim.SetBool("avoidance", true);
 
+                stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
+
                 AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
                 if (animInfo.normalizedTime < 1.0f)
                 {
                     anim.SetBool("avoidance", false);
                 }
-
-                 stringUnit.SideUpdate(sidenumber);
             }
         }
 
@@ -922,6 +974,7 @@ public class EnemyAI4 : Character
             }
             else if (jump_target.transform == playerObj.transform) //飛びたいところの間に障害物がなければ
             {
+                dead_bool = true;
                 net_bool = true;
                 anim.SetBool("jump", true);
                 jump_start = transform.position;
@@ -938,13 +991,14 @@ public class EnemyAI4 : Character
     /*** 攻撃ジャンプ移動中 ***/
     private void AttackJumpMove()
     {
-        if(playerDist <= 5)
+        if (playerDist <= 5)
         {
             anim.SetBool("Attack", true);
         }
         else
         {
             anim.SetBool("jumpair", true);
+            anim.SetBool("jump", false);
         }
 
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
@@ -981,7 +1035,7 @@ public class EnemyAI4 : Character
                     anim.SetBool("avoidance", false);
                 }
 
-                stringUnit.SideUpdate(sidenumber);
+                stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
             }
         }
 
@@ -1012,7 +1066,7 @@ public class EnemyAI4 : Character
                         anim.SetBool("avoidance", false);
                     }
 
-                    stringUnit.SideUpdate(sidenumber);
+                    stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
                 }
             }
 
@@ -1062,8 +1116,10 @@ public class EnemyAI4 : Character
     private void AttackRearJumpMove()
     {
         anim.SetBool("jumpair", true);
+        anim.SetBool("jump", false);
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         {
+            dead_bool = false;
             m_randomCount = 0;
             transform.position = jump_end;
             m_StateProcessor.State = m_TreeDecision;
@@ -1096,7 +1152,7 @@ public class EnemyAI4 : Character
                     anim.SetBool("avoidance", false);
                 }
 
-                stringUnit.SideUpdate(sidenumber);
+                stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
             }
         }
     }
@@ -1129,7 +1185,7 @@ public class EnemyAI4 : Character
 
                 nearObj = hit.collider.gameObject;
             }
-            else if (hit.transform == null)
+            else
             {
                 m_StateProcessor.State = m_Fall;
             }
@@ -1289,6 +1345,7 @@ public class EnemyAI4 : Character
     private void PredominanceJumpMove()
     {
         anim.SetBool("jumpair", true);
+        anim.SetBool("jump", false);
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         {
             transform.position = jump_end;
@@ -1323,7 +1380,7 @@ public class EnemyAI4 : Character
                     anim.SetBool("avoidance", false);
                 }
 
-                stringUnit.SideUpdate(sidenumber);
+                stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
             }
         }
     }
@@ -1352,7 +1409,7 @@ public class EnemyAI4 : Character
 
                 nearObj = hit.collider.gameObject;
             }
-            else if(hit.transform == null)
+            else
             {
                 m_StateProcessor.State = m_Fall;
             }
@@ -1393,8 +1450,40 @@ public class EnemyAI4 : Character
             wait_time += Time.deltaTime * 1;
             if (wait_time >= 1.0f)
             {
-                m_targetPos = GetPlayerPosition();
-                m_StateProcessor.State = m_AttackJump;
+                if (playerDist <= player_Detection * 2 / 3)  //設定距離の半分以下の距離だったら
+                {
+                    if (m_randomCount == 0)
+                        m_randomCount = Random.Range(4, 6);
+                    if (m_randomCount == 5)
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_AttackJump;
+                    }
+                    else
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_SearchRandom;
+                    }
+                }
+                else
+                {
+                    if (m_randomCount == 0)
+                        m_randomCount = Random.Range(3, 6);
+                    if (m_randomCount == 5)
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_AttackJump;
+                    }
+                    else
+                    {
+                        m_randomCount = 0;
+                        m_targetPos = GetPlayerPosition();
+                        m_StateProcessor.State = m_SearchRandom;
+                    }
+                }
             }
         }
         else
@@ -1774,7 +1863,7 @@ public class EnemyAI4 : Character
 
         RaycastHit hit;
         Ray ray2 = new Ray(transform.position, -transform.up);
-        if (Physics.Raycast(ray2, out hit, 0.5f))
+        if (Physics.Raycast(ray2, out hit, 0.5f, groundLayer))
         {
             if (hit.transform.tag == "Ground")
             {
@@ -1786,8 +1875,16 @@ public class EnemyAI4 : Character
 
                 m_StateProcessor.State = m_FallGroundMove;
             }
-        }
+            //if (hit.transform.tag == "Tree")
+            //{
+            //    transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            //    transform.rotation = Quaternion.LookRotation(
+            //        Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
 
+            //}
+
+        }
+        Debug.Log(hit.transform.tag);
         //m_StateProcessor.State = m_FallingMove;
     }
 
@@ -1801,11 +1898,6 @@ public class EnemyAI4 : Character
             col_number = col.gameObject.GetComponent<Tree>().m_SideNumber;
             reObj2 = col.collider.gameObject;
             nearObj = col.collider.gameObject;
-        }
-
-        if(col.gameObject.tag == "Player")
-        {
-            m_StateProcessor.State = m_Fall;
         }
 
         
@@ -1826,34 +1918,36 @@ public class EnemyAI4 : Character
             }
 
             //糸を奪う
-            if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
-            {
-                //奪う確率
-                if (net_bool == true)
-                {
-                    netCount = Random.Range(1, 11);
-                    net_bool = false;
-                }
+            //if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+            //{
+            //    //奪う確率
+            //    if (net_bool == true)
+            //    {
+            //        netCount = Random.Range(1, 11);
+            //        net_bool = false;
+            //    }
 
-                if (netCount <= 4) //失敗したとき
-                {
-                    m_StateProcessor.State = m_Fall;
-                }
-                else //成功したとき
-                {
-                    anim.SetBool("avoidance", true);
+            //    if (netCount <= 4) //失敗したとき
+            //    {
+            //        m_StateProcessor.State = m_Fall;
+            //    }
+            //    else //成功したとき
+            //    {
+            //        anim.SetBool("avoidance", true);
 
-                    AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
-                    if (animInfo.normalizedTime < 1.0f)
-                    {
-                        anim.SetBool("avoidance", false);
-                    }
+            //        AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
+            //        if (animInfo.normalizedTime < 1.0f)
+            //        {
+            //            anim.SetBool("avoidance", false);
+            //        }
 
-                    stringObj1.GetComponent<StringUnit>().m_SideNumber = sidenumber;
-                }
-            }
+            //        stringObj1.GetComponent<StringUnit>().m_SideNumber = sidenumber;
+            //    }
+            //}
         }
     }
+
+
 
 
     //近くの木

@@ -3830,8 +3830,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 3
   m_Shooter: {fileID: 114130872222264282}
-  m_detection: 30
+  ground_detection: 30
   tree_Detection: 150
+  player_Detection: 100
   latter_half_time: 45
 --- !u!124 &124830650510548344
 Behaviour:
