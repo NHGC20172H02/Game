@@ -6,7 +6,8 @@ public class Character : MonoBehaviour {
 
     protected float elapse_time = 0;            //ジャンプの経過時間
     protected float flightDuration = 0;         //ジャンプの滞空時間
-    protected bool isBodyblow = false;     //体当たりを食らったか
+    protected bool isBodyblow = false;          //体当たりを食らったか
+    protected Vector3 gravity = Vector3.zero;     //重力
 
     protected virtual void Start () {
 		
@@ -67,14 +68,14 @@ public class Character : MonoBehaviour {
         }
         else if (collider.tag == "Enemy")
         {
-            //character = collider.GetComponent<EnemyAI40>();
-            collider.GetComponent<BoxCollider>().isTrigger = false;
-            collider.GetComponent<Rigidbody>().useGravity = true;
-            Vector3 reflection = Reflection(collider.transform.position - transform.position, collider.transform.up);
-            StartCoroutine(AddReflection(collider, reflection));
+            character = collider.GetComponent<EnemyAI40>();
+            //collider.GetComponent<BoxCollider>().isTrigger = false;
+            //collider.GetComponent<Rigidbody>().useGravity = true;
         }
 
         if (character == null) return;
+        //Vector3 reflection = Reflection(collider.transform.position - transform.position, collider.transform.up).normalized;
+        //StartCoroutine(ReceiveBodyBlow(collider, reflection));
         character.isBodyblow = true;
     }
 
@@ -84,13 +85,15 @@ public class Character : MonoBehaviour {
         return (forward - 2 * Vector3.Dot(forward, normal) * normal);
     }
 
-    IEnumerator AddReflection(Collider collider, Vector3 force)
+    IEnumerator ReceiveBodyBlow(Collider target, Vector3 force)
     {
-        float time = 5;
-        while (true)
+        float time = 0.5f;
+        while (time > 0)
         {
-            collider.GetComponent<Rigidbody>().AddForce(force * time, ForceMode.Force);
-            time -= 0.1f;
+            target.GetComponent<EnemyAI40>().gravity.y += Physics.gravity.y * Time.deltaTime;
+            target.transform.Translate(target.GetComponent<EnemyAI40>().gravity * Time.deltaTime, Space.World);
+            target.transform.Translate(force * Time.deltaTime, Space.World);
+            time -= Time.deltaTime;
             yield return null;
         }
     }

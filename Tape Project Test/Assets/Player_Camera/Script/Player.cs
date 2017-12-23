@@ -16,13 +16,13 @@ public class Player : Character
     public PredictionLine m_Prediction;
     public Animator m_Animator;
     public StringShooter m_Shooter;
+    public PlayerStateManager m_StateManager;          //Player状態管理
+    public int PlayerNum = 1;
 
     private float MIN = -80f;
     private float MAX = 80f;
-    private PlayerStateManager m_StateManager;          //Player状態管理
     private RaycastHit m_hitinfo;                       //足元の情報
     private Vector3 m_prevPos;
-    private Vector3 Gravity = Vector3.zero;             //重力
     private Vector3 move_start;                         //ジャンプ始点
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
@@ -37,7 +37,6 @@ public class Player : Character
 
     protected override void Start()
     {
-        m_StateManager = PlayerStateManager.GetInstance;
         m_StateManager.GroundTp.p_exeDelegate = GroundMove;
         m_StateManager.TreeTp.p_exeDelegate = TreeTpMove;
         m_StateManager.TreeFp.p_exeDelegate = TreeFpMove;
@@ -71,7 +70,7 @@ public class Player : Character
             move = Move(m_Camera.right, m_hitinfo.normal);
 
         //木に登る
-        if (Physics.Raycast(start, move, out m_hitinfo, 1f))
+        if (Physics.Raycast(start, move, out m_hitinfo, 1f, m_TreeLayer))
         {
             transform.position = m_hitinfo.point;
             transform.rotation = Quaternion.LookRotation(Vector3.Cross(transform.right, m_hitinfo.normal), m_hitinfo.normal);
@@ -119,8 +118,13 @@ public class Player : Character
 
         Vector3 origin = start + (m_Camera.position - start).normalized;
         Ray ray = new Ray(origin, m_Camera.forward);
+        int[] layers = new int[1];
+        layers[0] = m_StringLayer;
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        {
+            IntersectString(layers);
+        }
         Jump(ray, m_hitinfo);
-        Debug.DrawLine(ray.origin, ray.origin + ray.direction * 5f, Color.red);
     }
 
     //木の上の一人称カメラ状態での操作
@@ -230,7 +234,7 @@ public class Player : Character
                 stringVec = -stringVec;
             vec = stringVec;
             move = stringVec * Input.GetAxis("Vertical");
-            IntersectString(Input.GetAxis("Horizontal"));
+            //IntersectString(Input.GetAxis("Horizontal"));
             m_Animator.SetFloat("StringMoveX", 0);
             m_Animator.SetFloat("StringMoveZ", Input.GetAxis("Vertical"));
         }
@@ -238,7 +242,7 @@ public class Player : Character
         {
             vec = -stringVertical;
             move = stringVec * Input.GetAxis("Horizontal");
-            IntersectString(Input.GetAxis("Vertical"));
+            //IntersectString(Input.GetAxis("Vertical"));
             m_Animator.SetFloat("StringMoveZ", 0);
             m_Animator.SetFloat("StringMoveX", Input.GetAxis("Horizontal"));
         }
@@ -246,7 +250,7 @@ public class Player : Character
         {
             vec = stringVertical;
             move = -stringVec * Input.GetAxis("Horizontal");
-            IntersectString(Input.GetAxis("Vertical"));
+            //IntersectString(Input.GetAxis("Vertical"));
             m_Animator.SetFloat("StringMoveZ", 0);
             m_Animator.SetFloat("StringMoveX", Input.GetAxis("Horizontal"));
         }
@@ -263,6 +267,13 @@ public class Player : Character
         Vector3 start = transform.position + transform.up * 0.5f;
         Vector3 origin = start + (m_Camera.position - transform.position).normalized;
         Ray ray = new Ray(origin, m_Camera.forward);
+        int[] layers = new int[2];
+        layers[0] = m_StringLayer;
+        layers[1] = m_NetLayer;
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        {
+            IntersectString(layers);
+        }
         Jump(ray, m_hitinfo);
     }
 
@@ -276,9 +287,9 @@ public class Player : Character
         }
         float dis = Vector3.Distance(move_start, move_end);
         //落下スピード
-        Gravity.y += Physics.gravity.y * Time.deltaTime;
-        float fallTime = Mathf.Abs(dis / Gravity.y);
-        transform.Translate(Gravity * Time.deltaTime, Space.World);
+        gravity.y += Physics.gravity.y * Time.deltaTime;
+        float fallTime = Mathf.Abs(dis / gravity.y);
+        transform.Translate(gravity * Time.deltaTime, Space.World);
         Vector3 forward = Vector3.Cross(m_Camera.right, m_hitinfo.normal);
         transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.1f), m_hitinfo.normal);
 
@@ -324,11 +335,7 @@ public class Player : Character
         if (Physics.CheckSphere(move_end, 2f, playerLayer) && !isLanding)
         {
             m_Animator.SetTrigger("Tackle");
-            foreach(Collider col in Physics.OverlapSphere(move_end, 1f, m_EnemyLayer))
-            {
-                if (m_enemy != col) continue;
-                SendingBodyBlow(m_enemy);
-            }
+            SendingBodyBlow(m_enemy);
             isLanding = true;
             if (jump_target.collider.tag == "String")
                 m_Animator.SetBool("IsString", true);
@@ -355,8 +362,12 @@ public class Player : Character
     {
         bool jump = false;
         //糸を狙うのかどうか
-        if (Input.GetKeyDown(KeyCode.K) || Input.GetButtonDown("RB"))
+        if (Input.GetKeyUp(KeyCode.K) || Input.GetButtonUp("RB"))
+        {
+            m_attackTime = 0;
+            m_enemy = null;
             isCursor = !isCursor;
+        }
         if (isCursor)
         {
             if (!(jump = Physics.Raycast(ray, out jump_target, m_JumpLimit, m_NetLayer)))
@@ -372,11 +383,6 @@ public class Player : Character
             if (m_attackTime > 1f)
                 foreach(Collider col in Physics.OverlapSphere(jump_target.point, 3f, m_EnemyLayer))
                     m_enemy = col;
-        }
-        if (Input.GetKeyUp(KeyCode.K) || Input.GetButtonUp("RB"))
-        {
-            m_attackTime = 0;
-            m_enemy = null;
         }
 
         if (jump)
@@ -463,80 +469,120 @@ public class Player : Character
         return targetPos;
     }
 
-    //糸の交差部分の移動
-    private void IntersectString(float axis)
-    {
-        bool isCol = false;
-        var colliders = Physics.OverlapSphere(transform.position, 0.1f, m_StringLayer);
-        foreach(Collider col in colliders)
-        {
-            if (col != m_hitinfo.collider)
-                isCol = true;
-        }
-        if (!isCol) return;
-        if (axis != 0)
-        {
-            var unit = StringSearch(m_hitinfo.collider.GetComponent<StringUnit>(), colliders);
-            Physics.SphereCast(unit.position + Vector3.up, 0.5f, Vector3.down, out m_hitinfo, 1f, m_StringLayer);
-        }
-    }
-    //糸内のコネクタ検索
-    private Transform StringSearch(StringUnit stringUnit, Collider[] colliders)
+    private void IntersectString(int[] layerMask)
     {
         float shortest = 100000f;
         Transform result = null;
-        foreach(Collider col in colliders)
+        for(int i = 0; i < layerMask.Length; i++)
         {
-            foreach (Connecter c in stringUnit.m_Child)
+            if (i > 0 && result != null) continue;
+            foreach (Collider col in Physics.OverlapSphere(transform.position, 0.5f, layerMask[i]))
             {
-                if (col.gameObject == c.gameObject) continue;
-                if (c.tag == "String")
+                if(col.tag == "Net")
                 {
-                    StringUnit s = c as StringUnit;
-                    Comparision(s.m_PointA, s.transform, ref result, ref shortest);
-                    Comparision(s.m_PointB, s.transform, ref result, ref shortest);
+                    Net n = col.GetComponent<Net>();
+                    StringUnit s = n.m_StartConnecter as StringUnit;
+                    Comparision(s.m_PointA, n.transform, ref result, ref shortest);
+                    Comparision(s.m_PointB, n.transform, ref result, ref shortest);
+                    s = col.GetComponent<Net>().m_EndConnecter as StringUnit;
+                    Comparision(s.m_PointA, n.transform, ref result, ref shortest);
+                    Comparision(s.m_PointB, n.transform, ref result, ref shortest);
                 }
-                else if (c.tag == "Net")
+                else if(col.tag == "String")
                 {
-                    foreach (Connecter c_2 in c.m_Child)
-                    {
-                        if (col.gameObject == c_2.gameObject) continue;
-                        StringUnit s_2 = c_2 as StringUnit;
-                        Comparision(s_2.m_PointA, s_2.transform, ref result, ref shortest);
-                        Comparision(s_2.m_PointB, s_2.transform, ref result, ref shortest);
-                    }
-                }
-            }
-            if (stringUnit.m_StartConnecter.tag == "String")
-                Comparision(stringUnit.m_PointA, stringUnit.m_StartConnecter.transform, ref result, ref shortest);
-            else if (stringUnit.m_StartConnecter.tag == "Net")
-            {
-                foreach (Connecter c in stringUnit.m_StartConnecter.m_Child)
-                {
-                    if (col.gameObject == c.gameObject) continue;
-                    StringUnit s = c as StringUnit;
-                    Comparision(s.m_PointA, s.transform, ref result, ref shortest);
-                    Comparision(s.m_PointB, s.transform, ref result, ref shortest);
-                }
-            }
-            if (stringUnit.m_EndConnecter.tag == "String")
-                Comparision(stringUnit.m_PointB, stringUnit.m_EndConnecter.transform, ref result, ref shortest);
-            else if (stringUnit.m_EndConnecter.tag == "Net")
-            {
-                foreach (Connecter c in stringUnit.m_EndConnecter.m_Child)
-                {
-                    if (col.gameObject == c.gameObject) continue;
-                    StringUnit s = c as StringUnit;
+                    StringUnit s = col.GetComponent<StringUnit>();
                     Comparision(s.m_PointA, s.transform, ref result, ref shortest);
                     Comparision(s.m_PointB, s.transform, ref result, ref shortest);
                 }
             }
         }
-        return result;
+        if (result == null) return;
+        if(result.tag == "String")
+        {
+            Physics.SphereCast(result.position + Vector3.up, 0.5f, Vector3.down, out m_hitinfo, 1f, m_StringLayer);
+            m_StateManager.StateProcassor.State = m_StateManager.StringTp;
+        }
+        else
+        {
+            Physics.SphereCast(result.position + Vector3.up, 0.5f, Vector3.down, out m_hitinfo, 1f, m_NetLayer);
+            m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
+        }
     }
+    ////糸の交差部分の移動
+    //private void IntersectString(float axis)
+    //{
+    //    bool isCol = false;
+    //    var colliders = Physics.OverlapSphere(transform.position, 0.1f, m_StringLayer);
+    //    foreach(Collider col in colliders)
+    //    {
+    //        if (col != m_hitinfo.collider)
+    //            isCol = true;
+    //    }
+    //    if (!isCol) return;
+    //    if (axis != 0)
+    //    {
+    //        var unit = StringSearch(m_hitinfo.collider.GetComponent<StringUnit>(), colliders);
+    //        Physics.SphereCast(unit.position + Vector3.up, 0.5f, Vector3.down, out m_hitinfo, 1f, m_StringLayer);
+    //    }
+    //}
+    ////糸内のコネクタ検索
+    //private Transform StringSearch(StringUnit stringUnit, Collider[] colliders)
+    //{
+    //    float shortest = 100000f;
+    //    Transform result = null;
+    //    foreach(Collider col in colliders)
+    //    {
+    //        foreach (Connecter c in stringUnit.m_Child)
+    //        {
+    //            if (col.gameObject == c.gameObject) continue;
+    //            if (c.tag == "String")
+    //            {
+    //                StringUnit s = c as StringUnit;
+    //                Comparision(s.m_PointA, s.transform, ref result, ref shortest);
+    //                Comparision(s.m_PointB, s.transform, ref result, ref shortest);
+    //            }
+    //            else if (c.tag == "Net")
+    //            {
+    //                foreach (Connecter c_2 in c.m_Child)
+    //                {
+    //                    if (col.gameObject == c_2.gameObject) continue;
+    //                    StringUnit s_2 = c_2 as StringUnit;
+    //                    Comparision(s_2.m_PointA, s_2.transform, ref result, ref shortest);
+    //                    Comparision(s_2.m_PointB, s_2.transform, ref result, ref shortest);
+    //                }
+    //            }
+    //        }
+    //        if (stringUnit.m_StartConnecter.tag == "String")
+    //            Comparision(stringUnit.m_PointA, stringUnit.m_StartConnecter.transform, ref result, ref shortest);
+    //        else if (stringUnit.m_StartConnecter.tag == "Net")
+    //        {
+    //            foreach (Connecter c in stringUnit.m_StartConnecter.m_Child)
+    //            {
+    //                if (col.gameObject == c.gameObject) continue;
+    //                StringUnit s = c as StringUnit;
+    //                Comparision(s.m_PointA, s.transform, ref result, ref shortest);
+    //                Comparision(s.m_PointB, s.transform, ref result, ref shortest);
+    //            }
+    //        }
+    //        if (stringUnit.m_EndConnecter.tag == "String")
+    //            Comparision(stringUnit.m_PointB, stringUnit.m_EndConnecter.transform, ref result, ref shortest);
+    //        else if (stringUnit.m_EndConnecter.tag == "Net")
+    //        {
+    //            foreach (Connecter c in stringUnit.m_EndConnecter.m_Child)
+    //            {
+    //                if (col.gameObject == c.gameObject) continue;
+    //                StringUnit s = c as StringUnit;
+    //                Comparision(s.m_PointA, s.transform, ref result, ref shortest);
+    //                Comparision(s.m_PointB, s.transform, ref result, ref shortest);
+    //            }
+    //        }
+    //    }
+    //    return result;
+    //}
     //一番近い位置
     private void Comparision(Vector3 pos, Transform target, ref Transform result, ref float shortest)
     {
+        if (m_hitinfo.collider.gameObject == target.gameObject) return;
         if (target.tag == "String" || target.tag == "Net")
         {
             float distance = Vector3.Distance(pos, transform.position);
@@ -582,7 +628,7 @@ public class Player : Character
         if (other.transform.tag == "Ground" || other.transform.tag == "Tree")
         {
             if (m_hitinfo.transform.tag != other.transform.tag) return;
-            Gravity = Vector3.zero;
+            gravity = Vector3.zero;
             elapse_time = 0;
             m_failureTime = 0;
             m_Animator.SetTrigger("Landing");
