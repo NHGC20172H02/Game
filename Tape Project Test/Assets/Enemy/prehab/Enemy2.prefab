@@ -647,6 +647,7 @@ GameObject:
   - component: {fileID: 95356331639727914}
   - component: {fileID: 114533001950309022}
   - component: {fileID: 114624242110974726}
+  - component: {fileID: 114939046867580062}
   m_Layer: 0
   m_Name: Enemy2
   m_TagString: Untagged
@@ -3833,6 +3834,21 @@ MonoBehaviour:
   m_detection: 30
   tree_Detection: 150
   latter_half_time: 45
+--- !u!114 &114939046867580062
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1380246854979712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7905857de4ce73d48a7796802d946368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Scripts:
+  - {fileID: 114624242110974726}
+  m_Animator:
+  - {fileID: 95356331639727914}
 --- !u!124 &124830650510548344
 Behaviour:
   m_ObjectHideFlags: 1
