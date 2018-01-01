@@ -5,17 +5,13 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour
 {
 
-    [SerializeField]
-    GameObject m_target;
-    [SerializeField]
-    Transform m_Spider;
-    [SerializeField]
-    Transform m_Camera;
-    [SerializeField]
-    float rotate_Speed = 100f;
-    [SerializeField]
-    float minAngle = -60, maxAngle = 60;
+    public GameObject m_target;
+    public Transform m_Spider;
+    public Transform m_Camera;
+    public float rotate_Speed = 100f;
+    public float minAngle = -60, maxAngle = 60;
 
+    private PlayerStateManager m_StateManager;
     private Vector3 target_pos;
 
     //三人称用のカメラとの距離
@@ -26,14 +22,14 @@ public class CameraMove : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        var instance = PlayerStateManager.GetInstance;
-        instance.GroundTp.c_exeDelegate = GroundMove;
-        instance.TreeTp.c_exeDelegate = TreeTpMove;
-        instance.TreeFp.c_exeDelegate = TreeFpMove;
-        instance.JumpTp.c_exeDelegate = JumpTpMove;
-        instance.StringTp.c_exeDelegate = TreeTpMove;
-        instance.Falling.c_exeDelegate = TreeTpMove;
-        instance.BodyBlow.c_exeDelegate = TreeTpMove;
+        m_StateManager = m_target.GetComponent<Player>().m_StateManager;
+        m_StateManager.GroundTp.c_exeDelegate = GroundMove;
+        m_StateManager.TreeTp.c_exeDelegate = TreeTpMove;
+        m_StateManager.TreeFp.c_exeDelegate = TreeFpMove;
+        m_StateManager.JumpTp.c_exeDelegate = JumpTpMove;
+        m_StateManager.StringTp.c_exeDelegate = TreeTpMove;
+        m_StateManager.Falling.c_exeDelegate = TreeTpMove;
+        m_StateManager.BodyBlow.c_exeDelegate = TreeTpMove;
         g_distance = Vector3.Distance(transform.position, m_Camera.position);
         t_distance = g_distance * 2f;
     }
