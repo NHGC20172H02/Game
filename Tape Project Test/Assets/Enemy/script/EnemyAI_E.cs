@@ -23,6 +23,8 @@ public class EnemyAI_E : Character {
     public float player_Detection = 100.0f;
     [Header("Enemyの思考時間")]
     public float thought_Time = 4.0f;
+    [Header("Enemyの思考時間（優勢時）")]
+    public float predominance_Thought_Time = 7.0f;
 
     float time_limit;
 
@@ -52,8 +54,6 @@ public class EnemyAI_E : Character {
     bool net_bool = false;
     bool dead_bool = false;
     bool player_onTree;
-
-    float angle;
 
     GameObject nearObj0;
     [System.NonSerialized]
@@ -92,6 +92,8 @@ public class EnemyAI_E : Character {
     GroundJumping m_GroundJumping = new GroundJumping();
     JumpMove m_JumpMove = new JumpMove();
 
+    PredominanceDecision m_PredominanceDecision = new PredominanceDecision();
+
     AttackJump m_AttackJump = new AttackJump();
     AttackJumpMove m_AttackJumpMove = new AttackJumpMove();
     AttackRearJump m_AttackRearJump = new AttackRearJump();
@@ -116,7 +118,9 @@ public class EnemyAI_E : Character {
         m_Jumping.exeDelegate = Jumping;
         m_GroundJumping.exeDelegate = GroundJumping;
         m_JumpMove.exeDelegate = JumpMove;
-        
+
+        m_PredominanceDecision.exeDelegate = PredominanceDecision;
+
         m_AttackJump.exeDelegate = AttackJump;
         m_AttackJumpMove.exeDelegate = AttackJumpMove;
         m_AttackRearJump.exeDelegate = AttackRearJump;
@@ -188,7 +192,7 @@ public class EnemyAI_E : Character {
         if (playerObj != null)
         {
             playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
-            player_onTree = playerObj.GetComponent<Player>().IsOnTree();
+            //player_onTree = playerObj.GetComponent<Player>().IsOnTree();
         }
         //近くのネットとの距離
         if (stringNet != null)
@@ -406,7 +410,12 @@ public class EnemyAI_E : Character {
         //        m_StateProcessor.State = m_ColorlessTree;
         //    }
         //}
-        if (playerDist >= 10 && playerDist <= player_Detection) //Playerに攻撃
+        //自分が優勢の時
+        if (EnemyTree_Count > PlayerTree_Count)
+        {
+            m_StateProcessor.State = m_PredominanceDecision;
+        }
+        else if (playerDist >= 10 && playerDist <= player_Detection) //Playerに攻撃
         {
             wait_time += Time.deltaTime * 1;
             if (wait_time >= thought_Time)
@@ -941,6 +950,68 @@ public class EnemyAI_E : Character {
     }
 
 
+
+    /*** 優勢時の行動判断 ***/
+    private void PredominanceDecision()
+    {
+        anim.SetBool("jump", false);
+        anim.SetBool("jumpair", false);
+        anim.SetBool("avoidance", false);
+        anim.SetBool("Attack", false);
+        if (myTreeObj != null)
+        {
+            //近くの糸との距離
+            myTreeDist = Vector3.Distance(myTreeObj.transform.position, this.transform.position);
+        }
+
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
+        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+        if (Physics.Raycast(ray, out hit, 1f, treeLayer))
+        {
+            if (hit.transform.tag == "Tree")
+            {
+                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+                nearObj = hit.collider.gameObject;
+            }
+            else
+            {
+                m_StateProcessor.State = m_Fall;
+            }
+        }
+
+
+        if (PlayerTree_Count != 0)
+        {
+            //Playerの木の本数
+            PlayerTree_Count = TerritoryManager.Instance.GetTreeCount(1);
+        }
+        if (EnemyTree_Count != 0)
+        {
+            //Enemyの木の本数
+            EnemyTree_Count = TerritoryManager.Instance.GetTreeCount(2);
+        }
+
+        predominance_time += Time.deltaTime * 1;
+
+        //相手が優勢の時、又は、同じの時
+        if (EnemyTree_Count < PlayerTree_Count || EnemyTree_Count == PlayerTree_Count)
+        {
+            predominance_time = 0;
+            m_StateProcessor.State = m_TreeDecision;
+        }
+        else if (predominance_time >= predominance_Thought_Time)
+        {
+            if (myTreeDist <= tree_Detection)
+            {
+                predominance_time = 0;
+                m_StateProcessor.State = m_SearchRandom;
+            }
+        }
+    }
 
 
 

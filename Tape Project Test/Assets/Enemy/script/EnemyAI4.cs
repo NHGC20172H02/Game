@@ -280,7 +280,7 @@ public class EnemyAI4 : Character
         if (playerObj != null)
         {
             playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
-            player_onTree = playerObj.GetComponent<Player>().IsOnTree();
+            //player_onTree = playerObj.GetComponent<Player>().IsOnTree();
         }
         //近くのネットとの距離
         if (stringNet != null)
