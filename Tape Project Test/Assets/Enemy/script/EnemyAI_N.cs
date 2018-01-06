@@ -110,6 +110,7 @@ public class EnemyAI_N : Character {
 
     FallGroundMove m_FallGroundMove = new FallGroundMove();
     Fall m_Fall = new Fall();
+    Falling m_Falling = new Falling();
 
     // Use this for initialization
     protected override void Start()
@@ -140,6 +141,7 @@ public class EnemyAI_N : Character {
 
         m_FallGroundMove.exeDelegate = FallGroundMove;
         m_Fall.exeDelegate = Fall;
+        m_Falling.exeDelegate = Falling;
 
         m_StateProcessor.State = m_GroundMove;
     }
@@ -310,6 +312,7 @@ public class EnemyAI_N : Character {
         anim.SetBool("trap", false);
         anim.SetBool("jumpair", false);
         anim.SetBool("avoidance", false);
+        anim.SetBool("move_front", true);
 
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
@@ -1282,10 +1285,6 @@ public class EnemyAI_N : Character {
         AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
 
         anim.SetBool("trap", true);
-        if (animInfo.normalizedTime < 1.0f)
-        {
-            anim.SetBool("dead", true);
-        }
 
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
@@ -1294,7 +1293,18 @@ public class EnemyAI_N : Character {
         Ray ray = new Ray(transform.position, -Vector3.up);
         if (!Physics.Raycast(ray, out jump_target, 100f, treeLayer))
             Physics.Raycast(ray, out jump_target, 100f, groundLayer);
+        jump_start = transform.position;
+        jump_end = jump_target.point;
 
+        m_StateProcessor.State = m_Falling;
+        //m_StateProcessor.State = m_FallingMove;
+    }
+    //落下中
+    private void Falling()
+    {
+        anim.SetBool("dead", true);
+
+        float dis = Vector3.Distance(jump_start, jump_end);
         //落下スピード
         Vector3 fallSpeed = Physics.gravity.y * Vector3.up;
         transform.Translate(fallSpeed * Time.deltaTime, Space.World);
@@ -1303,27 +1313,29 @@ public class EnemyAI_N : Character {
 
         RaycastHit hit;
         Ray ray2 = new Ray(transform.position, -transform.up);
-        if (Physics.Raycast(ray2, out hit, 0.5f, groundLayer))
+        if (Physics.Raycast(ray2, out hit, 0.5f))
         {
+            if (hit.transform.tag == "Ground")
+            {
+                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
 
-            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-            transform.rotation = Quaternion.LookRotation(
-                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+                anim.SetBool("jump", false);
 
-            anim.SetBool("jump", false);
+                m_StateProcessor.State = m_FallGroundMove;
+            }
+            else if (hit.transform.tag == "Tree")
+            {
+                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
 
-            m_StateProcessor.State = m_FallGroundMove;
+                anim.SetBool("jump", false);
 
-            //if (hit.transform.tag == "Tree")
-            //{
-            //    transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-            //    transform.rotation = Quaternion.LookRotation(
-            //        Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-
-            //}
-
+                m_StateProcessor.State = m_FallGroundMove;
+            }
         }
-        //m_StateProcessor.State = m_FallingMove;
     }
 
 

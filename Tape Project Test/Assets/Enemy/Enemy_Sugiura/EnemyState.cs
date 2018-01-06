@@ -185,6 +185,14 @@ namespace EnemyState
         }
     }
 
+    public class Falling : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "Falling";
+        }
+    }
+
     public class FallGroundMove : EnemyState
     {
         public override string getStateName()
