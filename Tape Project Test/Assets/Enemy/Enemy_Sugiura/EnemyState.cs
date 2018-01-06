@@ -185,6 +185,14 @@ namespace EnemyState
         }
     }
 
+    public class Falling : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "Falling";
+        }
+    }
+
     public class FallGroundMove : EnemyState
     {
         public override string getStateName()
@@ -262,6 +270,20 @@ namespace EnemyState
         public override string getStateName()
         {
             return "AttackJumpMove";
+        }
+    }
+    public class AttackRearJump : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "AttackRearJump";
+        }
+    }
+    public class AttackRearJumpMove : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "AttackRearJumpMove";
         }
     }
 }

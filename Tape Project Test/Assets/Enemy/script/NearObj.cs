@@ -40,7 +40,12 @@ public class NearObj : MonoBehaviour {
 	void Update () {
 
         //今いる木
+        if(GetComponent<EnemyAI4>() != null)
         m_nearObj = GetComponent<EnemyAI4>().nearObj;
+        if (GetComponent<EnemyAI_E>() != null)
+            m_nearObj = GetComponent<EnemyAI_E>().nearObj;
+        if (GetComponent<EnemyAI_N>() != null)
+            m_nearObj = GetComponent<EnemyAI_N>().nearObj;
 
         //近かったオブジェクト（木）を取得
         m_nearObj2 = serchTag(this.gameObject, "Tree");
@@ -71,7 +76,12 @@ public class NearObj : MonoBehaviour {
         m_stringNet = stringNet(this.gameObject, "Net");
 
         //１つ前にいた木を保持
-        m_reObj = GetComponent<EnemyAI4>().reObj;
+        if (GetComponent<EnemyAI4>() != null)
+            m_reObj = GetComponent<EnemyAI4>().reObj;
+        if (GetComponent<EnemyAI_E>() != null)
+            m_reObj = GetComponent<EnemyAI_E>().reObj;
+        if (GetComponent<EnemyAI_N>() != null)
+            m_reObj = GetComponent<EnemyAI_N>().reObj;
     }
 
 

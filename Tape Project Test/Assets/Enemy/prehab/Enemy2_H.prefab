@@ -420,7 +420,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1279873817421456
 GameObject:
   m_ObjectHideFlags: 1
@@ -649,7 +649,7 @@ GameObject:
   - component: {fileID: 114624242110974726}
   - component: {fileID: 114939046867580062}
   m_Layer: 0
-  m_Name: Enemy2
+  m_Name: Enemy2_H
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3831,8 +3831,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 3
   m_Shooter: {fileID: 114130872222264282}
-  m_detection: 30
+  ground_detection: 30
   tree_Detection: 150
+  player_Detection: 100
+  thought_Time: 2
+  latterHalf_Thought_Time: 1
+  predominance_Thought_Time: 2
   latter_half_time: 45
 --- !u!114 &114939046867580062
 MonoBehaviour:
