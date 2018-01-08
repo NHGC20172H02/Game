@@ -67,7 +67,9 @@ MonoBehaviour:
   m_StringShooter: {fileID: 0}
   m_PointA: {x: 0, y: 0, z: 0}
   m_PointB: {x: 0, y: 0, z: 0}
-  m_point: {fileID: 0}
+  m_StringStockPrefab: {fileID: 1802979472427602, guid: bbef6904cd562ee4292407805b4ca153,
+    type: 2}
+  m_StringStock: {fileID: 0}
 --- !u!120 &120552317581310650
 LineRenderer:
   m_ObjectHideFlags: 1

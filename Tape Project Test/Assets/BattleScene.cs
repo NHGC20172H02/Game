@@ -31,13 +31,14 @@ public class BattleScene : MonoBehaviour {
 
 		yield return new WaitUntil(() => (m_Timer <= 0.0f));
 
+		state = GameState.Result;
 		PauseManager.Instance.Pause(false);
 		m_UIAnimator.SetTrigger("Finish");
 
 		yield return new WaitForSeconds(2.0f);
 
-		state = GameState.Result;
 		SceneManager.LoadScene("Result", LoadSceneMode.Additive);
+		m_UIAnimator.SetTrigger("Finish");
 	}
 
 	// Update is called once per frame
@@ -45,8 +46,8 @@ public class BattleScene : MonoBehaviour {
     {
         if (state == GameState.Play)
         {
-            m_TimerUI.text = ((int)m_Timer).ToString();
             m_Timer -= Time.deltaTime;
         }
-    }
+		m_TimerUI.text = ((int)(m_Timer + 1)).ToString();
+	}
 }

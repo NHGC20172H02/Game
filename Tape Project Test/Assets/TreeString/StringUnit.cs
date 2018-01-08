@@ -16,11 +16,13 @@ public class StringUnit : Connecter {
 	public Vector3 m_PointA;
 	public Vector3 m_PointB;
 
+	public GameObject m_StringStockPrefab;
+	public StringStock m_StringStock;
 	private void Start()
 	{
 		TerritoryManager.Instance.m_Strings.Add(this);
 	}
-	public void Create(StringShooter stringShooter, Vector3 start, Vector3 end)
+	public void Create(StringShooter stringShooter, Vector3 start, Vector3 end, Transform Cartridge)
 	{
 		m_StringShooter = stringShooter;
 		m_PointA = start;
@@ -30,6 +32,11 @@ public class StringUnit : Connecter {
 		m_Cost = (int)(distance * 0.1f);
 		m_Collider.height = distance;
 		m_Collider.center = new Vector3(0, 0, distance * 0.5f);
+		if (Cartridge != null)
+		{
+			m_StringStock = Instantiate(m_StringStockPrefab, Cartridge).GetComponent<StringStock>();
+			m_StringStock.SetWidth(4.8f * m_Cost * (100 / m_StringShooter.m_MaxCost));
+		}
 	}
 
 	public void SetConnecter(Connecter Start,Connecter End)
@@ -44,7 +51,16 @@ public class StringUnit : Connecter {
 	{
 		if (m_SideNumber == sideNumber) return;
 		SetSide(sideNumber);
-		m_StringShooter.m_Strings.Remove(this);
+		if (m_StringShooter != null)
+		{
+			if (m_StringStock != null)
+			{
+				m_StringStock.Delete(m_SideNumber);
+			}
+			m_StringShooter.m_Strings.Remove(this);
+			m_StringShooter.m_Cost -= m_Cost;
+			m_StringShooter = null;
+		}
 		m_StartConnecter.SideUpdate(sideNumber);
 		m_EndConnecter.SideUpdate(sideNumber);
 		foreach (var item in m_Child)
@@ -61,9 +77,14 @@ public class StringUnit : Connecter {
 		}
 		m_StartConnecter.RemoveString(this);
 		m_EndConnecter.RemoveString(this);
+		m_StringShooter.m_Strings.Remove(this);
 		m_StringShooter.m_Cost -= m_Cost;
 		Destroy(gameObject);
 		TerritoryManager.Instance.m_Strings.Remove(this);
+		if (m_StringStock != null)
+		{
+			m_StringStock.Delete(m_SideNumber);
+		}
 	}
 	public void Stretch(Vector3 point)
 	{

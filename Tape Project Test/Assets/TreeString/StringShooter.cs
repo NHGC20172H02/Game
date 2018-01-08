@@ -15,6 +15,7 @@ public class StringShooter : MonoBehaviour
 	public float m_NetAngleLimit = 40;
 	public int m_NetCostLimit = 3;
 	public LayerMask layerMask;
+	public Transform m_Cartridge;
 	// Use this for initialization
 	void Start()
 	{
@@ -36,7 +37,7 @@ public class StringShooter : MonoBehaviour
 		end = SnapPoint(end);
 		Quaternion look = Quaternion.LookRotation(end - start);
 		StringUnit stringUnit = Instantiate(m_StringUnit, start, look).GetComponent<StringUnit>();
-		stringUnit.Create(this, start, end);
+		stringUnit.Create(this, start, end,m_Cartridge);
 		stringUnit.SetSide(m_SideNumber);
 		stringUnit.SetConnecter(GetConnecter(start), GetConnecter(end));
 		m_Strings.Add(stringUnit);
@@ -44,7 +45,7 @@ public class StringShooter : MonoBehaviour
 		while (m_Cost > m_MaxCost)
 		{
 			StringUnit firstStringUnit = m_Strings[0];
-			m_Strings.RemoveAt(0);
+			//m_Strings.RemoveAt(0);
 			firstStringUnit.Delete();
 		}
 		if (/*(stringUnit.m_StartConnecter is Tree || stringUnit.m_EndConnecter is Tree && false) &&*/ stringUnit.m_Cost <= m_NetCostLimit)
