@@ -2095,6 +2095,8 @@ MonoBehaviour:
   m_Shooter: {fileID: 114127604017469954}
   m_StateManager: {fileID: 114911580558467808, guid: 57cae77adb50af646860b5b24b64eb6e,
     type: 2}
+  m_Rigidbody: {fileID: 54117905993999114}
+  PlayerNum: 1
 --- !u!114 &114127604017469954
 MonoBehaviour:
   m_ObjectHideFlags: 1
