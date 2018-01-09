@@ -61,6 +61,11 @@ public class PlayerStateManager : MonoBehaviour {
     {
         get { return m_bodyBlow; }
     }
+    private GroundJump m_groundJump = new GroundJump();
+    public GroundJump GroundJump
+    {
+        get { return m_groundJump; }
+    }
 
     // Use this for initialization
     void Start () {

@@ -7,7 +7,9 @@ public class Character : MonoBehaviour {
     protected float elapse_time = 0;            //ジャンプの経過時間
     protected float flightDuration = 0;         //ジャンプの滞空時間
     protected bool isBodyblow = false;          //体当たりを食らったか
-    protected Vector3 gravity = Vector3.zero;     //重力
+    protected Vector3 gravity = Vector3.zero;   //重力
+    protected IEnumerator receiveBodyblow = null;
+    static float BodyblowForce = 5f;            //体当たりの威力
 
     protected virtual void Start () {
 		
@@ -59,24 +61,25 @@ public class Character : MonoBehaviour {
     }
 
     //体当たり情報を相手に送信
-    protected void SendingBodyBlow(Collider collider)
+    protected void SendingBodyBlow(GameObject target)
     {
         Character character = null;
-        if (collider.tag == "Player")
+        if (target.tag == "Player")
         {
-            character = collider.GetComponent<Player>();
+            character = target.GetComponent<Player>();
+            character.GetComponent<Player>().m_Animator.SetTrigger("Failure");
         }
-        else if (collider.tag == "Enemy")
+        else if (target.tag == "Enemy")
         {
-            character = collider.GetComponent<EnemyAI40>();
-            //collider.GetComponent<BoxCollider>().isTrigger = false;
-            //collider.GetComponent<Rigidbody>().useGravity = true;
+            //character = target.GetComponent<EnemyAI40>();
+            character = target.GetComponent<BodyblowTestEnemy>();
         }
 
         if (character == null) return;
-        //Vector3 reflection = Reflection(collider.transform.position - transform.position, collider.transform.up).normalized;
-        //StartCoroutine(ReceiveBodyBlow(collider, reflection));
         character.isBodyblow = true;
+        Vector3 reflection = Reflection(target.transform.position - transform.position, target.transform.up).normalized;
+        character.receiveBodyblow = ReceiveBodyBlow(character, reflection);
+        character.StartCoroutine(character.receiveBodyblow);
     }
 
     //反射ベクトル
@@ -85,16 +88,24 @@ public class Character : MonoBehaviour {
         return (forward - 2 * Vector3.Dot(forward, normal) * normal);
     }
 
-    IEnumerator ReceiveBodyBlow(Collider target, Vector3 force)
+    //体当たりを食らった際の処理
+    IEnumerator ReceiveBodyBlow(Character target, Vector3 force)
     {
-        float time = 0.5f;
-        while (time > 0)
+        while (true)
         {
-            target.GetComponent<EnemyAI40>().gravity.y += Physics.gravity.y * Time.deltaTime;
-            target.transform.Translate(target.GetComponent<EnemyAI40>().gravity * Time.deltaTime, Space.World);
-            target.transform.Translate(force * Time.deltaTime, Space.World);
-            time -= Time.deltaTime;
+            //target.gravity.y += Physics.gravity.y * Time.deltaTime;
+            //target.transform.Translate(target.gravity * Time.deltaTime, Space.World);
+            target.transform.Translate(force * BodyblowForce * Time.deltaTime, Space.World);
             yield return null;
         }
+    }
+
+    protected void ResetBodyblow()
+    {
+        /*** 体当たりを食らって着地したときに呼び出すやつ ***/
+        StopCoroutine(receiveBodyblow);
+        gravity.y = 0;
+        isBodyblow = false;
+        /****************************************************/
     }
 }

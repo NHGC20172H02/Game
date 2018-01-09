@@ -12,6 +12,7 @@ public class CameraMove : MonoBehaviour
     public float minAngle = -60, maxAngle = 60;
 
     private PlayerStateManager m_StateManager;
+    private Animator m_Animator;
     private Vector3 target_pos;
 
     //三人称用のカメラとの距離
@@ -30,8 +31,10 @@ public class CameraMove : MonoBehaviour
         m_StateManager.StringTp.c_exeDelegate = TreeTpMove;
         m_StateManager.Falling.c_exeDelegate = TreeTpMove;
         m_StateManager.BodyBlow.c_exeDelegate = TreeTpMove;
+        m_StateManager.GroundJump.c_exeDelegate = TreeTpMove;
         g_distance = Vector3.Distance(transform.position, m_Camera.position);
         t_distance = g_distance * 2f;
+        m_Animator = m_target.GetComponent<Player>().m_Animator;
     }
 
     // Update is called once per frame
@@ -57,8 +60,11 @@ public class CameraMove : MonoBehaviour
             transform.RotateAround(target_pos, transform.right, -rotate_Speed * Time.deltaTime);
         }
         //コントローラ用
-        transform.RotateAround(target_pos, Vector3.up, Input.GetAxis("Horizontal2") * rotate_Speed * Time.deltaTime);
+        float x = Input.GetAxis("Horizontal2");
+        transform.RotateAround(target_pos, Vector3.up, x * rotate_Speed * Time.deltaTime);
         transform.RotateAround(target_pos, transform.right, Input.GetAxis("Vertical2") * rotate_Speed * Time.deltaTime);
+        if(x != 0)
+            m_Animator.SetFloat("MoveX", x);
         //角度制限
         float rotateY = (transform.eulerAngles.y > 180) ? transform.eulerAngles.y - 360 : transform.eulerAngles.y;
         rotateY = (rotateY < 0) ? rotateY + 360 : rotateY;

@@ -109,5 +109,13 @@ namespace PlayerState
             return "BodyBlow";
         }
     }
+    public class GroundJump : PlayerState
+    {
+        public override string getStateName()
+        {
+            return "GroundJump";
+        }
+    }
+
 
 }
