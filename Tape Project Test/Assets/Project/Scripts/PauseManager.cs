@@ -25,7 +25,7 @@ public class PauseManager : SingletonMonoBehaviour<PauseManager> {
 		{
 			Pause(true);
 		}
-		if (Input.GetKeyDown(KeyCode.I))
+		if (Input.GetButtonDown("Start"))
 		{
 			Pause(false);
 		}
