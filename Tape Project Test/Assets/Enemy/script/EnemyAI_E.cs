@@ -25,6 +25,8 @@ public class EnemyAI_E : Character {
     public float thought_Time = 4.0f;
     [Header("Enemyの思考時間（優勢時）")]
     public float predominance_Thought_Time = 7.0f;
+    //糸を奪う失敗する確率(1～10)
+    int m_netrob = 6;
 
     float time_limit;
 
@@ -217,10 +219,6 @@ public class EnemyAI_E : Character {
         }
 
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            m_StateProcessor.State = m_Fall;
-        }
         //Debug.Log(distNet);
         //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
@@ -767,7 +765,7 @@ public class EnemyAI_E : Character {
                 net_bool = false;
             }
 
-            if (netCount <= 6) //失敗したとき
+            if (netCount <= m_netrob) //失敗したとき
             {
                 m_StateProcessor.State = m_Fall;
             }
@@ -849,7 +847,7 @@ public class EnemyAI_E : Character {
                 net_bool = false;
             }
 
-            if (netCount <= 6) //失敗したとき
+            if (netCount <= m_netrob) //失敗したとき
             {
                 m_StateProcessor.State = m_Fall;
             }
@@ -933,7 +931,7 @@ public class EnemyAI_E : Character {
                 net_bool = false;
             }
 
-            if (netCount <= 6) //失敗したとき
+            if (netCount <= m_netrob) //失敗したとき
             {
                 m_StateProcessor.State = m_Fall;
             }
@@ -1141,42 +1139,42 @@ public class EnemyAI_E : Character {
     //近くの木
     public Vector3 GetUpPosition2()
     {
-        return new Vector3(nearObj2.transform.position.x, Random.Range(4, 20), nearObj2.transform.position.z);
+        return new Vector3(nearObj2.transform.position.x, Random.Range(4, 22), nearObj2.transform.position.z);
     }
     //２番目の近くの木
     public Vector3 GetUpPosition3()
     {
-        return new Vector3(nearObj3.transform.position.x, Random.Range(4, 20), nearObj3.transform.position.z);
+        return new Vector3(nearObj3.transform.position.x, Random.Range(4, 22), nearObj3.transform.position.z);
     }
 
 
     //誰の陣地でもない近くの木
     public Vector3 GetUpPosition00()
     {
-        return new Vector3(nearObj0.transform.position.x, Random.Range(4, 20), nearObj0.transform.position.z);
+        return new Vector3(nearObj0.transform.position.x, Random.Range(4, 22), nearObj0.transform.position.z);
     }
     //自分の陣地ではない近くの木
     public Vector3 GetUpPosition40()
     {
-        return new Vector3(nearObj40.transform.position.x, Random.Range(4, 20), nearObj40.transform.position.z);
+        return new Vector3(nearObj40.transform.position.x, Random.Range(4, 22), nearObj40.transform.position.z);
     }
     //自分の陣地ではない２番目の近くの木
     public Vector3 GetUpPosition50()
     {
-        return new Vector3(nearObj50.transform.position.x, Random.Range(4, 20), nearObj50.transform.position.z);
+        return new Vector3(nearObj50.transform.position.x, Random.Range(4, 22), nearObj50.transform.position.z);
     }
 
 
     //自分の陣地の近くの木
     public Vector3 MyTreePosition1()
     {
-        return new Vector3(myTreeObj.transform.position.x, Random.Range(4, 20), myTreeObj.transform.position.z);
+        return new Vector3(myTreeObj.transform.position.x, Random.Range(4, 22), myTreeObj.transform.position.z);
     }
 
     //自分の陣地の2番目に近くの木
     public Vector3 MyTreePosition2()
     {
-        return new Vector3(myTreeObj2.transform.position.x, Random.Range(4, 20), myTreeObj2.transform.position.z);
+        return new Vector3(myTreeObj2.transform.position.x, Random.Range(4, 22), myTreeObj2.transform.position.z);
     }
 
 
@@ -1196,13 +1194,6 @@ public class EnemyAI_E : Character {
     public Vector3 GetPosition3()
     {
         return new Vector3(nearObj2.transform.position.x, 7.0f, nearObj2.transform.position.z);
-    }
-
-
-    //近くの自分の糸にジャンプするポジション
-    public Vector3 GetStringPosition()
-    {
-        return new Vector3(myStringObj.transform.position.x, myStringObj.transform.position.y, myStringObj.transform.position.z);
     }
 
     //PlayerのPosition
