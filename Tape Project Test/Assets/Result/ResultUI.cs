@@ -21,8 +21,13 @@ public class ResultUI : MonoBehaviour
 	public Text m_ETreeCount;
 	public Text m_EScore;
 
-	public Text m_PWL;
-	public Text m_EWL;
+	public Image m_PWL;
+	public Image m_EWL;
+
+	public Sprite m_PWin;
+	public Sprite m_EWin;
+	public Sprite m_PLose;
+	public Sprite m_ELose;
 
 	// Use this for initialization
 	IEnumerator Start()
@@ -51,13 +56,13 @@ public class ResultUI : MonoBehaviour
 
 		if (PScore > EScore)
 		{
-			m_PWL.text = "Win";
-			m_EWL.text = "Lose";
+			m_PWL.sprite = m_PWin;
+			m_EWL.sprite = m_ELose;
 		}
 		else if (PScore < EScore)
 		{
-			m_PWL.text = "Lose";
-			m_EWL.text = "Win";
+			m_PWL.sprite = m_PLose;
+			m_EWL.sprite = m_EWin;
 		}
 
 		yield return new WaitForSeconds(10);
