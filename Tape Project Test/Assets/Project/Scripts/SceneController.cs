@@ -27,6 +27,11 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 	[HideInInspector]
 	public bool m_IsLoadingAnimation;
 
+	override protected void Awake()
+	{
+		base.Awake();
+		if (CheckInstance()) DontDestroyOnLoad(gameObject);
+	}
 	IEnumerator Start()
 	{
 
@@ -41,7 +46,7 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 		}
 #endif
 
-		m_Core = SceneManager.GetActiveScene();
+		//m_Core = SceneManager.GetActiveScene();
 		m_IsLoading = false;
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
@@ -70,7 +75,7 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 
 		yield return new WaitUntil(() => !m_IsLoadingAnimation);
 
-		SceneManager.SetActiveScene(m_Core);
+		SceneManager.SetActiveScene(SceneManager.GetSceneByName(m_LoadingSceneName));
 		int progresscount = m_LoadedScenes.Count + m_SceneListTable.m_Table[i].Scenes.Count;
 		int count = 0;
 
@@ -112,7 +117,7 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 
 		yield return new WaitForSeconds(0.2f);
 		yield return new WaitUntil(() => !m_IsLoadingAnimation);
-
+		SceneManager.SetActiveScene(SceneManager.GetSceneByName(m_SceneListTable.m_Table[i].Scenes[0]));
 		// ローディングシーンのアンロード
 		m_Async = SceneManager.UnloadSceneAsync(m_LoadingSceneName);
 		yield return new WaitUntil(() => m_Async.isDone);

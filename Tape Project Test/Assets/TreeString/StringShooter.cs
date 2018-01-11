@@ -16,10 +16,12 @@ public class StringShooter : MonoBehaviour
 	public int m_NetCostLimit = 3;
 	public LayerMask layerMask;
 	public Transform m_Cartridge;
+	public PlayModeData m_PlayModeData;
 	// Use this for initialization
 	void Start()
 	{
 		m_Strings = new List<StringUnit>();
+		m_MaxCost = m_PlayModeData.cost;
 	}
 
 	// Update is called once per frame

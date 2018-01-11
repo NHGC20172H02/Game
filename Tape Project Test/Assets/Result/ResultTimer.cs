@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,7 +31,7 @@ public class ResultTimer : MonoBehaviour {
 
         if (r_Count == 0 || Input.GetKeyDown(KeyCode.T))
         {
-            SceneManager.LoadScene("Title");
-        }
-    }
+			SceneController.Instance.ChangeScenes(0);
+		}
+	}
 }

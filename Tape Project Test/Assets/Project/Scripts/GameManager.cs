@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +17,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	[SerializeField]
 	private bool m_MultiSceneHotKeyActive = true;
+
+	override protected void Awake()
+	{
+		base.Awake();
+		if (CheckInstance()) DontDestroyOnLoad(gameObject);
+	}
 
 	// Use this for initialization
 	void Start () {

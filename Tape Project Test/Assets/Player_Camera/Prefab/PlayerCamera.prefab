@@ -2320,7 +2320,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -2382,6 +2382,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   m_Cartridge: {fileID: 0}
+  m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
 --- !u!114 &114222713561997336
 MonoBehaviour:
   m_ObjectHideFlags: 1
