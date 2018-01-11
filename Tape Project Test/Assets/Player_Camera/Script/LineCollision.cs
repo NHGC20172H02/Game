@@ -22,7 +22,7 @@ public class LineCollision : MonoBehaviour {
     {
         m_Parent.m_HitString = null;
         m_Parent.m_HitNet = null;
-        m_Parent.m_HitStringPoint = new ContactPoint();
+        //m_Parent.m_HitStringPoint = Vector3.zero;
     }
 
     void Update () {
