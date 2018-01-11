@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +7,12 @@ public class Button50m : MonoBehaviour {
     public void OnClick()
     {
         Debug.Log("Button50m click");
-        
-    }
+		SceneController.Instance.ChangeScenes(1);
 
-    // Use this for initialization
-    void Start ()
+	}
+
+	// Use this for initialization
+	void Start ()
     {
         gameObject.SetActive(false);
         
