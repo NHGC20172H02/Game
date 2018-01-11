@@ -67,6 +67,6 @@ public class ResultUI : MonoBehaviour
 
 		yield return new WaitForSeconds(10);
 
-		SceneManager.LoadScene("Title");
+		SceneController.Instance.ChangeScenes(0);
 	}
 }
