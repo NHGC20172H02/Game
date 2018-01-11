@@ -3838,6 +3838,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   m_Cartridge: {fileID: 0}
+  m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
 --- !u!124 &124259334213576862
 Behaviour:
   m_ObjectHideFlags: 1
