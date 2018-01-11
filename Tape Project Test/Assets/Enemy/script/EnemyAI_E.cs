@@ -62,6 +62,7 @@ public class EnemyAI_E : Character {
     public GameObject nearObj;
     GameObject nearObj2;
     GameObject nearObj3;
+    GameObject nearObj4;
     GameObject nearObj40;
     GameObject nearObj50;
     GameObject myTreeObj;
@@ -150,6 +151,10 @@ public class EnemyAI_E : Character {
         nearObj3 = GetComponent<NearObj>().m_nearObj3;
         if (nearObj3 == null) return;
 
+        //3番目のオブジェクト（木）
+        nearObj4 = GetComponent<NearObj>().m_nearObj4;
+        if (nearObj3 == null) return;
+
         //近くの自分の陣地ではない木
         nearObj40 = GetComponent<NearObj>().m_nearObj40;
 
@@ -214,6 +219,7 @@ public class EnemyAI_E : Character {
         {
             if (playerDist >= 0.1f && playerDist <= 1)
             {
+                if(isBodyblow)
                 m_StateProcessor.State = m_Fall;
             }
         }
@@ -634,10 +640,11 @@ public class EnemyAI_E : Character {
                 }
                 else if (nearObj50 == null)
                 {
-                    eyeObj = nearObj40;
-                    jump_start = this.transform.position;
-                    m_targetPos = GetUpPosition40();
-                    m_StateProcessor.State = m_Jumping;
+                    //eyeObj = nearObj40;
+                    //jump_start = this.transform.position;
+                    //m_targetPos = GetUpPosition40();
+                    //m_StateProcessor.State = m_Jumping;
+                    m_StateProcessor.State = m_SearchRandom;
                 }
             }
             else
@@ -650,8 +657,8 @@ public class EnemyAI_E : Character {
     /*** 木をランダムに検索 ***/
     private void SearchRandom()
     {
-        if (m_randomCount != 5 && m_randomCount != 4)
-            m_randomCount = Random.Range(4, 6);
+        if (m_randomCount != 5 && m_randomCount != 4 && m_randomCount != 6)
+            m_randomCount = Random.Range(4, 7);
 
         //乱数が５になったら
         if (m_randomCount == 5)
@@ -672,7 +679,15 @@ public class EnemyAI_E : Character {
 
             m_StateProcessor.State = m_Jumping;
         }
+        if (m_randomCount == 6)
+        {
+            eyeObj = nearObj3;
 
+            //3番目の近くの木に飛ぶ
+            m_targetPos = GetUpPosition4();
+
+            m_StateProcessor.State = m_Jumping;
+        }
     }
 
 
@@ -820,6 +835,7 @@ public class EnemyAI_E : Character {
         if (playerDist <= 5)
         {
             anim.SetBool("Attack", true);
+            SendingBodyBlow(playerObj);
         }
         else
         {
@@ -1062,7 +1078,7 @@ public class EnemyAI_E : Character {
 
                 m_StateProcessor.State = m_FallGroundMove;
             }
-            else if (hit.transform.tag == "Tree")
+            if (hit.transform.tag == "Tree")
             {
                 transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
                 transform.rotation = Quaternion.LookRotation(
@@ -1085,6 +1101,11 @@ public class EnemyAI_E : Character {
             col_number = col.gameObject.GetComponent<Tree>().m_SideNumber;
             reObj2 = col.collider.gameObject;
             nearObj = col.collider.gameObject;
+        }
+
+        if (col.gameObject.tag == "Ground")
+        {
+            ResetBodyblow();
         }
 
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
@@ -1146,7 +1167,12 @@ public class EnemyAI_E : Character {
     {
         return new Vector3(nearObj3.transform.position.x, Random.Range(4, 22), nearObj3.transform.position.z);
     }
-
+    //3番目の近くの木
+    public Vector3 GetUpPosition4()
+    {
+        return new Vector3(nearObj4.transform.position.x, Random.Range(4, 22), nearObj4.transform.position.z);
+    }
+    
 
     //誰の陣地でもない近くの木
     public Vector3 GetUpPosition00()
@@ -1188,7 +1214,7 @@ public class EnemyAI_E : Character {
     {
         return new Vector3(nearObj3.transform.position.x, nearObj3.transform.position.y, nearObj3.transform.position.z);
     }
-
+    
 
     //近くの木にジャンプするポジション
     public Vector3 GetPosition3()
