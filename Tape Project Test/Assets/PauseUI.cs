@@ -25,6 +25,8 @@ public class PauseUI : MonoBehaviour
         m_ReturnToTitle.SetActive(false);
 
         audioSource = gameObject.GetComponent<AudioSource>();
+
+        EventSystem.current.SetSelectedGameObject(m_ReturnToGame);
     }
 	
 	// Update is called once per frame

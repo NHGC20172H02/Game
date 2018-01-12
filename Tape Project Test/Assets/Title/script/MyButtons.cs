@@ -39,6 +39,7 @@ public class MyButtons : MonoBehaviour {
         m_ManualBackButton.SetActive(false);
         m_GameEnd.SetActive(false);
 
+
         titleCamera.SetActive(true);
         selectCamera.GetComponent<Camera>().enabled = false;
 
