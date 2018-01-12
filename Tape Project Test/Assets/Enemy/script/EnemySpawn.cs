@@ -2,56 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawn : MonoBehaviour {
+public class EnemySpawn : MonoBehaviour
+{
 
-    public GameObject Enemy_E;
-    public GameObject Enemy_N;
-    public GameObject Enemy_H;
+    GameObject Enemy_H;
+    public PlayModeData modeData;
 
-    GameObject m_EnemyAI;
-    GameObject spawnEnemy;
-
-    int s;
-    bool isStarted = false;
+    int cost;
+    public int Hard;
+    public int Normal;
+    public int Easy;
 
     // Use this for initialization
-    void Start () {
-        isStarted = true;
-        DontDestroyOnLoad(this);
-
-        m_EnemyAI = SpaenEnemy(s);
-
-        Instantiate(m_EnemyAI, this.transform.position, Quaternion.identity);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-    public GameObject SpaenEnemy(int spawn)
+    void Start()
     {
-        if(spawn == 1)
-        {
-            spawnEnemy = Enemy_H;
-        }
-        if(spawn == 2)
-        {
-            spawnEnemy = Enemy_N;
-        }
-        if(spawn == 3)
-        {
-            spawnEnemy = Enemy_E;
-        }
+        cost = modeData.cost;
 
-        return spawnEnemy;
+        Enemy_H = GameObject.FindGameObjectWithTag("Enemy");
     }
 
-    private void OnLevelWasLoaded(int level)
+    // Update is called once per frame
+    void Update()
     {
-        if (isStarted)
+        if (cost == Hard)
         {
-            Destroy(this.gameObject);
+            Destroy(Enemy_H.GetComponent<EnemyAI_E>());
+            Destroy(Enemy_H.GetComponent<EnemyAI_N>());
+        }
+        if (cost == Normal)
+        {
+            Destroy(Enemy_H.GetComponent<EnemyAI_E>());
+            Destroy(Enemy_H.GetComponent<EnemyAI4>());
+        }
+        if (cost == Easy)
+        {
+            Destroy(Enemy_H.GetComponent<EnemyAI_N>());
+            Destroy(Enemy_H.GetComponent<EnemyAI4>());
         }
     }
 }

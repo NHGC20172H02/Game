@@ -51,6 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 551b4e8495482734ea34e7c535cad40a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Enemy_E: {fileID: 1612515808486256, guid: 0ed2df4e21ad7334497b09a42c70fa1f, type: 2}
-  Enemy_N: {fileID: 1652453162922558, guid: a6c5a88ccd9d14a43a7821c774d29db8, type: 2}
   Enemy_H: {fileID: 1380246854979712, guid: f9a00322726bdb54c8bf812635834447, type: 2}
+  modeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
+  Hard: 25
+  Normal: 50
+  Easy: 100

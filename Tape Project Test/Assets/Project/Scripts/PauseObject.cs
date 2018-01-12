@@ -15,7 +15,10 @@ public class PauseObject : MonoBehaviour {
 	{
 		foreach (var item in m_Scripts)
 		{
-			item.enabled = pause;
+            if (item != null)
+            {
+                item.enabled = pause;
+            }
 		}
 		foreach (var item in m_Animator)
 		{
