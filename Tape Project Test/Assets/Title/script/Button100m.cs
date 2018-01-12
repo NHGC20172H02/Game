@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,6 +25,7 @@ public class Button100m : MonoBehaviour {
 
     public void OnClick()
     {
+		SceneController.Instance.ChangeScenes(1);
 
-    }
+	}
 }

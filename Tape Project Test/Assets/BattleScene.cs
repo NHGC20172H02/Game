@@ -37,7 +37,7 @@ public class BattleScene : MonoBehaviour {
 
 		yield return new WaitForSeconds(2.0f);
 
-		SceneManager.LoadScene("Result", LoadSceneMode.Additive);
+		SceneController.Instance.AddScene("Result");
 		m_UIAnimator.SetTrigger("Finish");
 	}
 

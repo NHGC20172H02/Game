@@ -6,7 +6,7 @@ using UnityEngine;
 public class PredictionLine : MonoBehaviour {
 
     public LineRenderer m_LineRenderer;
-    public ContactPoint m_HitStringPoint;
+    public Vector3 m_HitStringPoint;
     public StringUnit m_HitString;
     public Net m_HitNet;
     public bool m_IsString = false;
@@ -23,7 +23,7 @@ public class PredictionLine : MonoBehaviour {
 
     void Start () {
         m_Collisions = new List<GameObject>();
-        for(int i = 0; i < 9; i++)
+        for(int i = 0; i < 10; i++)
         {
             m_Collisions.Add(Instantiate(m_Collision, transform));
         }
@@ -96,13 +96,13 @@ public class PredictionLine : MonoBehaviour {
         {
             len += 0.1f;
             posList.Add(BezierCurve(len));
-            if (i > 9) continue;
+            if (i > 9 || i < 2) continue;
             //予測線のCollision設定
-            Vector3 dir = (posList[i - 1] - posList[i]).normalized;
+            Vector3 dir = (posList[i] - posList[i - 1]).normalized;
             float dis = Vector3.Distance(posList[i], posList[i - 1]);
-            m_Collisions[i - 1].transform.position = posList[i] - dir * dis / 2;
-            m_Collisions[i - 1].transform.rotation = Quaternion.LookRotation(dir);
-            m_Collisions[i - 1].GetComponent<BoxCollider>().size = new Vector3(1f, 1f, dis);
+            m_Collisions[i].transform.position = posList[i] - dir * dis / 2;
+            m_Collisions[i].transform.rotation = Quaternion.LookRotation(dir);
+            m_Collisions[i].GetComponent<BoxCollider>().size = new Vector3(0.1f, 0.1f, dis);
         }
 
         m_LineRenderer.positionCount = posList.Count;
@@ -120,14 +120,14 @@ public class PredictionLine : MonoBehaviour {
                 m_IsString = false;
                 m_HitNumber = m_HitNet.m_SideNumber;
             }
-            else
+            else if(collision.transform.tag == "String")
             {
                 m_HitString = collision.transform.GetComponent<StringUnit>();
                 m_IsString = true;
                 m_HitNumber = m_HitString.m_SideNumber;
             }
             if (m_HitNumber == 1) return;
-            m_HitStringPoint = point;
+            m_HitStringPoint = point.point;
         }
     }
 }

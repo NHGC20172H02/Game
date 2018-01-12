@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,8 +10,8 @@ public class Button25m : MonoBehaviour {
         //ログに表示
         Debug.Log("Button25m click");
 
-        //シーン移動
-        SceneManager.LoadScene("Scene");
+		//シーン移動
+		SceneController.Instance.ChangeScenes(1);
     }
 
     // Use this for initialization

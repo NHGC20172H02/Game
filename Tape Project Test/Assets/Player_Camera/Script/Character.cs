@@ -11,6 +11,10 @@ public class Character : MonoBehaviour {
     protected IEnumerator receiveBodyblow = null;
     static float BodyblowForce = 5f;            //体当たりの威力
 
+    /*** ジャンプパラメータ ***/
+    float targetDistance, V0, Vx, Vy;           //距離、初速度、速度
+    Vector3 forward;
+
     protected virtual void Start () {
 		
 	}
@@ -19,20 +23,35 @@ public class Character : MonoBehaviour {
 		
 	}
 
+    protected void JumpCalculation(Vector3 start, Vector3 end, float angle)
+    {
+        targetDistance = Vector3.Distance(start, end);
+
+        //初速度
+        V0 = targetDistance / (Mathf.Sin(2 * angle * Mathf.Deg2Rad) / 9.8f);
+        //速度
+        Vx = Mathf.Sqrt(V0) * Mathf.Cos(angle * Mathf.Deg2Rad);
+        Vy = Mathf.Sqrt(V0) * Mathf.Sin(angle * Mathf.Deg2Rad);
+
+        flightDuration = targetDistance / Vx;
+
+        forward = (end - start).normalized;
+    }
+
     //ジャンプ（start : 始点、end : 終点、normal : 着地点の法線ベクトル、angle : 射角）
     protected bool Projection(Vector3 start, Vector3 end, Vector3 normal, float angle)
     {
-        float target_Distance = Vector3.Distance(start, end);
+        targetDistance = Vector3.Distance(start, end);
 
         //初速度
-        float V0 = target_Distance / (Mathf.Sin(2 * angle * Mathf.Deg2Rad) / 9.8f);
+        V0 = targetDistance / (Mathf.Sin(2 * angle * Mathf.Deg2Rad) / 9.8f);
         //速度
-        float Vx = Mathf.Sqrt(V0) * Mathf.Cos(angle * Mathf.Deg2Rad);
-        float Vy = Mathf.Sqrt(V0) * Mathf.Sin(angle * Mathf.Deg2Rad);
+        Vx = Mathf.Sqrt(V0) * Mathf.Cos(angle * Mathf.Deg2Rad);
+        Vy = Mathf.Sqrt(V0) * Mathf.Sin(angle * Mathf.Deg2Rad);
 
-        flightDuration = target_Distance / Vx;
+        flightDuration = targetDistance / Vx;
 
-        Vector3 forward = (end - start).normalized;
+        forward = (end - start).normalized;
         var z = forward * Vx * Time.deltaTime;
         transform.position += new Vector3(0, (Vy + (Physics.gravity.y * elapse_time)) * Time.deltaTime, 0) + z;
 
@@ -71,8 +90,8 @@ public class Character : MonoBehaviour {
         }
         else if (target.tag == "Enemy")
         {
-            //character = target.GetComponent<EnemyAI40>();
-            character = target.GetComponent<BodyblowTestEnemy>();
+            character = target.GetComponent<EnemyAI40>();
+            //character = target.GetComponent<BodyblowTestEnemy>();
         }
 
         if (character == null) return;
