@@ -204,11 +204,16 @@ public class SceneUnitSet{
 			AssetDatabase.Refresh();
 		}
 
+		AssetDatabase.StartAssetEditing();
 		_sceneListTable.m_Table.Clear();
 
 		for (int i = 0; i < UnitNum; i++)
 		{
 			_sceneListTable.m_Table.Add(new SceneList(_sceneUnitList[i].GetSceneName()));
 		}
+
+		AssetDatabase.StopAssetEditing();
+		EditorUtility.SetDirty(_sceneListTable);
+		AssetDatabase.SaveAssets();
 	}
 }

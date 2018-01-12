@@ -11,4 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b34d07207dae3845882ab682c3486b4, type: 3}
   m_Name: SceneListTable
   m_EditorClassIdentifier: 
-  m_Table: []
+  m_Table:
+  - Scenes:
+    - Title
+  - Scenes:
+    - Scene

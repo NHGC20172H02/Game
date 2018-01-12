@@ -29,6 +29,11 @@ public class ResultUI : MonoBehaviour
 	public Sprite m_PLose;
 	public Sprite m_ELose;
 
+	public AudioSource m_BGM;
+	public AudioSource m_SE;
+	public AudioClip m_WinBGM;
+	public AudioClip m_LoseBGM;
+
 	// Use this for initialization
 	IEnumerator Start()
 	{
@@ -54,10 +59,12 @@ public class ResultUI : MonoBehaviour
 		m_ETreeCount.text = TreeCount.ToString();
 		m_EScore.text = EScore.ToString();
 
+		m_BGM.clip = m_LoseBGM;
 		if (PScore > EScore)
 		{
 			m_PWL.sprite = m_PWin;
 			m_EWL.sprite = m_ELose;
+			m_BGM.clip = m_WinBGM;
 		}
 		else if (PScore < EScore)
 		{
@@ -68,5 +75,10 @@ public class ResultUI : MonoBehaviour
 		yield return new WaitForSeconds(10);
 
 		SceneController.Instance.ChangeScenes(0);
+	}
+
+	public void PlaySE()
+	{
+		m_SE.Play();
 	}
 }
