@@ -8,7 +8,8 @@ public class TerritoryManager : SingletonMonoBehaviour<TerritoryManager> {
 	public List<StringUnit> m_Strings = new List<StringUnit>();
 	public List<Net> m_Nets = new List<Net>();
 
-	void Start () {
+	override protected void Awake(){
+		base.Awake();
 		Initialize();
 	}
 

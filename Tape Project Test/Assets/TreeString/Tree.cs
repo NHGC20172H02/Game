@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tree : Connecter {
+	public Renderer m_MapRenderer;
+	public Material[] m_MapMaterials;
 	private void Start()
 	{
 		TerritoryManager.Instance.m_Trees.Add(this);
@@ -23,6 +25,10 @@ public class Tree : Connecter {
 			}
 		}
 		SetSide(sideNumber);
+		if(m_MapRenderer != null)
+		{
+			m_MapRenderer.material = m_MapMaterials[sideNumber];
+		}
 	}
 
 }
