@@ -104,7 +104,7 @@ public class EnemyAI_E : Character {
 
     FallGroundMove m_FallGroundMove = new FallGroundMove();
     Fall m_Fall = new Fall();
-    Falling m_Falling = new Falling();
+    //Falling m_Falling = new Falling();
 
     // Use this for initialization
     protected override void Start()
@@ -132,7 +132,7 @@ public class EnemyAI_E : Character {
 
         m_FallGroundMove.exeDelegate = FallGroundMove;
         m_Fall.exeDelegate = Fall;
-        m_Falling.exeDelegate = Falling;
+        //m_Falling.exeDelegate = Falling;
 
         m_StateProcessor.State = m_GroundMove;
     }
@@ -201,6 +201,7 @@ public class EnemyAI_E : Character {
         if (playerObj != null)
         {
             playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
+            player_onTree = true;
             //player_onTree = playerObj.GetComponent<Player>().IsOnTree();
         }
         //近くのネットとの距離
@@ -427,13 +428,13 @@ public class EnemyAI_E : Character {
             wait_time += Time.deltaTime * 1;
             if (wait_time >= thought_Time)
             {
-                if (player_onTree == true)
+                if (player_onTree == playerObj.GetComponent<Player>().IsOnTree())
                 {
                     if (playerDist <= player_Detection * 2 / 3)  //設定距離の以下の距離だったら
                     {
                         if (m_randomCount == 0)
-                            m_randomCount = Random.Range(4, 8);
-                        if (m_randomCount == 5)
+                            m_randomCount = Random.Range(1, 5);
+                        if (m_randomCount == 4)
                         {
                             m_randomCount = 0;
                             m_targetPos = GetPlayerPosition();
@@ -449,7 +450,7 @@ public class EnemyAI_E : Character {
                     else
                     {
                         if (m_randomCount == 0)
-                            m_randomCount = Random.Range(3, 7);
+                            m_randomCount = Random.Range(1, 7);
                         if (m_randomCount == 5)
                         {
                             m_randomCount = 0;
@@ -1033,11 +1034,74 @@ public class EnemyAI_E : Character {
 
 
     //落下
+    //private void Fall()
+    //{
+    //    AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
+
+    //    anim.SetBool("trap", true);
+
+    //    int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+    //    int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
+
+    //    //落下先情報取得（木を優先）
+    //    Ray ray = new Ray(transform.position, -Vector3.up);
+    //    if (!Physics.Raycast(ray, out jump_target, 100f, treeLayer))
+    //        Physics.Raycast(ray, out jump_target, 100f, groundLayer);
+    //    jump_start = transform.position;
+    //    jump_end = jump_target.point;
+
+    //    m_StateProcessor.State = m_Falling;
+    //    //m_StateProcessor.State = m_FallingMove;
+    //}
+    //落下中
+    //private void Falling()
+    //{
+    //    anim.SetBool("dead", true);
+
+    //    float dis = Vector3.Distance(jump_start, jump_end);
+    //    //落下スピード
+    //    Vector3 fallSpeed = Physics.gravity.y * Vector3.up;
+    //    transform.Translate(fallSpeed * Time.deltaTime, Space.World);
+    //    Vector3 forward = Vector3.Cross(transform.right, jump_target.normal);
+    //    transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.1f), jump_target.normal);
+
+    //    RaycastHit hit;
+    //    Ray ray2 = new Ray(transform.position, -transform.up);
+    //    if (Physics.Raycast(ray2, out hit, 0.5f))
+    //    {
+    //        if (hit.transform.tag == "Ground")
+    //        {
+    //            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+    //            transform.rotation = Quaternion.LookRotation(
+    //                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+    //            anim.SetBool("jump", false);
+
+    //            m_StateProcessor.State = m_FallGroundMove;
+    //        }
+    //        if (hit.transform.tag == "Tree")
+    //        {
+    //            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+    //            transform.rotation = Quaternion.LookRotation(
+    //                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+    //            anim.SetBool("jump", false);
+
+    //            m_StateProcessor.State = m_FallGroundMove;
+    //        }
+
+    //    }
+    //}
+
     private void Fall()
     {
         AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
 
         anim.SetBool("trap", true);
+        if (animInfo.normalizedTime < 1.0f)
+        {
+            anim.SetBool("dead", true);
+        }
 
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
@@ -1046,18 +1110,7 @@ public class EnemyAI_E : Character {
         Ray ray = new Ray(transform.position, -Vector3.up);
         if (!Physics.Raycast(ray, out jump_target, 100f, treeLayer))
             Physics.Raycast(ray, out jump_target, 100f, groundLayer);
-        jump_start = transform.position;
-        jump_end = jump_target.point;
 
-        m_StateProcessor.State = m_Falling;
-        //m_StateProcessor.State = m_FallingMove;
-    }
-    //落下中
-    private void Falling()
-    {
-        anim.SetBool("dead", true);
-
-        float dis = Vector3.Distance(jump_start, jump_end);
         //落下スピード
         Vector3 fallSpeed = Physics.gravity.y * Vector3.up;
         transform.Translate(fallSpeed * Time.deltaTime, Space.World);
@@ -1066,30 +1119,17 @@ public class EnemyAI_E : Character {
 
         RaycastHit hit;
         Ray ray2 = new Ray(transform.position, -transform.up);
-        if (Physics.Raycast(ray2, out hit, 0.5f))
+        if (Physics.Raycast(ray2, out hit, 0.5f,groundLayer))
         {
-            if (hit.transform.tag == "Ground")
-            {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
 
-                anim.SetBool("jump", false);
+            anim.SetBool("jump", false);
 
-                m_StateProcessor.State = m_FallGroundMove;
-            }
-            if (hit.transform.tag == "Tree")
-            {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-
-                anim.SetBool("jump", false);
-
-                m_StateProcessor.State = m_FallGroundMove;
-            }
-
+            m_StateProcessor.State = m_FallGroundMove;
         }
+        //m_StateProcessor.State = m_FallingMove;
     }
 
     private void OnCollisionEnter(Collision col)
