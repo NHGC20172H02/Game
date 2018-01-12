@@ -5,6 +5,7 @@ using UnityEngine;
 public class ReturnToGame : MonoBehaviour
 {
     public GameObject m_PausePanel;
+    public GameObject m_PauseImage;
     public GameObject m_PauseBackGround;
     public GameObject m_ReturnToGame;
     public GameObject m_ReturnToTitle;
@@ -24,6 +25,7 @@ public class ReturnToGame : MonoBehaviour
     public void OnClick()
     {
         m_PausePanel.SetActive(false);
+        m_PauseImage.SetActive(false);
         m_PauseBackGround.SetActive(false);
         m_ReturnToGame.SetActive(false);
         m_ReturnToTitle.SetActive(false);

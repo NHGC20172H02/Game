@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameStart : MonoBehaviour {
 
@@ -21,8 +22,11 @@ public class GameStart : MonoBehaviour {
     public GameObject panel;
 
     public GameObject select;
-    public GameObject select2;
-    public GameObject select3;
+    public GameObject select4;
+    public GameObject select5;
+    public GameObject select6;
+    public GameObject select7;
+
 
     // Use this for initialization
     void Start ()
@@ -39,18 +43,24 @@ public class GameStart : MonoBehaviour {
         panel.SetActive(true);
 
         select = gameObject.GetComponent<MyButtons>().m_Select;
-        select2 = gameObject.GetComponent<MyButtons>().m_Select2;
-        select3 = gameObject.GetComponent<MyButtons>().m_Select3;
+        select4 = gameObject.GetComponent<MyButtons>().m_Select4;
+        select5 = gameObject.GetComponent<MyButtons>().m_Select5;
+        select6 = gameObject.GetComponent<MyButtons>().m_Select6;
+        select7 = gameObject.GetComponent<MyButtons>().m_Select7;
+
+        
     }
-	
+
 	// Update is called once per frame
 	void Update ()
     {
-		
-	}
+       
+
+    }
 
     public void OnClick()
     {
+
         m_25mButton.SetActive(true);
         m_50mButton.SetActive(true);
         m_100mButton.SetActive(true);
@@ -71,7 +81,11 @@ public class GameStart : MonoBehaviour {
         m_TitleCamera.SetActive(false);
 
         panel.SetActive(false);
-        select2.SetActive(false);
-        select3.SetActive(true);
+        select4.SetActive(false);
+        select5.SetActive(false);
+        select6.SetActive(true);
+        select7.SetActive(true);
+
+        
     }
 }

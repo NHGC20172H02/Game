@@ -9,13 +9,16 @@ public class PressAnyKeyAnimation : MonoBehaviour {
 
     float animationTimer = 0.0f;
 
-	// Use this for initialization
-	void Start ()
+    private AudioSource selectSource;
+
+    // Use this for initialization
+    void Start ()
     {
         animator_ = GetComponent<Animator>();
 
         animator_.SetBool("PressButtonAnimation", false);
-        
+
+        selectSource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -32,8 +35,9 @@ public class PressAnyKeyAnimation : MonoBehaviour {
                 animator_.SetBool("PressButtonAnimation", false);
                 animationTimer = 0;
             }
-        }
 
+            selectSource.Play();
+        }
 
     }
 }

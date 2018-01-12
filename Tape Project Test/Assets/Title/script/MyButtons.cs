@@ -9,32 +9,46 @@ public class MyButtons : MonoBehaviour {
 
     public GameObject m_GameStart;
     public GameObject m_Manual;
+    public GameObject m_ManualFont;
+    public GameObject m_ManualBackButton;
     public GameObject m_GameEnd;
 
     public GameObject titleCamera;
     public GameObject selectCamera;
 
     public GameObject m_Select;
-    public GameObject m_Select2;
-    public GameObject m_Select3;
+    public GameObject m_Select4;
+    public GameObject m_Select5;
+    public GameObject m_Select6;
+    public GameObject m_Select7;
 
     public GameObject s_Text;
 
     public Animator animstop;
+
+    public AudioSource audioSource;
+
+    GameObject lastSelectedGameObject = null;
 
     // Use this for initialization
     void Start ()
     {
         m_GameStart.SetActive(false);
         m_Manual.SetActive(false);
+        m_ManualFont.SetActive(false);
+        m_ManualBackButton.SetActive(false);
         m_GameEnd.SetActive(false);
 
         titleCamera.SetActive(true);
         selectCamera.GetComponent<Camera>().enabled = false;
 
         m_Select.SetActive(false);
-        m_Select2.SetActive(true);
-        m_Select3.SetActive(false);
+        m_Select4.SetActive(true);
+        m_Select5.SetActive(true);
+        m_Select6.SetActive(false);
+        m_Select7.SetActive(false);
+
+        audioSource = gameObject.GetComponent<AudioSource>();
     }
 	
 	// Update is called once per frame
@@ -54,9 +68,19 @@ public class MyButtons : MonoBehaviour {
                     m_GameEnd.SetActive(true);
 
                     s_Text.SetActive(false);
+
+                    UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(m_GameStart);
                 }
             }
         }
 
-	}
+        GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
+
+        if (currentSelected != lastSelectedGameObject && lastSelectedGameObject != null)
+        {
+            audioSource.Play();
+        }
+        lastSelectedGameObject = currentSelected;
+
+    }
 }
