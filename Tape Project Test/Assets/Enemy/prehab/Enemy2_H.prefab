@@ -647,6 +647,8 @@ GameObject:
   - component: {fileID: 95356331639727914}
   - component: {fileID: 114533001950309022}
   - component: {fileID: 114624242110974726}
+  - component: {fileID: 114448058531329546}
+  - component: {fileID: 114400748612540686}
   - component: {fileID: 114939046867580062}
   m_Layer: 14
   m_Name: Enemy2_H
@@ -3809,6 +3811,44 @@ MonoBehaviour:
     m_Bits: 512
   m_Cartridge: {fileID: 0}
   m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
+--- !u!114 &114400748612540686
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1380246854979712}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8169497f3bec3347bdd5064b22a1e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_speed: 3
+  m_Shooter: {fileID: 114130872222264282}
+  ground_detection: 30
+  tree_Detection: 150
+  player_Detection: 100
+  thought_Time: 4
+  predominance_Thought_Time: 7
+--- !u!114 &114448058531329546
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1380246854979712}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddccfb74e76e4004ab93a94f5fd4cd44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_speed: 3
+  m_Shooter: {fileID: 114130872222264282}
+  ground_detection: 30
+  tree_Detection: 150
+  player_Detection: 100
+  thought_Time: 4
+  latterHalf_Thought_Time: 2
+  predominance_Thought_Time: 5
+  latter_half_time: 45
 --- !u!114 &114533001950309022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3826,7 +3866,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1380246854979712}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69a24ea6c2a4c974e9db36bc2e5b0dc8, type: 3}
   m_Name: 
@@ -3853,6 +3893,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Scripts:
   - {fileID: 114624242110974726}
+  - {fileID: 114448058531329546}
+  - {fileID: 114400748612540686}
   m_Animator:
   - {fileID: 95356331639727914}
 --- !u!124 &124830650510548344

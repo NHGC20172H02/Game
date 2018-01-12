@@ -5905,6 +5905,48 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 151509055}
   m_Mesh: {fileID: 4300010, guid: 06b1e0906b46d534086354cea49f33c0, type: 3}
+--- !u!1001 &155255493
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -23.054
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454347424066134, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 6a63ba3e040c39d4a8978529a9c50c70, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &156190124
 GameObject:
   m_ObjectHideFlags: 0
@@ -59854,6 +59896,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   m_Cartridge: {fileID: 0}
+  m_PlayModeData: {fileID: 0}
 --- !u!4 &1482571915
 Transform:
   m_ObjectHideFlags: 0
@@ -66969,7 +67012,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1652453162922558, guid: a6c5a88ccd9d14a43a7821c774d29db8, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1489221845314502, guid: a6c5a88ccd9d14a43a7821c774d29db8, type: 2}
       propertyPath: m_IsActive
