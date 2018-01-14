@@ -35,16 +35,16 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 	IEnumerator Start()
 	{
 
-#if UNITY_EDITOR
-#else
-		foreach (var scene in m_SceneListTable.m_Table[0].Scenes)
-		{
-			if (scene != m_CoreSceneName)
-			{
-				yield return SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
-			}
-		}
-#endif
+//#if UNITY_EDITOR
+//#else
+//		foreach (var scene in m_SceneListTable.m_Table[0].Scenes)
+//		{
+//			if (scene != m_CoreSceneName)
+//			{
+//				yield return SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
+//			}
+//		}
+//#endif
 
 		//m_Core = SceneManager.GetActiveScene();
 		m_IsLoading = false;
@@ -52,7 +52,7 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 		{
 			m_LoadedScenes.Add(SceneManager.GetSceneAt(i).name);
 		}
-		return null;
+		yield return null;
 	}
 
 	// マルチシーン切り替え
