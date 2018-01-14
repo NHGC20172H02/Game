@@ -34,8 +34,10 @@ public class ResultUI : MonoBehaviour
 	public AudioClip m_WinBGM;
 	public AudioClip m_LoseBGM;
 
+	public Animator m_Animator;
+
 	// Use this for initialization
-	IEnumerator Start()
+	void Start()
 	{
 		TerritoryManager territoryManager = TerritoryManager.Instance;
 
@@ -71,12 +73,15 @@ public class ResultUI : MonoBehaviour
 			m_PWL.sprite = m_PLose;
 			m_EWL.sprite = m_EWin;
 		}
-
-		yield return new WaitForSeconds(10);
-
-		SceneController.Instance.ChangeScenes(0);
 	}
-
+	private void Update()
+	{
+		if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Wait Animation") && Input.anyKeyDown)
+		{
+			m_Animator.SetTrigger("Finish");
+			SceneController.Instance.ChangeScenes(0);
+		}
+	}
 	public void PlaySE()
 	{
 		m_SE.Play();
