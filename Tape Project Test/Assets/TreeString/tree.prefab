@@ -192,3 +192,5 @@ MonoBehaviour:
   - {fileID: 2100000, guid: e4a91b925243ae1479e444e50326135a, type: 2}
   - {fileID: 2100000, guid: c5e5ff7acbcc58c4a96f7edd3bba195b, type: 2}
   - {fileID: 2100000, guid: 0d41f7390d265ce4097b493dcd6af420, type: 2}
+  m_Log: {fileID: 0}
+  m_LogText: {fileID: 1359887382232236, guid: e25066c4dfbc9ff42bca5322fe5b6958, type: 2}

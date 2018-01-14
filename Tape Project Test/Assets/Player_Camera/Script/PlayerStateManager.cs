@@ -8,15 +8,7 @@ public class PlayerStateManager : MonoBehaviour {
     private static PlayerStateManager stateManager;
     public static PlayerStateManager GetInstance
     {
-        get
-        {
-            if (stateManager == null)
-            {
-                GameObject g = new GameObject("PlayerStateManager");
-                stateManager = g.AddComponent<PlayerStateManager>();
-            }
-            return stateManager;
-        }
+        get { return stateManager; }
     }
 
     private StateProcessor m_stateProcessor = new StateProcessor();
