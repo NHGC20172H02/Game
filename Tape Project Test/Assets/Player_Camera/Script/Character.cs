@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
+    [Header("ジャンプの速さ")]
+    [Range(0.5f, 2.0f)]
+    public float m_JumpSpeed = 1f;
     protected float elapse_time = 0;            //ジャンプの経過時間
     protected float flightDuration = 0;         //ジャンプの滞空時間
     protected bool isBodyblow = false;          //体当たりを食らったか
@@ -23,17 +26,18 @@ public class Character : MonoBehaviour {
 		
 	}
 
+    //ジャンプの瞬間に呼び出す
     protected void JumpCalculation(Vector3 start, Vector3 end, float angle)
     {
         targetDistance = Vector3.Distance(start, end);
 
         //初速度
-        V0 = targetDistance / (Mathf.Sin(2 * angle * Mathf.Deg2Rad) / 9.8f);
-        //速度
+        V0 = targetDistance / (Mathf.Sin(2 * angle * Mathf.Deg2Rad) / 9.8f) * m_JumpSpeed;
+        //移動量
         Vx = Mathf.Sqrt(V0) * Mathf.Cos(angle * Mathf.Deg2Rad);
         Vy = Mathf.Sqrt(V0) * Mathf.Sin(angle * Mathf.Deg2Rad);
 
-        flightDuration = targetDistance / Vx;
+        flightDuration = targetDistance / Vx / m_JumpSpeed;
 
         forward = (end - start).normalized;
     }
@@ -52,8 +56,9 @@ public class Character : MonoBehaviour {
         flightDuration = targetDistance / Vx;
 
         forward = (end - start).normalized;
+        var y = new Vector3(0, (Vy + (Physics.gravity.y * elapse_time * m_JumpSpeed)) * Time.deltaTime, 0);
         var z = forward * Vx * Time.deltaTime;
-        transform.position += new Vector3(0, (Vy + (Physics.gravity.y * elapse_time)) * Time.deltaTime, 0) + z;
+        transform.position += y + z;
 
         elapse_time += Time.deltaTime;
 
@@ -61,8 +66,12 @@ public class Character : MonoBehaviour {
         if(transform.tag == "Player")
         {
             if (elapse_time > 0.3f)
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, normal), 0.5f), normal);
+            {
+                //transform.rotation = Quaternion.LookRotation(
+                //    Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, normal), 0.2f), normal);
+                transform.rotation
+                    = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, normal), 0.2f), normal);
+            }
         }
         else
         {
@@ -70,7 +79,7 @@ public class Character : MonoBehaviour {
                 = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, normal), 0.2f), normal);
         }
         //滞空時間を経過時間が上回ったら着地
-        if (elapse_time > flightDuration)
+        if (elapse_time / m_JumpSpeed > flightDuration)
         {
             elapse_time = 0;
             flightDuration = 0;
@@ -121,10 +130,8 @@ public class Character : MonoBehaviour {
 
     protected void ResetBodyblow()
     {
-        /*** 体当たりを食らって着地したときに呼び出すやつ ***/
         StopCoroutine(receiveBodyblow);
         gravity.y = 0;
         isBodyblow = false;
-        /****************************************************/
     }
 }

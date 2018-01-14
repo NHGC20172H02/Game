@@ -60,7 +60,7 @@ public class Player : Character
     protected override void Update()
     {
         transform.position = MoveRange(transform.position, new Vector3(MIN, 0, MIN), new Vector3(MAX, 50f, MAX));
-        if (isBodyblow)
+        if (isBodyblow && m_StateManager.StateProcassor.State != m_StateManager.JumpTp)
         {
             m_StateManager.StateProcassor.State = m_StateManager.Falling;
         }
@@ -220,7 +220,7 @@ public class Player : Character
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
             return;
         }
-        float dif = Mathf.Abs(flightDuration - elapse_time);
+        float dif = Mathf.Abs(flightDuration - elapse_time / m_JumpSpeed);
         if (dif < 0.3f && !isLanding)
         {
             m_Animator.SetTrigger("Landing");
@@ -345,13 +345,11 @@ public class Player : Character
             m_failureTime += Time.deltaTime;
             return;
         }
-        Ray ray = new Ray(transform.position, -Vector3.up);
+        Ray ray = new Ray(transform.position + Vector3.up, Vector3.down);
         if (!Physics.Raycast(ray, out m_hitinfo, 100f, m_TreeLayer))
             Physics.Raycast(ray, out m_hitinfo, 100f, m_GroundLayer);
-        float dis = Vector3.Distance(move_start, move_end);
         //落下スピード
         gravity.y += Physics.gravity.y * Time.deltaTime;
-        float fallTime = Mathf.Abs(dis / gravity.y);
         transform.Translate(gravity * Time.deltaTime, Space.World);
         Vector3 forward = Vector3.Cross(m_Camera.right, m_hitinfo.normal);
         transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.4f), m_hitinfo.normal);
@@ -408,7 +406,7 @@ public class Player : Character
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
             return;
         }
-        float dif = Mathf.Abs(flightDuration - elapse_time);
+        float dif = Mathf.Abs(flightDuration - elapse_time / flightDuration);
         if (dif < 0.3f)
         {
             m_Animator.SetTrigger("Landing");
@@ -561,47 +559,30 @@ public class Player : Character
     private void IntersectString(int[] layerMask)
     {
         float shortest = 100000f;
-        Transform result = null;
-        for(int i = 0; i < layerMask.Length; i++)
+        RaycastHit result = new RaycastHit();
+        for (int i = 0; i < layerMask.Length; i++)
         {
-            if (i > 0 && result != null) continue;
-            foreach (Collider col in Physics.OverlapSphere(transform.position, 0.5f, layerMask[i]))
+            foreach(RaycastHit hit in Physics.SphereCastAll(transform.position + Vector3.up, 0.3f, Vector3.down, 1f, layerMask[i]))
             {
-                if(col.tag == "Net")
-                {
-                    Net n = col.GetComponent<Net>();
-                    StringUnit s = n.m_StartConnecter as StringUnit;
-                    Comparision(s.m_PointA, n.transform, ref result, ref shortest);
-                    Comparision(s.m_PointB, n.transform, ref result, ref shortest);
-                    s = col.GetComponent<Net>().m_EndConnecter as StringUnit;
-                    Comparision(s.m_PointA, n.transform, ref result, ref shortest);
-                    Comparision(s.m_PointB, n.transform, ref result, ref shortest);
-                }
-                else if(col.tag == "String")
-                {
-                    StringUnit s = col.GetComponent<StringUnit>();
-                    Comparision(s.m_PointA, s.transform, ref result, ref shortest);
-                    Comparision(s.m_PointB, s.transform, ref result, ref shortest);
-                }
+                Comparision(hit.point, hit, ref result, ref shortest);
             }
         }
-        if (result == null) return;
-        if(result.tag == "String")
+        if (result.collider == null) return;
+        m_hitinfo = result;
+        if (result.collider.tag == "Net")
         {
-            Physics.SphereCast(result.position + Vector3.up, 0.3f, Vector3.down, out m_hitinfo, 1f, m_StringLayer);
-            m_StateManager.StateProcassor.State = m_StateManager.StringTp;
-        }
-        else
-        {
-            Physics.SphereCast(result.position + Vector3.up, 0.3f, Vector3.down, out m_hitinfo, 1f, m_NetLayer);
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
+        }
+        else if(result.collider.tag == "String")
+        {
+            m_StateManager.StateProcassor.State = m_StateManager.StringTp;
         }
     }
     //一番近い位置を求める
-    private void Comparision(Vector3 pos, Transform target, ref Transform result, ref float shortest)
+    private void Comparision(Vector3 pos, RaycastHit target, ref RaycastHit result, ref float shortest)
     {
-        if (m_hitinfo.collider.gameObject == target.gameObject) return;
-        if (target.tag == "String" || target.tag == "Net")
+        if (m_hitinfo.collider == target.collider) return;
+        if (target.collider.tag == "String" || target.collider.tag == "Net")
         {
             float distance = Vector3.Distance(pos, transform.position);
             if (shortest > distance)
@@ -646,7 +627,7 @@ public class Player : Character
         if (other.transform.tag == "Ground" || other.transform.tag == "Tree")
         {
             if (m_hitinfo.transform.tag != other.transform.tag) return;
-            if(receiveBodyblow != null)
+            if (receiveBodyblow != null)
             {
                 StopCoroutine(receiveBodyblow);
                 receiveBodyblow = null;
@@ -662,4 +643,29 @@ public class Player : Character
                 m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
         }
     }
+
+    //void OnCollisionEnter(Collision collision)
+    //{
+    //    //地面着地
+    //    if (m_StateManager.StateProcassor.State != m_StateManager.Falling) return;
+    //    if (collision.transform.tag == "Ground" || collision.transform.tag == "Tree")
+    //    {
+    //        if (m_hitinfo.transform.tag != collision.transform.tag) return;
+    //        if (receiveBodyblow != null)
+    //        {
+    //            StopCoroutine(receiveBodyblow);
+    //            receiveBodyblow = null;
+    //        }
+    //        isBodyblow = false;
+    //        gravity = Vector3.zero;
+    //        elapse_time = 0;
+    //        m_failureTime = 0;
+    //        m_Animator.SetTrigger("Landing");
+    //        if (collision.transform.tag == "Ground")
+    //            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
+    //        else
+    //            m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
+    //    }
+    //}
+
 }
