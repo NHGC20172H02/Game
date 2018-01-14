@@ -5,6 +5,8 @@ using UnityEngine;
 public class Tree : Connecter {
 	public Renderer m_MapRenderer;
 	public Material[] m_MapMaterials;
+	public Transform m_Log;
+	public GameObject m_LogText;
 	private void Start()
 	{
 		TerritoryManager.Instance.m_Trees.Add(this);
@@ -24,10 +26,16 @@ public class Tree : Connecter {
 				sideNumber = i;
 			}
 		}
+		if (m_SideNumber == sideNumber) return;
+
 		SetSide(sideNumber);
 		if(m_MapRenderer != null)
 		{
 			m_MapRenderer.material = m_MapMaterials[sideNumber];
+		}
+		if(m_Log != null)
+		{
+			Instantiate(m_LogText, m_Log).GetComponent<LogText>().m_Text.text = sideNumber == 1?"木を奪った！":"木が奪われた！";
 		}
 	}
 
