@@ -3722,7 +3722,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1380246854979712}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.5, z: 0.8}
@@ -3822,6 +3822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8169497f3bec3347bdd5064b22a1e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_JumpSpeed: 1
   m_speed: 3
   m_Shooter: {fileID: 114130872222264282}
   ground_detection: 30
@@ -3840,6 +3841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddccfb74e76e4004ab93a94f5fd4cd44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_JumpSpeed: 1
   m_speed: 3
   m_Shooter: {fileID: 114130872222264282}
   ground_detection: 30
@@ -3871,6 +3873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a24ea6c2a4c974e9db36bc2e5b0dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_JumpSpeed: 1
   m_speed: 3
   m_Shooter: {fileID: 114130872222264282}
   ground_detection: 30
