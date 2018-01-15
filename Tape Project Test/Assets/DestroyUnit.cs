@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class DestroyUnit : MonoBehaviour
 {
-    public float m_Timer = 10;
+    public float m_Timer = 90;
 
+    
 	// Use this for initialization
 	void Start ()
     {
@@ -21,13 +22,21 @@ public class DestroyUnit : MonoBehaviour
         if(m_Timer <= 0)
         {
             GameObject[] units = GameObject.FindGameObjectsWithTag("String");
+            GameObject[] nets = GameObject.FindGameObjectsWithTag("Net");
 
             foreach (GameObject unit in units)
             {
-                Destroy(unit);
+                unit.GetComponent<StringUnit>().Delete();
+                
             }
 
-            m_Timer = 10;
+            foreach (GameObject net in nets)
+            {
+                net.GetComponent<Net>().Delete();
+
+            }
+
+            m_Timer = 90;
         }
         
     }

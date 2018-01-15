@@ -53,30 +53,8 @@ public class ButtonBack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
-        {
-            backGameStart.SetActive(true);
-            backManual.SetActive(true);
-            backGameEnd.SetActive(true);
-            backTitle.SetActive(true);
-            backTitleCamera.SetActive(true);
-            backPanel.SetActive(true);
-            backSelect4.SetActive(true);
-            backSelect5.SetActive(true);
-
-            // 
-            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(backGameStart);
-
-
-            current100m.SetActive(false);
-            current50m.SetActive(false);
-            current25m.SetActive(false);
-            back.SetActive(false);
-            currentSelect.SetActive(false);
-            currentSelect6.SetActive(false);
-            currentSelect7.SetActive(false);
-            currentSelectCamera.GetComponent<Camera>().enabled = false;
-        }
+        
+        
     }
 
     public void OnClick()

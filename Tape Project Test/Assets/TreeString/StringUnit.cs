@@ -71,21 +71,29 @@ public class StringUnit : Connecter {
 
 	public override void Delete()
 	{
-		foreach (var item in m_Child.ToArray())
+        if (m_StringShooter != null)
+        {
+            m_StringShooter.m_Strings.Remove(this);
+            m_StringShooter.m_Cost -= m_Cost;
+        }
+
+        foreach (var item in m_Child.ToArray())
 		{
 			item.Delete();
 		}
 		m_StartConnecter.RemoveString(this);
 		m_EndConnecter.RemoveString(this);
-		m_StringShooter.m_Strings.Remove(this);
-		m_StringShooter.m_Cost -= m_Cost;
+		//m_StringShooter.m_Strings.Remove(this);
+		//m_StringShooter.m_Cost -= m_Cost;
 		Destroy(gameObject);
 		TerritoryManager.Instance.m_Strings.Remove(this);
 		if (m_StringStock != null)
 		{
 			m_StringStock.Delete(m_SideNumber);
 		}
-	}
+
+        
+    }
 	public void Stretch(Vector3 point)
 	{
 		m_LineRenderer.positionCount = 9;
