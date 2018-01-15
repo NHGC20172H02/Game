@@ -16,6 +16,8 @@ public class MyButtons : MonoBehaviour {
     public GameObject titleCamera;
     public GameObject selectCamera;
 
+    
+
     public GameObject m_Select;
     public GameObject m_Select4;
     public GameObject m_Select5;
@@ -38,7 +40,6 @@ public class MyButtons : MonoBehaviour {
         m_ManualFont.SetActive(false);
         m_ManualBackButton.SetActive(false);
         m_GameEnd.SetActive(false);
-
 
         titleCamera.SetActive(true);
         selectCamera.GetComponent<Camera>().enabled = false;
