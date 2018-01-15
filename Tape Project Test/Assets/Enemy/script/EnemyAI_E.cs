@@ -586,7 +586,7 @@ public class EnemyAI_E : Character {
         }
         else
         {
-            m_StateProcessor.State = m_TreeMove;
+            m_StateProcessor.State = m_SearchTree;
         }
     }
 

@@ -707,7 +707,7 @@ public class EnemyAI4 : Character
         }
         else
         {
-            m_StateProcessor.State = m_TreeMove;
+            m_StateProcessor.State = m_SearchTree;
         }
     }
 
