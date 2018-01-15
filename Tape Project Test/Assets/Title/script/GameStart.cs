@@ -20,6 +20,7 @@ public class GameStart : MonoBehaviour {
     public GameObject m_Title;
 
     public GameObject panel;
+    
 
     public GameObject select;
     public GameObject select4;
@@ -36,17 +37,19 @@ public class GameStart : MonoBehaviour {
         m_100mButton.SetActive(false);
         m_BackButton.SetActive(false);
 
+        MyButtons myButtons = FindObjectOfType<MyButtons>();
 
-        m_TitleCamera = GetComponent<MyButtons>().titleCamera;
-        m_SelectCamera = GetComponent<MyButtons>().selectCamera;
+        m_TitleCamera = myButtons.titleCamera;
+        m_SelectCamera = myButtons.selectCamera;
 
         panel.SetActive(true);
+        
 
-        select = gameObject.GetComponent<MyButtons>().m_Select;
-        select4 = gameObject.GetComponent<MyButtons>().m_Select4;
-        select5 = gameObject.GetComponent<MyButtons>().m_Select5;
-        select6 = gameObject.GetComponent<MyButtons>().m_Select6;
-        select7 = gameObject.GetComponent<MyButtons>().m_Select7;
+        select = myButtons.m_Select;
+        select4 = myButtons.m_Select4;
+        select5 = myButtons.m_Select5;
+        select6 = myButtons.m_Select6;
+        select7 = myButtons.m_Select7;
 
         
     }
@@ -71,7 +74,7 @@ public class GameStart : MonoBehaviour {
         m_SelectCamera.GetComponent<Camera>().enabled = true;
 
         // 
-        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(m_100mButton);
+        EventSystem.current.SetSelectedGameObject(m_100mButton);
 
         m_Title.SetActive(false);
         gameObject.SetActive(false);
@@ -85,7 +88,5 @@ public class GameStart : MonoBehaviour {
         select5.SetActive(false);
         select6.SetActive(true);
         select7.SetActive(true);
-
-        
     }
 }
