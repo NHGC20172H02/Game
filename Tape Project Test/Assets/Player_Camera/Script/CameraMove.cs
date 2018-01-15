@@ -81,7 +81,6 @@ public class CameraMove : MonoBehaviour
     void GroundMove()
     {
         Vector3 to_pos = transform.position - transform.forward * g_distance;
-        //m_Camera.position = Vector3.Lerp(m_Camera.position, to_pos, 0.3f);
         Move(to_pos, 1.0f, 0.4f, 0.6f);
     }
 
@@ -90,19 +89,15 @@ public class CameraMove : MonoBehaviour
         if (Vector3.Distance(transform.position, m_Camera.position) < t_distance)
         {
             Vector3 to_pos = transform.position - transform.forward * t_distance;
-            //m_Camera.position = Vector3.Lerp(m_Camera.position, to_pos, 0.3f);
             Move(to_pos, 1.0f, 0.2f, 0.6f);
         }
 
         //自機とカメラの間に木があるとカメラを自機によせる
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+        int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
         RaycastHit hit;
-        if (Physics.Raycast(
-            target_pos,
-            m_Camera.position - target_pos,
-            out hit,
-            Vector3.Distance(m_Camera.position, target_pos),
-            treeLayer))
+        if (Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, Vector3.Distance(m_Camera.position, target_pos), treeLayer)
+            || Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, Vector3.Distance(m_Camera.position, target_pos), groundLayer))
         {
             m_Camera.position = Vector3.Lerp(m_Camera.position, hit.point, 0.5f);
             Move(hit.point, 1.0f, 0.2f, 0.6f);
@@ -114,7 +109,6 @@ public class CameraMove : MonoBehaviour
 
     void TreeFpMove()
     {
-        //m_Camera.position = Vector3.Lerp(m_Camera.position, transform.position, 0.3f);
         Move(transform.position, 1.0f, 0.2f, 0.6f);
     }
 
@@ -123,7 +117,6 @@ public class CameraMove : MonoBehaviour
         if (Vector3.Distance(transform.position, m_Camera.position) < t_distance)
         {
             Vector3 to_pos = transform.position + -transform.forward * t_distance;
-            //m_Camera.position = Vector3.Lerp(m_Camera.position, to_pos, 0.3f);
             Move(to_pos, 1.0f, 0.2f, 0.6f);
             m_Camera.rotation = Quaternion.LookRotation(Vector3.Lerp(m_Camera.forward, transform.position - m_Camera.position, 0.3f));
         }
