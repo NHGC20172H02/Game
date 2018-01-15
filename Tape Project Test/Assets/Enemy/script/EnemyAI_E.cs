@@ -56,6 +56,7 @@ public class EnemyAI_E : Character {
     bool net_bool = false;
     bool dead_bool = false;
     bool player_onTree;
+    bool bodyBlow = true;
 
     GameObject nearObj0;
     [System.NonSerialized]
@@ -836,7 +837,11 @@ public class EnemyAI_E : Character {
         if (playerDist <= 5)
         {
             anim.SetBool("Attack", true);
-            SendingBodyBlow(playerObj);
+            if (bodyBlow == true)
+            {
+                SendingBodyBlow(playerObj);
+                bodyBlow = false;
+            }
         }
         else
         {
@@ -887,6 +892,7 @@ public class EnemyAI_E : Character {
     private void AttackRearJump()
     {
         anim.SetBool("Attack", false);
+        bodyBlow = true;
         wait_time += Time.deltaTime * 1;
         if (wait_time >= 1)
         {
@@ -1132,20 +1138,83 @@ public class EnemyAI_E : Character {
         //m_StateProcessor.State = m_FallingMove;
     }
 
-    private void OnCollisionEnter(Collision col)
+    //private void OnCollisionEnter(Collision col)
+    //{
+    //    if (col.gameObject.tag == "Tree")
+    //    {
+    //        m_randomCount = 0;
+
+    //        col_number = col.gameObject.GetComponent<Tree>().m_SideNumber;
+    //        reObj2 = col.collider.gameObject;
+    //        nearObj = col.collider.gameObject;
+    //    }
+
+    //    if (col.gameObject.tag == "Ground")
+    //    {
+    //        ResetBodyblow();
+    //    }
+
+    //    int sidenumber = GetComponent<StringShooter>().m_SideNumber;
+    //    if (col.gameObject.tag == "String" || col.gameObject.tag == "Net" && col_number != sidenumber)
+    //    {
+    //        m_randomCount = 0;
+
+    //        if (stringNet != null)
+    //        {
+    //            //近くのネットとの距離
+    //            distNet = Vector3.Distance(stringNet.transform.position, this.transform.position);
+    //        }
+    //        if (stringObj1)
+    //        {
+    //            //近くの相手の糸の距離
+    //            distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
+    //        }
+
+    //        //糸を奪う
+    //        //if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
+    //        //{
+    //        //    //奪う確率
+    //        //    if (net_bool == true)
+    //        //    {
+    //        //        netCount = Random.Range(1, 11);
+    //        //        net_bool = false;
+    //        //    }
+
+    //        //    if (netCount <= 4) //失敗したとき
+    //        //    {
+    //        //        m_StateProcessor.State = m_Fall;
+    //        //    }
+    //        //    else //成功したとき
+    //        //    {
+    //        //        anim.SetBool("avoidance", true);
+
+    //        //        AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
+    //        //        if (animInfo.normalizedTime < 1.0f)
+    //        //        {
+    //        //            anim.SetBool("avoidance", false);
+    //        //        }
+
+    //        //        stringObj1.GetComponent<StringUnit>().m_SideNumber = sidenumber;
+    //        //    }
+    //        //}
+    //    }
+    //}
+    private void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "Tree")
         {
             m_randomCount = 0;
 
             col_number = col.gameObject.GetComponent<Tree>().m_SideNumber;
-            reObj2 = col.collider.gameObject;
-            nearObj = col.collider.gameObject;
+            reObj2 = col.gameObject.gameObject;
+            nearObj = col.gameObject.gameObject;
         }
 
         if (col.gameObject.tag == "Ground")
         {
             ResetBodyblow();
+
+            m_StateProcessor.State = m_GroundMove;
         }
 
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
@@ -1163,37 +1232,8 @@ public class EnemyAI_E : Character {
                 //近くの相手の糸の距離
                 distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
             }
-
-            //糸を奪う
-            //if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
-            //{
-            //    //奪う確率
-            //    if (net_bool == true)
-            //    {
-            //        netCount = Random.Range(1, 11);
-            //        net_bool = false;
-            //    }
-
-            //    if (netCount <= 4) //失敗したとき
-            //    {
-            //        m_StateProcessor.State = m_Fall;
-            //    }
-            //    else //成功したとき
-            //    {
-            //        anim.SetBool("avoidance", true);
-
-            //        AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
-            //        if (animInfo.normalizedTime < 1.0f)
-            //        {
-            //            anim.SetBool("avoidance", false);
-            //        }
-
-            //        stringObj1.GetComponent<StringUnit>().m_SideNumber = sidenumber;
-            //    }
-            //}
         }
     }
-
 
 
 
