@@ -59100,6 +59100,16 @@ Prefab:
       propertyPath: m_CullingMask.m_Bits
       value: 4294868991
       objectReference: {fileID: 0}
+    - target: {fileID: 82889727999602952, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+        type: 2}
+      propertyPath: spreadCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114897817668162016, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+        type: 2}
+      propertyPath: m_Cartridge
+      value: 
+      objectReference: {fileID: 610026311}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
   m_IsPrefabParent: 0
