@@ -214,6 +214,7 @@ public class Player : Character
             m_Prediction.m_HitStringPoint = Vector3.zero;
             m_EscapeSphere.SetActive(false);
             m_WindLine.Stop();
+            m_Animator.ResetTrigger("Landing");
             m_AudioSource.PlayOneShot(m_AudioClips[2]);
             if (jump_target.collider.tag == "String")
             {
@@ -376,12 +377,13 @@ public class Player : Character
             m_Prediction.m_HitStringPoint = Vector3.zero;
             m_EscapeSphere.SetActive(false);
             m_WindLine.Stop();
-            if (jump_target.collider.tag == "String")
-            {
-                m_hitinfo = jump_target;
-                m_StateManager.StateProcassor.State = m_StateManager.StringTp;
-                return;
-            }
+            //m_Animator.ResetTrigger("Landing");
+            //if (jump_target.collider.tag == "String")
+            //{
+            //    m_hitinfo = jump_target;
+            //    m_StateManager.StateProcassor.State = m_StateManager.StringTp;
+            //    return;
+            //}
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
             return;
         }
@@ -468,8 +470,13 @@ public class Player : Character
         {
             m_attackTime += Time.deltaTime;
             if (m_attackTime > 1f)
-                foreach(Collider col in Physics.OverlapSphere(jump_target.point, 3f, m_EnemyLayer))
+            {
+                foreach (Collider col in Physics.OverlapSphere(jump_target.point, 3f, m_EnemyLayer))
+                {
                     m_enemy = col;
+                }
+            }
+
         }
 
         if (jump)
@@ -632,7 +639,7 @@ public class Player : Character
     private void ResetTrigger()
     {
         m_Animator.ResetTrigger("Jump");
-        m_Animator.ResetTrigger("Failure");
+        //m_Animator.ResetTrigger("Failure");
         m_Animator.ResetTrigger("Escape");
         m_Animator.ResetTrigger("Tackle");
         m_Animator.ResetTrigger("NormalJump");

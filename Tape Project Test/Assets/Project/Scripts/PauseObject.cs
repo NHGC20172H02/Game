@@ -27,11 +27,11 @@ public class PauseObject : MonoBehaviour {
 		}
         foreach(var item in m_Particles)
         {
-            if (pause)
+            if (pause && item.isPaused)
             {
                 item.Play();
             }
-            else
+            else if(item.isPlaying)
             {
                 item.Pause();
             }
