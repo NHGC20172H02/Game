@@ -1100,6 +1100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4678349104076914}
   - component: {fileID: 114496892838386952}
+  - component: {fileID: 114132865610725492}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: Untagged
@@ -2348,7 +2349,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.4, z: 1}
+  m_Size: {x: 1, y: 0.6, z: 1}
   m_Center: {x: 0, y: 0.16, z: -0.1}
 --- !u!81 &81265773626425832
 AudioListener:
@@ -2424,7 +2425,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -2461,6 +2462,22 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114132865610725492
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1980573448936196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3d789227c716dd44a70adca6f7aa67f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Timer: {fileID: 0}
+  m_GameObjects:
+  - {fileID: 1811603329427470}
+  - {fileID: 1981548588616102}
+  - {fileID: 1490565171330538}
 --- !u!114 &114430037697892728
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2512,6 +2529,8 @@ MonoBehaviour:
   - {fileID: 114687271224983274}
   m_Animator:
   - {fileID: 95038766648389830}
+  m_Particles:
+  - {fileID: 198651039020876628}
 --- !u!114 &114591155737201452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2596,13 +2615,14 @@ MonoBehaviour:
   m_StateManager: {fileID: 114762972871999870}
   m_AudioSource: {fileID: 82889727999602952}
   m_AudioClips:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 9aa701a69f65c7e459969c87f3fc205a, type: 3}
+  - {fileID: 8300000, guid: f4a9e10f6d7b9c4409bfd39eaa1bed07, type: 3}
+  - {fileID: 8300000, guid: 426e67527e6338d45835e12085d0d392, type: 3}
+  - {fileID: 8300000, guid: b3976f240d06ff84f9aa83030535e20b, type: 3}
+  - {fileID: 8300000, guid: 31e7e7903fb8de24bb9e5f9c9bb6707e, type: 3}
+  - {fileID: 8300000, guid: bef7e79e0cc372840b00faa5baf5a395, type: 3}
   m_EscapeSphere: {fileID: 1490565171330538}
   m_WindLine: {fileID: 198651039020876628}
-  PlayerNum: 1
 --- !u!114 &114762972871999870
 MonoBehaviour:
   m_ObjectHideFlags: 1

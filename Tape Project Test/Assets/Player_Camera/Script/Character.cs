@@ -94,8 +94,11 @@ public class Character : MonoBehaviour {
         Character character = null;
         if (target.tag == "Player")
         {
-            character = target.GetComponent<Player>();
-            character.GetComponent<Player>().m_Animator.SetTrigger("Failure");
+            if (target.GetComponent<Player>().IsOnTree())
+            {
+                character = target.GetComponent<Player>();
+                character.GetComponent<Player>().m_Animator.SetTrigger("Failure");
+            }
         }
         else if (target.tag == "Enemy")
         {
@@ -130,7 +133,10 @@ public class Character : MonoBehaviour {
 
     protected void ResetBodyblow()
     {
-        StopCoroutine(receiveBodyblow);
+        if(receiveBodyblow != null)
+        {
+            StopCoroutine(receiveBodyblow);
+        }
         gravity.y = 0;
         isBodyblow = false;
     }
