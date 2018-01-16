@@ -41,7 +41,7 @@ public class StringShooter : MonoBehaviour
 		StringUnit stringUnit = Instantiate(m_StringUnit, start, look).GetComponent<StringUnit>();
 		stringUnit.Create(this, start, end,m_Cartridge);
 		stringUnit.SetSide(m_SideNumber);
-		stringUnit.SetConnecter(GetConnecter(start), GetConnecter(end));
+		stringUnit.SetConnecter(GetConnecter(start,stringUnit.GetComponent<Collider>()), GetConnecter(end, stringUnit.GetComponent<Collider>()));
 		m_Strings.Add(stringUnit);
 		m_Cost += stringUnit.m_Cost;
 		while (m_Cost > m_MaxCost)
@@ -105,9 +105,10 @@ public class StringShooter : MonoBehaviour
 		}
 	}
 
-	private Connecter GetConnecter(Vector3 position)
+	private Connecter GetConnecter(Vector3 position, Collider ignoercollider)
 	{
 		List<Collider> colliders = new List<Collider>(Physics.OverlapSphere(position, m_Radius));
+		colliders.Remove(ignoercollider);
 		var collider = colliders.Find((item) => item.tag == "Tree");
 		if (collider == null) collider = colliders.Find((item) => item.tag == "Net");
 		if (collider == null) collider = colliders.Find((item) => item.tag == "String");
