@@ -63,12 +63,13 @@ public class Player : Character
         {
             m_StateManager.StateProcassor.State = m_StateManager.Falling;
         }
-        Debug.Log(m_StateManager.StateProcassor.State);
+        //Debug.Log(m_StateManager.StateProcassor.State);
     }
 
     //地面にいる場合の移動
     void GroundMove()
     {
+        ResetTrigger();
         m_Animator.SetBool("IsString", false);
         m_Prediction.gameObject.SetActive(false);
         m_WindLine.Stop();
@@ -122,13 +123,14 @@ public class Player : Character
     //木の上の俯瞰カメラ状態での移動
     void TreeTpMove()
     {
+        ResetTrigger();
         m_Animator.SetBool("IsString", false);
         if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Jumpair"))
             m_Animator.SetTrigger("Landing");        
         Vector3 start = transform.position + transform.up * 0.5f;
         //足元の情報取得（優先順位 : ネット->木->地面）
-        if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_NetLayer))
-            if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_TreeLayer))
+        if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_TreeLayer))
+            if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_NetLayer))
                 Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_GroundLayer);
 
         if(m_hitinfo.collider == null)
@@ -331,7 +333,7 @@ public class Player : Character
         int[] layers = new int[2];
         layers[0] = m_StringLayer;
         layers[1] = m_NetLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
         }
@@ -573,7 +575,8 @@ public class Player : Character
         RaycastHit result = new RaycastHit();
         for (int i = 0; i < layerMask.Length; i++)
         {
-            foreach(RaycastHit hit in Physics.SphereCastAll(transform.position + Vector3.up, 0.3f, Vector3.down, 1f, layerMask[i]))
+            if (i > 0 && result.collider != null) break;
+            foreach (RaycastHit hit in Physics.SphereCastAll(transform.position + Vector3.up, 0.3f, Vector3.down, 1f, layerMask[i]))
             {
                 Comparision(hit.point, hit, ref result, ref shortest);
             }
@@ -625,6 +628,16 @@ public class Player : Character
         }
         return false;
     }
+
+    private void ResetTrigger()
+    {
+        m_Animator.ResetTrigger("Jump");
+        m_Animator.ResetTrigger("Failure");
+        m_Animator.ResetTrigger("Escape");
+        m_Animator.ResetTrigger("Tackle");
+        m_Animator.ResetTrigger("NormalJump");
+    }
+
     //木に乗ってるかどうか
     public bool IsOnTree()
     {
