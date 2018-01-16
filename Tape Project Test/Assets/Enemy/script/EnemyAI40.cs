@@ -107,7 +107,6 @@ public class EnemyAI40 : Character
     PredominanceJumpMove m_PredominanceJumpMove = new PredominanceJumpMove();
 
     LatterHalfDecision m_LatterHalfDecision = new LatterHalfDecision();
-    LatterHalfColorlessTree m_LatterHalfColorlessTree = new LatterHalfColorlessTree();
 
     AttackJump m_AttackJump = new AttackJump();
     AttackJumpMove m_AttackJumpMove = new AttackJumpMove();
@@ -141,8 +140,7 @@ public class EnemyAI40 : Character
         m_PredominanceJumpMove.exeDelegate = PredominanceJumpMove;
 
         m_LatterHalfDecision.exeDelegate = LatterHalfDecision;
-        m_LatterHalfColorlessTree.exeDelegate = LatterHalfColorlessTree;
-
+        
         m_AttackJump.exeDelegate = AttackJump;
         m_AttackJumpMove.exeDelegate = AttackJumpMove;
 
@@ -1261,7 +1259,7 @@ public class EnemyAI40 : Character
             wait_time += Time.deltaTime * 1;
             if (wait_time >= 1.0f)
             {
-                m_StateProcessor.State = m_LatterHalfColorlessTree;
+                m_StateProcessor.State = m_ColorlessTree;
             }
         }
         else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
@@ -1279,24 +1277,6 @@ public class EnemyAI40 : Character
         }
     }
 
-    /*** 後半の無色の木を検索 ***/
-    private void LatterHalfColorlessTree()
-    {
-        float dist = Vector3.Distance(nearObj0.transform.position, this.transform.position);
-
-        if (dist <= tree_Detection)
-        {
-            eyeObj = nearObj0;
-            jump_start = this.transform.position;
-            m_targetPos = GetUpPosition00();
-            m_StateProcessor.State = m_Jumping;
-        }
-        else
-        {
-            m_StateProcessor.State = m_SearchRandom;
-        }
-    }
-
 
 
 
@@ -1309,7 +1289,7 @@ public class EnemyAI40 : Character
         if (animInfo.normalizedTime < 1.0f)
         {
             anim.SetBool("dead", true);
-            anim.SetBool("jump", false);
+            //anim.SetBool("jump", false);
         }
 
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });

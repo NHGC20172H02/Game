@@ -249,14 +249,6 @@ namespace EnemyState
         }
     }
 
-    public class LatterHalfColorlessTree : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "LatterHalfColorlessTree";
-        }
-    }
-
     public class AttackJump : EnemyState
     {
         public override string getStateName()

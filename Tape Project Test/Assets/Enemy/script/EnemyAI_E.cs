@@ -55,7 +55,7 @@ public class EnemyAI_E : Character {
     bool m_moveStart = false;
     bool net_bool = false;
     bool dead_bool = false;
-    bool player_onTree;
+    bool player_onTree = false;
     bool bodyBlow = true;
 
     GameObject nearObj0;
@@ -1201,7 +1201,7 @@ public class EnemyAI_E : Character {
     //}
     private void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Tree")
+        if (col.transform.tag == "Tree")
         {
             m_randomCount = 0;
 
@@ -1210,7 +1210,7 @@ public class EnemyAI_E : Character {
             nearObj = col.gameObject.gameObject;
         }
 
-        if (col.gameObject.tag == "Ground")
+        if (col.transform.tag == "Ground")
         {
             ResetBodyblow();
 

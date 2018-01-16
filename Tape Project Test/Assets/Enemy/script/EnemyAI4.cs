@@ -132,8 +132,7 @@ public class EnemyAI4 : Character
     PredominanceJumpMove m_PredominanceJumpMove = new PredominanceJumpMove();
 
     LatterHalfDecision m_LatterHalfDecision = new LatterHalfDecision();
-    LatterHalfColorlessTree m_LatterHalfColorlessTree = new LatterHalfColorlessTree();
-
+    
     AttackJump m_AttackJump = new AttackJump();
     AttackJumpMove m_AttackJumpMove = new AttackJumpMove();
     AttackRearJump m_AttackRearJump = new AttackRearJump();
@@ -176,8 +175,7 @@ public class EnemyAI4 : Character
         m_PredominanceJumpMove.exeDelegate = PredominanceJumpMove;
 
         m_LatterHalfDecision.exeDelegate = LatterHalfDecision;
-        m_LatterHalfColorlessTree.exeDelegate = LatterHalfColorlessTree;
-
+        
         m_AttackJump.exeDelegate = AttackJump;
         m_AttackJumpMove.exeDelegate = AttackJumpMove;
         m_AttackRearJump.exeDelegate = AttackRearJump;
@@ -1495,7 +1493,7 @@ public class EnemyAI4 : Character
             wait_time += Time.deltaTime * 1;
             if (wait_time >= latterHalf_Thought_Time)
             {
-                m_StateProcessor.State = m_LatterHalfColorlessTree;
+                m_StateProcessor.State = m_ColorlessTree;
             }
         }
         else if (playerDist >= 10 && playerDist <= player_Detection) //Playerに攻撃
@@ -1557,25 +1555,6 @@ public class EnemyAI4 : Character
             }
         }
     }
-
-    /*** 後半の無色の木を検索 ***/
-    private void LatterHalfColorlessTree()
-    {
-        float dist = Vector3.Distance(nearObj0.transform.position, this.transform.position);
-
-        if (dist <= tree_Detection)
-        {
-            eyeObj = nearObj0;
-            jump_start = this.transform.position;
-            m_targetPos = GetUpPosition00();
-            m_StateProcessor.State = m_Jumping;
-        }
-        else
-        {
-            m_StateProcessor.State = m_SearchRandom;
-        }
-    }
-
 
 
 
@@ -2063,7 +2042,7 @@ public class EnemyAI4 : Character
     //}
     private void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Tree")
+        if (col.transform.tag == "Tree")
         {
             m_randomCount = 0;
 
@@ -2072,7 +2051,7 @@ public class EnemyAI4 : Character
             nearObj = col.gameObject.gameObject;
         }
 
-        if (col.gameObject.tag == "Ground")
+        if (col.transform.tag == "Ground")
         {
             ResetBodyblow();
 
