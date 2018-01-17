@@ -7,6 +7,9 @@ TagManager:
   - Tree
   - String
   - Ground
+  - Undefined
+  - Net
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -19,12 +22,12 @@ TagManager:
   - Ground
   - String
   - Tree
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Prediction
+  - Net
+  - Enemy
+  - GameUI
+  - MiniMap
   - 
   - 
   - 

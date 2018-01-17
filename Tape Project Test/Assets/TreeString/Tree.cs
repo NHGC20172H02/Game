@@ -1,11 +1,15 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Tree : Connecter {
-
-	public Material[] m_Materials;
-	public override void SideUpdate()
+	public Renderer m_MapRenderer;
+	public Material[] m_MapMaterials;
+	private void Start()
+	{
+		TerritoryManager.Instance.m_Trees.Add(this);
+	}
+	public override void ChildUpdate()
 	{
 		List<int> count = new List<int> { 0, 0, 0 };
 		foreach (var item in m_Child)
@@ -20,13 +24,14 @@ public class Tree : Connecter {
 				sideNumber = i;
 			}
 		}
-		ChengeSide(sideNumber);
-	}
+		if (m_SideNumber == sideNumber) return;
 
-	private void ChengeSide(int i)
-	{
-		m_SideNumber = i;
-		GetComponent<Renderer>().material = m_Materials[m_SideNumber];
+		SetSide(sideNumber);
+		if(m_MapRenderer != null)
+		{
+			m_MapRenderer.material = m_MapMaterials[sideNumber];
+		}
+		LogManager.Instance.Create(sideNumber == 1 ? "木を奪った！" : "木が奪われた！");
 	}
 
 }
