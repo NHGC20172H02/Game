@@ -15,7 +15,7 @@ public class Net : Connecter {
 	static int[] TRIANGLES = new int[]
 		{
 			0,1,2,
-			3,5,4
+			4,3,5
 		};
 
 	static Vector2[] UV = new Vector2[]

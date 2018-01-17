@@ -60,6 +60,7 @@ public class StringShooter : MonoBehaviour
 				if (SU == null) continue;
 				if (SU.m_SideNumber != m_SideNumber) continue;
 				if (SU.m_Cost > m_NetCostLimit) continue;
+				if (SU.m_PointA == start && SU.m_PointB == end || SU.m_PointA == end && SU.m_PointB == start) continue;
 				if (Vector3.Angle(end - start, SU.m_PointA - start) < m_NetAngleLimit)
 				{
 					Net net = Instantiate(m_Net).GetComponent<Net>();
@@ -85,6 +86,7 @@ public class StringShooter : MonoBehaviour
 				if (SU == null) continue;
 				if (SU.m_SideNumber != m_SideNumber) continue;
 				if (SU.m_Cost > m_NetCostLimit) continue;
+				if (SU.m_PointA == start && SU.m_PointB == end || SU.m_PointA == end && SU.m_PointB == start) continue;
 				if (Vector3.Angle(start - end, SU.m_PointA - end) < m_NetAngleLimit)
 				{
 					Net net = Instantiate(m_Net).GetComponent<Net>();
