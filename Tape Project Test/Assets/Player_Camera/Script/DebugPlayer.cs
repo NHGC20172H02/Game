@@ -163,7 +163,7 @@ public class DebugPlayer : Character
         Ray ray = new Ray(origin, transform.forward);
         int[] layers = new int[1];
         layers[0] = m_StringLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
         }
@@ -326,7 +326,7 @@ public class DebugPlayer : Character
         int[] layers = new int[2];
         layers[0] = m_StringLayer;
         layers[1] = m_NetLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
         }
