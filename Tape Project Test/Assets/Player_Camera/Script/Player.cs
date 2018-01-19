@@ -34,7 +34,7 @@ public class Player : Character
     private Vector3 move_start;                         //ジャンプ始点
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
-    private bool isCursor = false;
+    private bool isTarget = false;
     private bool isEscape = false;
     private int waitFrame = 0;
     private float m_failureTime = 0;
@@ -144,7 +144,6 @@ public class Player : Character
         m_prevPos = transform.position;
         //位置補正
         transform.position = Vector3.Lerp(transform.position, m_hitinfo.point, 0.8f);
-        //transform.position = m_hitinfo.point;
         Vector3 move = Vector3.zero;
         if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("GroundMove"))
             move = Move(m_Camera.right, m_hitinfo.normal);
@@ -202,18 +201,8 @@ public class Player : Character
         if (!Depression()) return;
         if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
-            transform.position = jump_target.point;
-            transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
-            if(isEscape)
-                m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
-            else
-                m_Shooter.StringShoot(move_start, move_end);
-            waitFrame = 0;
-            isEscape = false;
-            isLanding = false;
-            m_Prediction.m_HitStringPoint = Vector3.zero;
-            m_EscapeSphere.SetActive(false);
-            m_WindLine.Stop();
+            JumpReset();
+            m_Animator.ResetTrigger("Landing");
             m_AudioSource.PlayOneShot(m_AudioClips[2]);
             if (jump_target.collider.tag == "String")
             {
@@ -357,6 +346,10 @@ public class Player : Character
         transform.Translate(gravity * Time.deltaTime, Space.World);
         Vector3 forward = Vector3.Cross(m_Camera.right, m_hitinfo.normal);
         transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.4f), m_hitinfo.normal);
+        if(transform.position.y < 0.3f)
+        {
+            LandingReset(m_hitinfo.collider);
+        }
     }
     //体当たり状態
     void BodyBlowMove()
@@ -364,24 +357,7 @@ public class Player : Character
         if (!Depression()) return;
         if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
-            transform.position = move_end;
-            transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
-            if (isEscape)
-                m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
-            else
-                m_Shooter.StringShoot(move_start, move_end);
-            waitFrame = 0;
-            isEscape = false;
-            isLanding = false;
-            m_Prediction.m_HitStringPoint = Vector3.zero;
-            m_EscapeSphere.SetActive(false);
-            m_WindLine.Stop();
-            if (jump_target.collider.tag == "String")
-            {
-                m_hitinfo = jump_target;
-                m_StateManager.StateProcassor.State = m_StateManager.StringTp;
-                return;
-            }
+            JumpReset();
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
             return;
         }
@@ -453,9 +429,9 @@ public class Player : Character
         {
             m_attackTime = 0;
             m_enemy = null;
-            isCursor = !isCursor;
+            isTarget = !isTarget;
         }
-        if (isCursor)
+        if (isTarget)
         {
             if (!(jump = Physics.Raycast(ray, out jump_target, m_JumpLimit, m_NetLayer)))
                 jump = Physics.SphereCast(ray, 1f, out jump_target, m_JumpLimit, m_StringLayer);
@@ -468,8 +444,12 @@ public class Player : Character
         {
             m_attackTime += Time.deltaTime;
             if (m_attackTime > 1f)
-                foreach(Collider col in Physics.OverlapSphere(jump_target.point, 3f, m_EnemyLayer))
+            {
+                foreach (Collider col in Physics.OverlapSphere(jump_target.point, 3f, m_EnemyLayer))
+                {
                     m_enemy = col;
+                }
+            }
         }
 
         if (jump)
@@ -610,32 +590,52 @@ public class Player : Character
     //乗ってる糸の番号が変更した場合
     private bool IsChangedNumber()
     {
-        if(m_hitinfo.collider.tag == "Net")
+        if((m_hitinfo.collider.tag == "Net" && m_hitinfo.collider.GetComponent<Net>().m_SideNumber != m_Shooter.m_SideNumber)
+            || (m_hitinfo.collider.tag == "String" && m_hitinfo.collider.GetComponent<StringUnit>().m_SideNumber != m_Shooter.m_SideNumber))
         {
-           if (m_hitinfo.collider.GetComponent<Net>().m_SideNumber != m_Shooter.m_SideNumber)
-            {
-                Fall();
-                return true;
-            }
-        }
-        else if(m_hitinfo.collider.tag == "String")
-        {
-            if (m_hitinfo.collider.GetComponent<StringUnit>().m_SideNumber != m_Shooter.m_SideNumber)
-            {
-                Fall();
-                return true;
-            }
+            Fall();
+            return true;
         }
         return false;
     }
 
+    //アニメータートリガーをリセット
     private void ResetTrigger()
     {
         m_Animator.ResetTrigger("Jump");
-        m_Animator.ResetTrigger("Failure");
+        //m_Animator.ResetTrigger("Failure");
         m_Animator.ResetTrigger("Escape");
         m_Animator.ResetTrigger("Tackle");
         m_Animator.ResetTrigger("NormalJump");
+    }
+    //ジャンプパラメータをリセット
+    private void JumpReset()
+    {
+        transform.position = move_end;
+        transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
+        if (isEscape)
+            m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
+        else
+            m_Shooter.StringShoot(move_start, move_end);
+        waitFrame = 0;
+        isEscape = false;
+        isLanding = false;
+        m_Prediction.m_HitStringPoint = Vector3.zero;
+        m_EscapeSphere.SetActive(false);
+        m_WindLine.Stop();
+    }
+    //着地時の各値リセット
+    private void LandingReset(Collider other)
+    {
+        ResetBodyblow();
+        elapse_time = 0;
+        m_failureTime = 0;
+        m_AudioSource.PlayOneShot(m_AudioClips[3]);
+        m_Animator.SetTrigger("Landing");
+        if (other.transform.tag == "Ground")
+            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
+        else
+            m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
     }
 
     //木に乗ってるかどうか
@@ -654,46 +654,7 @@ public class Player : Character
         if (other.transform.tag == "Ground" || other.transform.tag == "Tree")
         {
             if (m_hitinfo.transform.tag != other.transform.tag) return;
-            if (receiveBodyblow != null)
-            {
-                StopCoroutine(receiveBodyblow);
-                receiveBodyblow = null;
-            }
-            isBodyblow = false;
-            gravity = Vector3.zero;
-            elapse_time = 0;
-            m_failureTime = 0;
-            m_AudioSource.PlayOneShot(m_AudioClips[3]);
-            m_Animator.SetTrigger("Landing");
-            if (other.transform.tag == "Ground")
-                m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
-            else
-                m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
+            LandingReset(other);
         }
     }
-
-    //void OnCollisionEnter(Collision collision)
-    //{
-    //    //地面着地
-    //    if (m_StateManager.StateProcassor.State != m_StateManager.Falling) return;
-    //    if (collision.transform.tag == "Ground" || collision.transform.tag == "Tree")
-    //    {
-    //        if (m_hitinfo.transform.tag != collision.transform.tag) return;
-    //        if (receiveBodyblow != null)
-    //        {
-    //            StopCoroutine(receiveBodyblow);
-    //            receiveBodyblow = null;
-    //        }
-    //        isBodyblow = false;
-    //        gravity = Vector3.zero;
-    //        elapse_time = 0;
-    //        m_failureTime = 0;
-    //        m_Animator.SetTrigger("Landing");
-    //        if (collision.transform.tag == "Ground")
-    //            m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
-    //        else
-    //            m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
-    //    }
-    //}
-
 }

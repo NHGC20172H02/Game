@@ -96,14 +96,13 @@ public class Character : MonoBehaviour {
         {
             if (target.GetComponent<Player>().IsOnTree())
             {
-                character = target.GetComponent<Player>();
+                character = target.GetComponent<Character>();
                 character.GetComponent<Player>().m_Animator.SetTrigger("Failure");
             }
         }
         else if (target.tag == "Enemy")
         {
-            character = target.GetComponent<EnemyAI40>();
-            //character = target.GetComponent<BodyblowTestEnemy>();
+            character = target.GetComponent<Character>();
         }
 
         if (character == null) return;
