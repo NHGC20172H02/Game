@@ -389,6 +389,44 @@ public class NearObj : MonoBehaviour {
     }
     //3番目に近くの自分の陣地の木
     public GameObject MyTreeSerch3(GameObject nowObj, string tagName)
+    {
+        GameObject targetObj = null;
+        float tmpDis;
+        float nearDis = 0;
+
+        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
+        {
+
+            if (m_nearObj == obs)
+            {
+                continue;
+            }
+            else if (m_myTreeObj == obs)
+            {
+                continue;
+            }
+            else if(m_myTreeObj2 == obs)
+            {
+                continue;
+            }
+
+            int number = obs.GetComponent<Tree>().m_SideNumber;
+            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
+
+            if (number == sidenumber)
+            {
+                //自身と取得したオブジェクトの距離を取得
+                tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
+
+                if (nearDis == 0 || nearDis > tmpDis)
+                {
+                    nearDis = tmpDis;
+                    targetObj = obs;
+                }
+            }
+        }
+        return targetObj;
+    }
 
     //近くの相手の糸
     public GameObject stringTag1(GameObject nowObj, string tagName)
