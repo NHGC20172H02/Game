@@ -81,14 +81,6 @@ namespace EnemyState
         }
     }
 
-    public class ThreadSearchTree : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "ThreadSearchTree";
-        }
-    }
-
     public class SearchRandom : EnemyState
     {
         public override string getStateName()
@@ -96,14 +88,6 @@ namespace EnemyState
             return "SearchRandom";
         }
     }
-
-    public class ThreadJump : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "ThreadJump";
-        }
-    } 
 
     public class Jumping : EnemyState
     {
@@ -129,51 +113,11 @@ namespace EnemyState
         }
     }
 
-    public class StringMove : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringMove";
-        }
-    }
-
     public class StringCount : EnemyState
     {
         public override string getStateName()
         {
             return "StringCount";
-        }
-    }
-
-    public class StringJump : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringJumpt";
-        }
-    }
-
-    public class StringJumping : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringJumping";
-        }
-    }
-
-    public class StringDecision : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringDecisiont";
-        }
-    }
-
-    public class ThreadSearchRandom : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "ThreadSearchRandom";
         }
     }
 

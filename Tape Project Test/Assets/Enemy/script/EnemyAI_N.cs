@@ -34,7 +34,7 @@ public class EnemyAI_N : Character {
     int m_latterHalfNetRob = 4;
 
     [Header("後半状態になるまでの時間(秒)")]
-    public float latter_half_time = 45.0f;
+    public float latter_half_time = 60.0f;
 
     float time_limit;
 
@@ -79,7 +79,6 @@ public class EnemyAI_N : Character {
 
     GameObject eyeObj;
 
-    GameObject myStringObj;
     GameObject stringObj1;
     GameObject stringNet;
 
@@ -179,9 +178,6 @@ public class EnemyAI_N : Character {
 
         //近くの自分の陣地の木
         myTreeObj2 = GetComponent<NearObj>().m_myTreeObj2;
-
-        //近くの自分の糸
-        myStringObj = GetComponent<NearObj>().m_myStringObj;
 
         //近くの相手の糸
         stringObj1 = GetComponent<NearObj>().m_stringObj1;
@@ -532,7 +528,7 @@ public class EnemyAI_N : Character {
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
-        if (Physics.Raycast(ray, out hit, 1f, treeLayer))
+        if (Physics.SphereCast(ray, 1.0f, out hit, 1.5f, treeLayer))
         {
             if (hit.transform.tag == "Tree")
             {
@@ -576,7 +572,7 @@ public class EnemyAI_N : Character {
         {
             m_moveTimer += Time.deltaTime * 1;
 
-            if (m_moveTimer >= 2)
+            if (m_moveTimer >= 1.5f)
             {
                 m_moveCount = 0;
 
@@ -890,7 +886,7 @@ public class EnemyAI_N : Character {
     /*** 攻撃ジャンプ移動中 ***/
     private void AttackJumpMove()
     {
-        if (playerDist <= 5)
+        if (playerDist <= 7)
         {
             anim.SetBool("Attack", true);
             if (bodyBlow == true)
@@ -1372,7 +1368,7 @@ public class EnemyAI_N : Character {
 
         RaycastHit hit;
         Ray ray2 = new Ray(transform.position, -transform.up);
-        if (Physics.Raycast(ray2, out hit, 0.5f,groundLayer))
+        if (Physics.Raycast(ray2, out hit, 1.0f,groundLayer))
         {
             transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
@@ -1546,13 +1542,6 @@ public class EnemyAI_N : Character {
     public Vector3 GetPosition3()
     {
         return new Vector3(nearObj2.transform.position.x, 7.0f, nearObj2.transform.position.z);
-    }
-
-
-    //近くの自分の糸にジャンプするポジション
-    public Vector3 GetStringPosition()
-    {
-        return new Vector3(myStringObj.transform.position.x, myStringObj.transform.position.y, myStringObj.transform.position.z);
     }
 
     //PlayerのPosition

@@ -3850,7 +3850,7 @@ MonoBehaviour:
   thought_Time: 4
   latterHalf_Thought_Time: 2
   predominance_Thought_Time: 5
-  latter_half_time: 45
+  latter_half_time: 60
 --- !u!114 &114533001950309022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3882,7 +3882,7 @@ MonoBehaviour:
   thought_Time: 2
   latterHalf_Thought_Time: 1
   predominance_Thought_Time: 2
-  latter_half_time: 45
+  latter_half_time: 60
 --- !u!114 &114939046867580062
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3900,6 +3900,7 @@ MonoBehaviour:
   - {fileID: 114400748612540686}
   m_Animator:
   - {fileID: 95356331639727914}
+  m_Particles: []
 --- !u!124 &124830650510548344
 Behaviour:
   m_ObjectHideFlags: 1

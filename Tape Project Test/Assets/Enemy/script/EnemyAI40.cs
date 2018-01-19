@@ -264,10 +264,10 @@ public class EnemyAI40 : Character
         }
 
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            m_StateProcessor.State = m_Fall;
-        }
+        //if (Input.GetKeyDown(KeyCode.G))
+        //{
+        //    m_StateProcessor.State = m_Fall;
+        //}
 
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
@@ -1308,7 +1308,7 @@ public class EnemyAI40 : Character
 
         RaycastHit hit;
         Ray ray2 = new Ray(transform.position, -transform.up);
-        if (Physics.Raycast(ray2, out hit, 0.5f))
+        if (Physics.Raycast(ray2, out hit, 1.0f))
         {
             if (hit.transform.tag == "Ground")
             {
