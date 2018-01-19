@@ -16,12 +16,14 @@ public class LogManager : SingletonMonoBehaviour<LogManager> {
 		
 	}
 
-	public GameObject Create(string message)
+	public void Create(string message,Color color,bool flash)
 	{
-		if (m_LogParent == null) return null;
-		if (m_Prefab == null) return null;
-		GameObject log = Instantiate(m_Prefab, m_LogParent);
-		log.GetComponent<Text>().text = message;
-		return log;
+		if (m_LogParent == null) return;
+		if (m_Prefab == null) return;
+		GameObject l = Instantiate(m_Prefab, m_LogParent);
+		LogText log = l.GetComponent<LogText>();
+		log.m_Text.text = message;
+		log.m_Image.color = color;
+		log.m_Animator.SetBool("Flash",flash);
 	}
 }
