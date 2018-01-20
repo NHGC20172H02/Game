@@ -507,16 +507,20 @@ public class EnemyAI_E : Character {
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         if (Physics.SphereCast(ray, 1.0f,  out hit, 1.5f, treeLayer))
         {
-            if (hit.transform.tag == "Tree")
-            {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-            }
-            if (hit.transform.gameObject == null)
-            {
-                m_StateProcessor.State = m_Fall;
-            }
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+            //if (hit.transform.tag == "Tree")
+            //{
+            //    transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            //    transform.rotation = Quaternion.LookRotation(
+            //        Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+            //}
+            //if (hit.transform.gameObject == null)
+            //{
+            //    m_StateProcessor.State = m_Fall;
+            //}
         }
 
         if (m_moveCount == 1) //前移動

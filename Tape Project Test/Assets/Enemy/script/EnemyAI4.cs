@@ -23,8 +23,6 @@ public class EnemyAI4 : Character
 
     [Header("Enemyの思考時間（通常時）")]
     public float thought_Time = 2.0f;
-    [Header("Enemyの思考時間（後半時）")]
-    public float latterHalf_Thought_Time = 1.0f;
     [Header("Enemyの思考時間（優勢時）")]
     public float predominance_Thought_Time = 2.0f;
     //糸を奪う失敗する確率(1～10)
@@ -33,10 +31,6 @@ public class EnemyAI4 : Character
     int m_predominanceNetRob = 5;
     //糸を奪う後半時の失敗する確率(1～10)
     int m_latterHalfNetRob = 3;
-
-    [Header("後半状態になるまでの時間(秒)")]
-    public float latter_half_time = 60.0f;
-    float time_limit; //経過時間
 
     int m_randomCount;
     int startRan;
@@ -48,6 +42,7 @@ public class EnemyAI4 : Character
     //木に付いている糸の数の差
     int Thread_count_difference1;
     int Thread_count_difference2;
+    int Thread_count_difference3;
 
     int col_number;
 
@@ -108,6 +103,7 @@ public class EnemyAI4 : Character
     //自分の木に付いている糸の数
     List<int> mytreecount1;
     List<int> mytreecount2;
+    List<int> mytreecount3;
 
     Animator anim;
 
@@ -129,8 +125,6 @@ public class EnemyAI4 : Character
     PredominanceMyTree m_PredominanceMyTree = new PredominanceMyTree();
     PredominanceJump m_PredominanceJump = new PredominanceJump();
     PredominanceJumpMove m_PredominanceJumpMove = new PredominanceJumpMove();
-
-    LatterHalfDecision m_LatterHalfDecision = new LatterHalfDecision();
     
     AttackJump m_AttackJump = new AttackJump();
     AttackJumpMove m_AttackJumpMove = new AttackJumpMove();
@@ -164,8 +158,6 @@ public class EnemyAI4 : Character
         m_PredominanceMyTree.exeDelegate = PredominanceMyTree;
         m_PredominanceJump.exeDelegate = PredominanceJump;
         m_PredominanceJumpMove.exeDelegate = PredominanceJumpMove;
-
-        m_LatterHalfDecision.exeDelegate = LatterHalfDecision;
         
         m_AttackJump.exeDelegate = AttackJump;
         m_AttackJumpMove.exeDelegate = AttackJumpMove;
@@ -253,7 +245,15 @@ public class EnemyAI4 : Character
             mytreecount2 = new List<int> { 0, 0, 0 };
             foreach (var item in myTreeObj2.GetComponent<Tree>().m_Child)
             {
-                mytreecount1[item.m_SideNumber]++;
+                mytreecount2[item.m_SideNumber]++;
+            }
+        }
+        if (myTreeObj3 != null)
+        {
+            mytreecount3 = new List<int> { 0, 0, 0 };
+            foreach (var item in myTreeObj2.GetComponent<Tree>().m_Child)
+            {
+                mytreecount3[item.m_SideNumber]++;
             }
         }
 
@@ -270,13 +270,6 @@ public class EnemyAI4 : Character
         {
             reObj = reObj2;
             treeObj = 2;
-        }
-
-
-        //経過時間
-        if (latter_half_time + 1 >= time_limit)
-        {
-            time_limit += Time.deltaTime * 1;
         }
 
 
@@ -502,10 +495,6 @@ public class EnemyAI4 : Character
         {
             m_StateProcessor.State = m_PredominanceDecision;
         }
-        else if(latter_half_time <= time_limit) //後半時
-        {
-            m_StateProcessor.State = m_LatterHalfDecision;
-        }  
         else if (nearObj0 != null)
         {
             wait_time += Time.deltaTime * 1;
@@ -600,16 +589,20 @@ public class EnemyAI4 : Character
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         if (Physics.Raycast(ray, out hit, 1.5f, treeLayer))
         {
-            if (hit.transform.tag == "Tree")
-            {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-            }
-            if(hit.transform.gameObject == null)
-            {
-                m_StateProcessor.State = m_Fall;
-            }
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+            //if (hit.transform.tag == "Tree")
+            //{
+            //    transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            //    transform.rotation = Quaternion.LookRotation(
+            //        Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+            //}
+            //if(hit.transform.gameObject == null)
+            //{
+            //    m_StateProcessor.State = m_Fall;
+            //}
         }
 
         if (m_moveCount == 1) //前移動
@@ -788,8 +781,8 @@ public class EnemyAI4 : Character
         //GameObject player;
         //player = GameObject.FindWithTag("Player");
         //int playerNumber = player.GetComponent<StringShooter>().m_SideNumber;
-        Thread_count_difference1 = count2[1] - count2[sidenumber];
-        Thread_count_difference2 = count3[1] - count3[sidenumber];
+        Thread_count_difference1 = count2[1] - count2[sidenumber]; //近くの木
+        Thread_count_difference2 = count3[1] - count3[sidenumber]; //2番目の木
 
         if (Thread_count_difference1 >= 0 && Thread_count_difference1 <= 2 && count2[sidenumber] > count2[1]) //近くの木の糸の本数が２本以下
         {
@@ -858,22 +851,7 @@ public class EnemyAI4 : Character
         //移動先と自分の間のray
         if (Physics.Raycast(transform.position, m_targetPos - transform.position, out jump_target, tree_Detection, treeLayer))
         {
-            if(latter_half_time <= wait_time) //後半時
-            {
-                if(jump_target.transform != nearObj)
-                {
-                    net_bool = true;
-                    anim.SetBool("jump", true);
-                    jump_start = transform.position;
-                    jump_end = jump_target.point;
-                    m_StateProcessor.State = m_JumpMove;
-                }
-                else
-                {
-                    m_StateProcessor.State = m_TreeMove;
-                }
-            }
-            else if (jump_target.transform != eyeObj.transform)
+            if (jump_target.transform != eyeObj.transform)
             {
                 m_randomCount = 0;
                 m_StateProcessor.State = m_TreeMove;
@@ -934,39 +912,6 @@ public class EnemyAI4 : Character
                     anim.SetBool("avoidance", false);
                 }
             }
-        }
-
-        //後半時
-        if (latter_half_time <= wait_time)
-        {
-            //糸を奪う
-            if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
-            {
-                //奪う確率
-                if (net_bool == true)
-                {
-                    netCount = Random.Range(1, 11);
-                    net_bool = false;
-                }
-
-                if (netCount <= m_latterHalfNetRob) //失敗したとき
-                {
-                    m_StateProcessor.State = m_Fall;
-                }
-                else //成功したとき
-                {
-                    anim.SetBool("avoidance", true);
-
-                    AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
-                    if (animInfo.normalizedTime < 1.0f)
-                    {
-                        anim.SetBool("avoidance", false);
-                    }
-
-                    stringObj1.GetComponent<Connecter>().m_SideNumber = sidenumber;
-                }
-            }
-
         }
     }
 
@@ -1057,38 +1002,6 @@ public class EnemyAI4 : Character
             }
         }
 
-        //後半時
-        if (latter_half_time <= wait_time)
-        {
-            //糸を奪う
-            if (distThread >= 0.5f && distThread <= 1 || distNet >= 0.5f && distNet <= 1)
-            {
-                //奪う確率
-                if (net_bool == true)
-                {
-                    netCount = Random.Range(1, 11);
-                    net_bool = false;
-                }
-
-                if (netCount <= m_latterHalfNetRob) //失敗したとき
-                {
-                    m_StateProcessor.State = m_Fall;
-                }
-                else //成功したとき
-                {
-                    anim.SetBool("avoidance", true);
-
-                    AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
-                    if (animInfo.normalizedTime < 1.0f)
-                    {
-                        anim.SetBool("avoidance", false);
-                    }
-
-                    stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
-                }
-            }
-
-        }
     }
 
     /*** 攻撃後のジャンプの瞬間 ***/
@@ -1227,15 +1140,10 @@ public class EnemyAI4 : Character
         //自身が劣勢の時
         if (EnemyTree_Count < PlayerTree_Count)
         {
-            if (latter_half_time <= time_limit)//後半時
-            {
-                m_StateProcessor.State = m_LatterHalfDecision;
-            }
-            else
-            {
-                predominance_time = 0;
-                m_StateProcessor.State = m_TreeDecision;
-            }
+
+            predominance_time = 0;
+            m_StateProcessor.State = m_TreeDecision;
+
         }
         else if (predominance_time >= predominance_Thought_Time)
         {
@@ -1257,6 +1165,9 @@ public class EnemyAI4 : Character
     {
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
+        if (m_randomCount != 5 && m_randomCount != 4 && m_randomCount != 6)
+            m_randomCount = Random.Range(4, 7);
+
         //近くの木の付いている糸の差
         Thread_count_difference1 = mytreecount1[1] - mytreecount1[sidenumber];
         if (myTreeObj2 != null)
@@ -1264,22 +1175,36 @@ public class EnemyAI4 : Character
             //2番目近くの木の付いている糸の差
             Thread_count_difference2 = mytreecount2[1] - mytreecount2[sidenumber];
         }
+        if(myTreeObj3 != null)
+        {
+            //3番目近くの木の付いている糸の差
+            Thread_count_difference3 = mytreecount3[1] - mytreecount3[sidenumber];
+        }
 
         if (Thread_count_difference1 >= 0 && Thread_count_difference1 <= 2 &&
-            mytreecount1[sidenumber] > mytreecount1[1]) //近くの自分の木の糸の本数が２本以下
+            mytreecount1[sidenumber] > mytreecount1[1] && m_randomCount == 4) //近くの自分の木の糸の本数が２本以下
         {
-            eyeObj = nearObj2;
+            eyeObj = myTreeObj;
             //近い木に飛ぶ
             m_targetPos = MyTreePosition1();
 
             m_StateProcessor.State = m_PredominanceJump;
         }
-        else if (myTreeObj2 != null && Thread_count_difference1 >= 0 &&
-            Thread_count_difference1 <= 2 && mytreecount1[sidenumber] > mytreecount1[1])//２番目に近くの自分の木の糸の本数が２本以下
+        else if (myTreeObj2 != null && Thread_count_difference2 >= 0 && Thread_count_difference2 <= 2 && 
+            mytreecount2[sidenumber] > mytreecount2[1] && m_randomCount == 5)//２番目に近くの自分の木の糸の本数が２本以下
         {
-            eyeObj = nearObj3;
+            eyeObj = myTreeObj2;
             //２番目の近くの木に飛ぶ
             m_targetPos = MyTreePosition2();
+
+            m_StateProcessor.State = m_PredominanceJump;
+        }
+        else if (myTreeObj3 != null && Thread_count_difference3 >= 0 && Thread_count_difference3 <= 2 && 
+            mytreecount3[sidenumber] > mytreecount3[1] && m_randomCount == 6)//３番目に近くの自分の木の糸の本数が２本以下
+        {
+            eyeObj = myTreeObj3;
+            //３番目の近くの木に飛ぶ
+            m_targetPos = MyTreePosition3();
 
             m_StateProcessor.State = m_PredominanceJump;
         }
@@ -1347,6 +1272,8 @@ public class EnemyAI4 : Character
             {
                 net_bool = true;
                 anim.SetBool("jump", true);
+
+                m_randomCount = 0;
                 jump_start = transform.position;
                 jump_end = jump_target.point;
                 m_StateProcessor.State = m_PredominanceJumpMove;
@@ -1401,127 +1328,6 @@ public class EnemyAI4 : Character
             }
         }
     }
-
-
-
-
-    /*** 後半の行動判断 ***/
-    private void LatterHalfDecision()
-    {
-        anim.SetBool("jump", false);
-        anim.SetBool("jumpair", false);
-        anim.SetBool("avoidance", false);
-        anim.SetBool("Attack", false);
-
-        RaycastHit hit;
-        Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
-        if (Physics.Raycast(ray, out hit, 1f, treeLayer))
-        {
-            if (hit.transform.tag == "Tree")
-            {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-
-                nearObj = hit.collider.gameObject;
-            }
-            else
-            {
-                m_StateProcessor.State = m_Fall;
-            }
-        }
-
-        if (PlayerTree_Count != 0)
-        {
-            //Playerの木の本数
-            PlayerTree_Count = TerritoryManager.Instance.GetTreeCount(1);
-        }
-        if (EnemyTree_Count != 0)
-        {
-            //Enemyの木の本数
-            EnemyTree_Count = TerritoryManager.Instance.GetTreeCount(2);
-        }
-
-        if (playerObj != null)
-        {
-            //playerとの距離
-            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
-        }
-
-        //自分が優勢の時
-        if (EnemyTree_Count > PlayerTree_Count)
-        {
-            m_StateProcessor.State = m_PredominanceDecision;
-        }
-        else if (nearObj0 != null)
-        {
-            wait_time += Time.deltaTime * 1;
-            if (wait_time >= latterHalf_Thought_Time)
-            {
-                m_StateProcessor.State = m_ColorlessTree;
-            }
-        }
-        else if (playerDist >= 10 && playerDist <= player_Detection) //Playerに攻撃
-        {
-            wait_time += Time.deltaTime * 1;
-            if (wait_time >= latterHalf_Thought_Time)
-            {
-                if (player_onTree == true)
-                {
-                    if (playerDist <= player_Detection * 2 / 3)  //設定距離の半分以下の距離だったら
-                    {
-                        if (m_randomCount == 0)
-                            m_randomCount = Random.Range(1, 3);
-                        if (m_randomCount == 2)
-                        {
-                            m_randomCount = 0;
-                            m_targetPos = GetPlayerPosition();
-                            m_StateProcessor.State = m_AttackJump;
-                        }
-                        else
-                        {
-                            m_randomCount = 0;
-                            m_targetPos = GetPlayerPosition();
-                            m_StateProcessor.State = m_SearchRandom;
-                        }
-                    }
-                    else
-                    {
-                        if (m_randomCount == 0)
-                            m_randomCount = Random.Range(1, 4);
-                        if (m_randomCount == 3)
-                        {
-                            m_randomCount = 0;
-                            m_targetPos = GetPlayerPosition();
-                            m_StateProcessor.State = m_AttackJump;
-                        }
-                        else
-                        {
-                            m_randomCount = 0;
-                            m_targetPos = GetPlayerPosition();
-                            m_StateProcessor.State = m_SearchRandom;
-                        }
-                    }
-                }
-                else
-                {
-                    m_randomCount = 0;
-                    m_targetPos = GetPlayerPosition();
-                    m_StateProcessor.State = m_SearchRandom;
-                }
-            }
-        }
-        else
-        {
-            wait_time += Time.deltaTime * 1;
-            if (wait_time >= latterHalf_Thought_Time)
-            {
-                m_StateProcessor.State = m_SearchTree;
-            }
-        }
-    }
-
 
 
 

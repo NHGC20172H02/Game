@@ -185,14 +185,6 @@ namespace EnemyState
         }
     }
 
-    public class LatterHalfDecision : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "LatterHalfDecision";
-        }
-    }
-
     public class AttackJump : EnemyState
     {
         public override string getStateName()
