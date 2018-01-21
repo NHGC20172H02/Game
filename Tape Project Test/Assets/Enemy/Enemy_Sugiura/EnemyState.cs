@@ -89,6 +89,21 @@ namespace EnemyState
         }
     }
 
+    public class SearchMyTreeGauge : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "SearchMyTreeGauge";
+        }
+    }
+    public class SearchTreeGauge : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "SearchTreeGauge";
+        }
+    }
+
     public class Jumping : EnemyState
     {
         public override string getStateName()

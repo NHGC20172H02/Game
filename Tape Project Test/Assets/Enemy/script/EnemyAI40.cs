@@ -106,7 +106,6 @@ public class EnemyAI40 : Character
     PredominanceJump m_PredominanceJump = new PredominanceJump();
     PredominanceJumpMove m_PredominanceJumpMove = new PredominanceJumpMove();
 
-    LatterHalfDecision m_LatterHalfDecision = new LatterHalfDecision();
 
     AttackJump m_AttackJump = new AttackJump();
     AttackJumpMove m_AttackJumpMove = new AttackJumpMove();
@@ -138,8 +137,6 @@ public class EnemyAI40 : Character
         m_PredominanceMyTree.exeDelegate = PredominanceMyTree;
         m_PredominanceJump.exeDelegate = PredominanceJump;
         m_PredominanceJumpMove.exeDelegate = PredominanceJumpMove;
-
-        m_LatterHalfDecision.exeDelegate = LatterHalfDecision;
         
         m_AttackJump.exeDelegate = AttackJump;
         m_AttackJumpMove.exeDelegate = AttackJumpMove;
@@ -457,10 +454,6 @@ public class EnemyAI40 : Character
         {
             m_StateProcessor.State = m_PredominanceDecision;
         }
-        else if (latter_half_time <= wait_time) //後半時
-        {
-            m_StateProcessor.State = m_LatterHalfDecision;
-        } 
         else if (nearObj0 != null)
         {
             wait_time += Time.deltaTime * 1;
@@ -1031,15 +1024,8 @@ public class EnemyAI40 : Character
         //相手が優勢の時、又は、同じの時
         if (EnemyTree_Count < PlayerTree_Count || EnemyTree_Count == PlayerTree_Count)
         {
-            if (latter_half_time <= time_limit)
-            {
-                m_StateProcessor.State = m_LatterHalfDecision;
-            }
-            else
-            {
-                wait_time = 0;
-                m_StateProcessor.State = m_TreeDecision;
-            }
+            wait_time = 0;
+            m_StateProcessor.State = m_TreeDecision;
         }
         else if (wait_time >= 2)
         {
@@ -1204,75 +1190,6 @@ public class EnemyAI40 : Character
                 }
 
                 stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
-            }
-        }
-    }
-
-
-
-
-    /*** 後半の行動判断 ***/
-    private void LatterHalfDecision()
-    {
-        anim.SetBool("jump", false);
-        anim.SetBool("jumpair", false);
-        anim.SetBool("avoidance", false);
-        anim.SetBool("Attack", false);
-
-        RaycastHit hit;
-        Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
-        if (Physics.Raycast(ray, out hit, 1f, treeLayer))
-        {
-            if (hit.transform.tag == "Tree")
-            {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-
-                nearObj = hit.collider.gameObject;
-            }
-            else if (hit.transform == null)
-            {
-                m_StateProcessor.State = m_Fall;
-            }
-        }
-
-        if (PlayerTree_Count != 0)
-        {
-            //Playerの木の本数
-            PlayerTree_Count = TerritoryManager.Instance.GetTreeCount(2);
-        }
-        if (EnemyTree_Count != 0)
-        {
-            //Enemyの木の本数
-            EnemyTree_Count = TerritoryManager.Instance.GetTreeCount(1);
-        }
-
-        //自分が優勢の時
-        if (EnemyTree_Count > PlayerTree_Count)
-        {
-            m_StateProcessor.State = m_PredominanceDecision;
-        }  
-        else if (nearObj0 != null)
-        {
-            wait_time += Time.deltaTime * 1;
-            if (wait_time >= 1.0f)
-            {
-                m_StateProcessor.State = m_ColorlessTree;
-            }
-        }
-        else if (playerDist >= 10 && playerDist <= tree_Detection) //Playerに攻撃
-        {
-            m_targetPos = GetPlayerPosition();
-            m_StateProcessor.State = m_AttackJump;
-        }
-        else
-        {
-            wait_time += Time.deltaTime * 1;
-            if (wait_time >= 1.0f)
-            {
-                m_StateProcessor.State = m_SearchTree;
             }
         }
     }
