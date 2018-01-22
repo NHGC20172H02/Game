@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class Net : Connecter {
 
-	public Connecter m_StartConnecter;
-	public Connecter m_EndConnecter;
 
 	public MeshFilter m_MeshFilter;
 	public MeshCollider m_Collider;
-
-	public StringShooter m_StringShooter;
 
 	static int[] TRIANGLES = new int[]
 		{
@@ -27,9 +23,22 @@ public class Net : Connecter {
 			new Vector2(1,1),
 			new Vector2(0.5f,0)
 		};
+
 	private void Start()
 	{
 		TerritoryManager.Instance.m_Nets.Add(this);
+		m_Type = Type.Net;
+	}
+	public void Create(StringShooter stringShooter, Vector3 A, Vector3 B, Vector3 Corner)
+	{
+		m_StringShooter = stringShooter;
+		SetTriangle(A, B, Corner);
+	
+		foreach (var item in m_ConnectingTree)
+		{
+			if (!item.m_Connecting.Contains(this)) item.m_Connecting.Add(this);
+		}
+		SetSide(stringShooter.m_SideNumber);
 	}
 	public void SetTriangle(Vector3 A, Vector3 B, Vector3 Corner)
 	{
@@ -38,7 +47,6 @@ public class Net : Connecter {
 		{
 			A,B,Corner,
 			A,B,Corner
-
 		};
 		mesh.triangles = TRIANGLES;
 		mesh.uv = UV;
@@ -46,13 +54,7 @@ public class Net : Connecter {
 		m_MeshFilter.sharedMesh = mesh;
 		m_Collider.sharedMesh = mesh;
 	}
-	public void SetConnecter(Connecter Start, Connecter End)
-	{
-		m_StartConnecter = Start;
-		m_EndConnecter = End;
-		m_StartConnecter.AddString(this);
-		m_EndConnecter.AddString(this);
-	}
+
 
 
 	public override void SideUpdate(int sideNumber)
