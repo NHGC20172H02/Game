@@ -26,8 +26,6 @@ public class NearObj : MonoBehaviour {
     public GameObject m_myTreeObj3;
 
     [System.NonSerialized]
-    public GameObject m_myStringObj;
-    [System.NonSerialized]
     public GameObject m_stringObj1;
     [System.NonSerialized]
     public GameObject m_stringNet;
@@ -74,9 +72,6 @@ public class NearObj : MonoBehaviour {
 
         //2番目に近くの自分の陣地の木
         m_myTreeObj3 = MyTreeSerch3(this.gameObject, "Tree");
-
-        //近くの自分の糸
-        m_myStringObj = stringTag0(this.gameObject, "String");
 
         //近くの相手の糸
         m_stringObj1 = stringTag1(this.gameObject, "String");
@@ -416,36 +411,6 @@ public class NearObj : MonoBehaviour {
             }
 
             int number = obs.GetComponent<Tree>().m_SideNumber;
-            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
-
-            if (number == sidenumber)
-            {
-                //自身と取得したオブジェクトの距離を取得
-                tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
-
-                if (nearDis == 0 || nearDis > tmpDis)
-                {
-                    nearDis = tmpDis;
-                    targetObj = obs;
-                }
-            }
-        }
-        return targetObj;
-    }
-
-
-    //近くの自分の糸
-    public GameObject stringTag0(GameObject nowObj, string tagName)
-    {
-        GameObject targetObj = null;
-        float tmpDis;
-        float nearDis = 0;
-
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
-        {
-
-
-            int number = obs.GetComponent<StringUnit>().m_SideNumber;
             int sidenumber = GetComponent<StringShooter>().m_SideNumber;
 
             if (number == sidenumber)

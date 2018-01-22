@@ -49,7 +49,7 @@ public class EnemyAI2_2 : Character
     SearchRandom m_SearchRandom = new SearchRandom();
     Jumping m_Jumping = new Jumping();
     JumpMove m_JumpMove = new JumpMove();
-    StringMove m_StringMove = new StringMove();
+    //StringMove m_StringMove = new StringMove();
 
 
     // Use this for initialization
@@ -68,7 +68,7 @@ public class EnemyAI2_2 : Character
         m_SearchRandom.exeDelegate = SearchRandom;
         m_Jumping.exeDelegate = Jumping;
         m_JumpMove.exeDelegate = JumpMove;
-        m_StringMove.exeDelegate = StringMove;
+        //m_StringMove.exeDelegate = StringMove;
     }
 
     /*** 全状態共通の更新 ***/
