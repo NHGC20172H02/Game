@@ -52,11 +52,11 @@ public class TerritoryManager : SingletonMonoBehaviour<TerritoryManager> {
 
 	public int GetStringLenth(int sideNumber)
 	{
-		int count = 0;
+		float count = 0;
 		foreach (var item in m_Strings)
 		{
 			count += item.m_SideNumber == sideNumber ? item.m_Cost : 0;
 		}
-		return count;
+		return (int)count;
 	}
 }
