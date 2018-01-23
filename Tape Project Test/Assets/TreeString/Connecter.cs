@@ -50,6 +50,7 @@ public class Connecter : MonoBehaviour {
 	}
 	public void AddTree(Tree tree)
 	{
+		if (tree == null) return;
 		if (!m_ConnectingTree.Contains(tree)) m_ConnectingTree.Add(tree);
 	}
 }

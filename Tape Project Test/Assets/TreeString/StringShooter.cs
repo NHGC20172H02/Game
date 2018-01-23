@@ -17,6 +17,10 @@ public class StringShooter : MonoBehaviour
 	public LayerMask layerMask;
 	public Transform m_Cartridge;
 	public PlayModeData m_PlayModeData;
+
+	public bool m_IsMoving;
+	public Vector3 m_Prepos;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -27,6 +31,8 @@ public class StringShooter : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		m_IsMoving = 0.001f < Vector3.Distance(m_Prepos, transform.position);
+		m_Prepos = transform.position;
 	}
 
 	public void StringShoot(Vector3 start, Vector3 end)
