@@ -90,7 +90,7 @@ public class DebugPlayer : Character
         if (Physics.Raycast(start + Vector3.up * m_GroundJumpHeight, transform.forward, out hit, m_GroundJumpForward, m_TreeLayer))
         {
             m_Prediction.gameObject.SetActive(true);
-            m_Prediction.SetParameter(transform.position, hit.point, m_Angle);
+            m_Prediction.SetParameter(transform.position, hit.point, m_Angle, m_Shooter.m_SideNumber);
             m_Prediction.Calculation();
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
@@ -471,9 +471,9 @@ public class DebugPlayer : Character
 
             //予測線、カーソル表示
             m_Prediction.gameObject.SetActive(true);
-            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle);
+            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber);
             if (m_enemy != null)
-                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle);
+                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle, m_Shooter.m_SideNumber);
             m_Prediction.Calculation();
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))

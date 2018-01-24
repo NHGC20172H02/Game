@@ -1054,6 +1054,7 @@ GameObject:
   - component: {fileID: 124876178543123338}
   - component: {fileID: 81265773626425832}
   - component: {fileID: 45629666574476544}
+  - component: {fileID: 114848308498781474}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2490,12 +2491,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LineRenderer: {fileID: 120146597489513364}
+  m_Cursor: {fileID: 224519615952571622}
   m_HitStringPoint: {x: 0, y: 0, z: 0}
   m_HitString: {fileID: 0}
   m_HitNet: {fileID: 0}
   m_IsString: 0
   m_Collision: {fileID: 1449203891991992, guid: ce0bd3666db87844e9d3683332d63656,
     type: 2}
+  m_Colors:
+  - {r: 0, g: 0.7058824, b: 0, a: 0.23529412}
+  - {r: 0.7058824, g: 0, b: 0, a: 0.23529412}
+  - {r: 0, g: 0, b: 0.7058824, a: 0.23529412}
 --- !u!114 &114483850767830702
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2588,7 +2594,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_JumpSpeed: 1
   m_Speed: 5
-  m_JumpLimit: 75
+  m_JumpLimit: 25
   m_Angle: 30
   m_GroundJumpHeight: 5
   m_GroundJumpForward: 5
@@ -2609,6 +2615,7 @@ MonoBehaviour:
   m_EnemyLayer:
     serializedVersion: 2
     m_Bits: 16384
+  m_JumpMode: 0
   m_Prediction: {fileID: 114430037697892728}
   m_Animator: {fileID: 95038766648389830}
   m_Shooter: {fileID: 114897817668162016}
@@ -2655,6 +2662,18 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &114848308498781474
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1925801734536530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 9b3de62af3b8e02478b6bdc87eec6f18, type: 2}
 --- !u!114 &114897817668162016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2681,6 +2700,8 @@ MonoBehaviour:
     m_Bits: 512
   m_Cartridge: {fileID: 0}
   m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
+  m_IsMoving: 0
+  m_Prepos: {x: 0, y: 0, z: 0}
 --- !u!120 &120146597489513364
 LineRenderer:
   m_ObjectHideFlags: 1
