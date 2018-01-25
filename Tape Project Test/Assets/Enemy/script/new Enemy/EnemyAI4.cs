@@ -50,6 +50,7 @@ public partial class EnemyAI4 : Character
     float playerDist;
     float m_gauge; //自分がいる木のゲージ量(-がEnemy、+がPlayer)
     float near_Gauge; //近くの木のゲージ量
+    float near_Gauge2; //２番目に近くの木のゲージ量
     float playerNearDist = 17; //Playerとの距離（近くの範囲）
 
     int m_moveCount;   //歩く時の方向決め
@@ -65,8 +66,11 @@ public partial class EnemyAI4 : Character
     bool bodyBlow = true;
     bool noGaugeJump = false;
 
+    bool on_trigger = false;
+
     //検索した木
     GameObject nearObj0;
+    GameObject nearObj02;
     [System.NonSerialized]
     public GameObject nearObj;
     GameObject nearObj2;
@@ -172,6 +176,9 @@ public partial class EnemyAI4 : Character
     {
         //誰の陣地でもない近くの木
         nearObj0 = GetComponent<NearObj>().m_nearObj0;
+        //誰の陣地でもない２番目に近くの木
+        nearObj02 = GetComponent<NearObj>().m_nearObj02;
+        if (nearObj02 == null) return;
 
         //近かったオブジェクト（木）を取得
         nearObj2 = GetComponent<NearObj>().m_nearObj2;
@@ -466,6 +473,8 @@ public partial class EnemyAI4 : Character
         anim.SetBool("avoidance", false);
         anim.SetBool("Attack", false);
 
+        on_trigger = false;
+
         //近くの自分の陣地ではない木との距離
         if (nearObj40 != null)
         {
@@ -668,13 +677,40 @@ public partial class EnemyAI4 : Character
     /*** 無色の木を検索 ***/
     private void ColorlessTree()
     {
+        near_Gauge = nearObj0.GetComponent<Tree>().m_TerritoryRate;
+        near_Gauge2 = nearObj02.GetComponent<Tree>().m_TerritoryRate;
+
         float dist = Vector3.Distance(nearObj0.transform.position, this.transform.position);
 
         if (dist <= tree_Detection)
         {
-            eyeObj = nearObj0;
-            m_targetPos = GetUpPosition00();
-            m_StateProcessor.State = m_Jumping;
+            if(near_Gauge <= 1)
+            {
+                eyeObj = nearObj0;
+                m_targetPos = GetUpPosition00();
+                m_StateProcessor.State = m_Jumping;
+            }
+            else if(near_Gauge2 <= 1)
+            {
+                eyeObj = nearObj02;
+                m_targetPos = GetUpPosition02();
+                m_StateProcessor.State = m_Jumping;
+            }
+            else //相手のゲージが少ない方
+            {
+                if(near_Gauge2 >= near_Gauge)
+                {
+                    eyeObj = nearObj0;
+                    m_targetPos = GetUpPosition00();
+                    m_StateProcessor.State = m_Jumping;
+                }
+                if(near_Gauge >= near_Gauge2)
+                {
+                    eyeObj = nearObj02;
+                    m_targetPos = GetUpPosition02();
+                    m_StateProcessor.State = m_Jumping;
+                }
+            }
         }
         else
         {
@@ -977,7 +1013,7 @@ public partial class EnemyAI4 : Character
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         { 
             transform.position = jump_end;
-            //m_Shooter.StringShoot(jump_start, jump_end);
+            m_Shooter.StringShoot(jump_start, jump_end);
             m_StateProcessor.State = m_TreeDecision;
         }
 
@@ -1409,14 +1445,14 @@ public partial class EnemyAI4 : Character
         if (col.transform.tag == "Ground")
         {
             ResetBodyblow();
-
+            on_trigger = true;
             //m_StateProcessor.State = m_GroundMove;
         }
     }
 
     private void OnTriggerExit(Collider col)
     {
-        if (col.transform.tag == "Tree")
+        if (col.transform.tag == "Tree" && on_trigger == false)
         {
             if(m_StateProcessor.State == m_TreeMove)
             {

@@ -6,6 +6,8 @@ public class NearObj : MonoBehaviour {
     [System.NonSerialized]
     public GameObject m_nearObj0;
     [System.NonSerialized]
+    public GameObject m_nearObj02;
+    [System.NonSerialized]
     public GameObject m_nearObj;
     [System.NonSerialized]
     public GameObject m_nearObj2;
@@ -63,6 +65,8 @@ public class NearObj : MonoBehaviour {
 
         //誰の陣地でもない近くの木
         m_nearObj0 = serchTag0(this.gameObject, "Tree");
+        //誰の陣地でもない２番目に近くの木
+        m_nearObj02 = serchTag02(this.gameObject, "Tree");
 
         //近くの自分の陣地の木
         m_myTreeObj = MyTreeSerch(this.gameObject, "Tree");
@@ -297,6 +301,41 @@ public class NearObj : MonoBehaviour {
         {
 
             if (m_nearObj == obs)
+            {
+                continue;
+            }
+            int number = obs.GetComponent<Tree>().m_SideNumber;
+            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
+
+            if (number == 0)
+            {
+                //自身と取得したオブジェクトの距離を取得
+                tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
+
+                if (nearDis == 0 || nearDis > tmpDis)
+                {
+                    nearDis = tmpDis;
+                    targetObj = obs;
+                }
+            }
+        }
+        return targetObj;
+    }
+    //誰の陣地でもない近くの木
+    public GameObject serchTag02(GameObject nowObj, string tagName)
+    {
+        GameObject targetObj = null;
+        float tmpDis;
+        float nearDis = 0;
+
+        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
+        {
+
+            if (m_nearObj == obs)
+            {
+                continue;
+            }
+            if (m_nearObj0 == obs)
             {
                 continue;
             }

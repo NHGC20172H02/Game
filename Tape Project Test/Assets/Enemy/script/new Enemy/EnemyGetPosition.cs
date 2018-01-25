@@ -27,6 +27,12 @@ public partial class EnemyAI4 {
     {
         return new Vector3(nearObj0.transform.position.x, Random.Range(4, 22), nearObj0.transform.position.z);
     }
+    //誰の陣地でもない近くの木
+    public Vector3 GetUpPosition02()
+    {
+        return new Vector3(nearObj02.transform.position.x, Random.Range(4, 22), nearObj02.transform.position.z);
+    }
+
     //自分の陣地ではない近くの木
     public Vector3 GetUpPosition40()
     {
