@@ -3725,7 +3725,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5, z: 0.8}
+  m_Size: {x: 1, y: 2, z: 1.5}
   m_Center: {x: -0.029401183, y: 0, z: -0.1}
 --- !u!81 &81284783580445472
 AudioListener:
@@ -3877,12 +3877,10 @@ MonoBehaviour:
   m_speed: 3
   m_Shooter: {fileID: 114130872222264282}
   ground_detection: 30
-  tree_Detection: 150
-  player_Detection: 100
-  thought_Time: 2
-  latterHalf_Thought_Time: 1
-  predominance_Thought_Time: 2
-  latter_half_time: 60
+  tree_Detection: 100
+  player_Detection: 80
+  thought_Gauge: -100
+  predominance_Thought_Gauge: -100
 --- !u!114 &114939046867580062
 MonoBehaviour:
   m_ObjectHideFlags: 1

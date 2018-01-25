@@ -155,7 +155,7 @@ public class Tree : Connecter
 		}
 		foreach (var tree in m_ConnectingTree)
 		{
-			m_ActivCounts[tree.m_SideNumber, 2]++;
+			m_ActivCounts[tree.m_SideNumber-1, 2]++;
 		}
 	}
 	public override void SideUpdate(int sideNumber)
