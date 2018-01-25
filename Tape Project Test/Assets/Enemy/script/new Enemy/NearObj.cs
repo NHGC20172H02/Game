@@ -50,9 +50,9 @@ public class NearObj : MonoBehaviour {
             m_nearObj = GetComponent<EnemyAI_N>().nearObj;
 
         //近かったオブジェクト（木）を取得
-        m_nearObj2 = serchTag(this.gameObject, "Tree");
+        m_nearObj2 = RandomSerchTag(this.gameObject, "Tree");
         //2番目のオブジェクト（木）
-        m_nearObj3 = serchTag2(this.gameObject, "Tree");
+        m_nearObj3 = RandomSerchTag2(this.gameObject, "Tree");
         //3番目のオブジェクト（木）
         m_nearObj4 = RandomSerchTag3(this.gameObject, "Tree");
 
@@ -90,7 +90,7 @@ public class NearObj : MonoBehaviour {
 
 
     //指定されたタグの中で最も近いオブジェクト
-    public GameObject serchTag(GameObject nowObj, string tagName)
+    public GameObject RandomSerchTag(GameObject nowObj, string tagName)
     {
         //距離用一時変換
         float tmpDis;
@@ -128,7 +128,7 @@ public class NearObj : MonoBehaviour {
     }
 
     //指定されたタグの中で2番目近いオブジェクト
-    public GameObject serchTag2(GameObject nowObj, string tagName)
+    public GameObject RandomSerchTag2(GameObject nowObj, string tagName)
     {
         //距離用一時変換
         float tmpDis;
