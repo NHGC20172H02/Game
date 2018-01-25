@@ -50,7 +50,7 @@ public partial class EnemyAI4 : Character
     float playerDist;
     float m_gauge; //自分がいる木のゲージ量(-がEnemy、+がPlayer)
     float near_Gauge; //近くの木のゲージ量
-    float playerNearDist = 15; //Playerとの距離（近くの範囲）
+    float playerNearDist = 17; //Playerとの距離（近くの範囲）
 
     int m_moveCount;   //歩く時の方向決め
     float wait_time;   //行動停止時間
@@ -136,7 +136,6 @@ public partial class EnemyAI4 : Character
     // Use this for initialization
     protected override void Start()
     {
-        startRan = Random.Range(1, 3);
         anim = GetComponent<Animator>();
 
         m_StateProcessor.State = m_GroundMove;
@@ -324,7 +323,7 @@ public partial class EnemyAI4 : Character
         //    m_StateProcessor.State = m_Fall;
         //}
         //Debug.Log(nearObj.transform.name);
-        Debug.Log(m_StateProcessor.State);
+        //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
@@ -336,6 +335,9 @@ public partial class EnemyAI4 : Character
     /*** 地面移動 ***/
     private void GroundMove()
     {
+        if(startRan != 1 && startRan != 2)
+        startRan = Random.Range(1, 3);
+
         anim.SetBool("move_front", true);
    
         if (startRan == 1)
@@ -372,6 +374,7 @@ public partial class EnemyAI4 : Character
             wait_time += Time.deltaTime * 1;
             if (wait_time >= 1)
             {
+                startRan = 0;
                 m_targetPos = GetPosition3();
                 m_StateProcessor.State = m_GroundJumping;
             }
@@ -581,6 +584,7 @@ public partial class EnemyAI4 : Character
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+        int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
         if (Physics.SphereCast(ray, 1f, out hit, 1f, treeLayer))
         {
             transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
@@ -597,6 +601,18 @@ public partial class EnemyAI4 : Character
             //{
             //    m_StateProcessor.State = m_Fall;
             //}
+        }
+        if (Physics.SphereCast(ray, 1f, out hit, 1f, groundLayer))
+        {
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+            anim.SetBool("move_front", false);
+            anim.SetBool("move_back", false);
+            anim.SetBool("move_left", false);
+            anim.SetBool("move_right", false);
+            m_StateProcessor.State = m_GroundMove;
         }
 
         if (m_moveCount == 1) //前移動
@@ -1338,6 +1354,10 @@ public partial class EnemyAI4 : Character
     private void Fall()
     {
         AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
+        anim.SetBool("move_front", false);
+        anim.SetBool("move_back", false);
+        anim.SetBool("move_left", false);
+        anim.SetBool("move_right", false);
 
         anim.SetBool("trap", true);
         if (animInfo.normalizedTime < 1.0f)
@@ -1390,7 +1410,7 @@ public partial class EnemyAI4 : Character
         {
             ResetBodyblow();
 
-            m_StateProcessor.State = m_GroundMove;
+            //m_StateProcessor.State = m_GroundMove;
         }
     }
 
@@ -1400,6 +1420,7 @@ public partial class EnemyAI4 : Character
         {
             if(m_StateProcessor.State == m_TreeMove)
             {
+                anim.SetBool("jump", true);
                 m_StateProcessor.State = m_Fall;
             }
         }
