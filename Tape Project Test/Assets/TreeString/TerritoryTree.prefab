@@ -170,7 +170,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 8cf2cb5355a89c44caf3e4904a5008f6, type: 2}
+  - {fileID: 2100000, guid: 4743ac2607c1881439b4e834cdf434d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -311,16 +311,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b40b69e8e0ecb0e4fb658701aece526c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Type: 0
   m_SideNumber: 0
+  m_StringShooter: {fileID: 0}
+  m_StartConnecter: {fileID: 0}
+  m_EndConnecter: {fileID: 0}
   m_Child: []
+  m_ConnectingTree: []
   m_Materials:
-  - {fileID: 2100000, guid: 0fdf996ea5c17c64295d5ee9db2dafe9, type: 2}
-  - {fileID: 2100000, guid: 50be9aa632e1ff244b82659e2757cdfe, type: 2}
-  - {fileID: 2100000, guid: 9d595b7477fc19345a13a54c4f053ac8, type: 2}
+  - {fileID: 2100000, guid: 4743ac2607c1881439b4e834cdf434d8, type: 2}
+  - {fileID: 2100000, guid: f4a8f2485aba7264090264c13ebef91a, type: 2}
+  - {fileID: 2100000, guid: 5aa301b5c694f8c4893f534d1b884c1d, type: 2}
+  m_Zahyou: 
   m_Gauge: {fileID: 114747284519522566}
+  m_TerritoryRateMAX: 0
   m_TerritoryRate: 0
   m_TerritoryRatePre: 0
-  m_Renderer: {fileID: 23736926398417486}
+  m_Renderer: {fileID: 23433342928611018}
+  m_Connecting: []
+  m_IsHitChara: 0000
+  m_IsMoveChara: 0000
 --- !u!114 &114747284519522566
 MonoBehaviour:
   m_ObjectHideFlags: 1
