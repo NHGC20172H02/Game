@@ -365,9 +365,22 @@ public partial class Player : Character
             && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp));
     }
 
+    //自分の乗っている木を取得
+    public GameObject GetOnTree()
+    {
+        if (m_hitinfo.collider == null) return null;
+        var state = m_StateManager.StateProcassor.State;
+        if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
+            return null;
+        return m_hitinfo.collider.gameObject;
+    }
+    //ターゲットしている木を取得
     public GameObject GetTargetTree()
     {
-        if (jump_target.collider.tag != "Tree") return null;
+        if (jump_target.collider == null) return null;
+        var state = m_StateManager.StateProcassor.State;
+        if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
+            return null;
         return jump_target.collider.gameObject;
     }
 
