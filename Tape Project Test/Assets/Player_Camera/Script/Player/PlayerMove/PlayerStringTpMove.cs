@@ -66,9 +66,10 @@ public partial class Player {
         Vector3 start = transform.position + transform.up * 0.5f;
         Vector3 origin = start + (m_Camera.position - transform.position).normalized;
         Ray ray = new Ray(origin, m_Camera.forward);
-        int[] layers = new int[2];
+        int[] layers = new int[3];
         layers[0] = m_StringLayer;
-        layers[1] = m_NetLayer;
+        layers[1] = m_TreeLayer;
+        layers[2] = m_NetLayer;
         if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
