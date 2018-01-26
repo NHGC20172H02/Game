@@ -21,7 +21,6 @@ public class GameStart : MonoBehaviour {
 
     public GameObject panel;
     
-
     public GameObject select;
     public GameObject select4;
     public GameObject select5;
@@ -44,14 +43,11 @@ public class GameStart : MonoBehaviour {
 
         panel.SetActive(true);
         
-
         select = myButtons.m_Select;
         select4 = myButtons.m_Select4;
         select5 = myButtons.m_Select5;
         select6 = myButtons.m_Select6;
         select7 = myButtons.m_Select7;
-
-        
     }
 
 	// Update is called once per frame
@@ -83,7 +79,7 @@ public class GameStart : MonoBehaviour {
 
         m_TitleCamera.SetActive(false);
 
-        panel.SetActive(false);
+        panel.SetActive(true);
         select4.SetActive(false);
         select5.SetActive(false);
         select6.SetActive(true);

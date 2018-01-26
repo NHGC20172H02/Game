@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BattleScene : MonoBehaviour {
 	public Animator m_UIAnimator;
-	public float m_Timer = 180;
+	public float m_Timer = 600;
 	public Text m_TimerUI;
 
     enum GameState
@@ -50,6 +50,7 @@ public class BattleScene : MonoBehaviour {
         {
             m_Timer -= Time.deltaTime;
         }
-		m_TimerUI.text = ((int)(m_Timer + 1)).ToString();
+		var time = (int)(m_Timer + 1);
+		m_TimerUI.text = (time / 60).ToString("00") +":"+ (time % 60).ToString("00");
 	}
 }

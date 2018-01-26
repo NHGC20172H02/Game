@@ -24,7 +24,6 @@ public partial class Player : Character
     public float jumpLower = 5f;
     public Transform m_Camera;
     public LayerMask m_GroundLayer, m_TreeLayer, m_StringLayer, m_NetLayer, m_EnemyLayer;
-    public JumpMode m_JumpMode = JumpMode.NormalJump;
     public PredictionLine m_Prediction;
     public Animator m_Animator;
     public StringShooter m_Shooter;
@@ -42,6 +41,7 @@ public partial class Player : Character
     private Vector3 move_start;                         //ジャンプ始点
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
+    private JumpMode m_JumpMode = JumpMode.NormalJump;
     private bool isTarget = false;
     private bool isEscape = false;
     private int waitFrame = 0;
@@ -154,12 +154,12 @@ public partial class Player : Character
                     return;
                 }
             }
-            if (jump_target.transform.tag == "String")
-                if (jump_target.transform.GetComponent<StringUnit>().m_SideNumber != m_Shooter.m_SideNumber)
+            if (jump_target.transform.tag == "String" || jump_target.transform.tag == "Net")
+                if (jump_target.transform.GetComponent<Connecter>().m_SideNumber != m_Shooter.m_SideNumber)
                     return;
-            if (jump_target.collider.tag == "Net")
-                if (jump_target.transform.GetComponent<Net>().m_SideNumber != m_Shooter.m_SideNumber)
-                    return;
+            //if (jump_target.collider.tag == "Net")
+            //    if (jump_target.transform.GetComponent<Net>().m_SideNumber != m_Shooter.m_SideNumber)
+            //        return;
 
             float dis = Vector3.Distance(transform.position, jump_target.point);
             if (dis > m_JumpLimit)
@@ -265,7 +265,7 @@ public partial class Player : Character
         }
         if (result.collider == null) return;
         m_hitinfo = result;
-        if (result.collider.tag == "Net")
+        if (result.collider.tag == "Net" || result.collider.tag == "Tree")
         {
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
         }
@@ -330,6 +330,8 @@ public partial class Player : Character
                         m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
                     else
                         m_Shooter.StringShoot(move_start, move_end);
+                    if (m_hitinfo.collider != jump_target.collider)
+                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= Vector3.Distance(move_start, move_end);
                     break;
                 }
         }
@@ -361,6 +363,25 @@ public partial class Player : Character
         var state = m_StateManager.StateProcassor.State;
         return (m_hitinfo.collider.tag == "Tree" 
             && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp));
+    }
+
+    //自分の乗っている木を取得
+    public GameObject GetOnTree()
+    {
+        if (m_hitinfo.collider == null) return null;
+        var state = m_StateManager.StateProcassor.State;
+        if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
+            return m_hitinfo.collider.gameObject;
+        return null;
+    }
+    //ターゲットしている木を取得
+    public GameObject GetTargetTree()
+    {
+        if (jump_target.collider == null) return null;
+        var state = m_StateManager.StateProcassor.State;
+        if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
+            return jump_target.collider.gameObject;
+        return null;
     }
 
     void OnTriggerEnter(Collider other)

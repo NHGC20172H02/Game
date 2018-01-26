@@ -3805,12 +3805,14 @@ MonoBehaviour:
   m_Strings: []
   m_Net: {fileID: 1779774980515568, guid: 119e0faa09e8d32429c12ac35bb87826, type: 2}
   m_NetAngleLimit: 40
-  m_NetCostLimit: 3
+  m_NetCostLimit: 30
   layerMask:
     serializedVersion: 2
     m_Bits: 512
   m_Cartridge: {fileID: 0}
   m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
+  m_IsMoving: 0
+  m_Prepos: {x: 0, y: 0, z: 0}
 --- !u!114 &114400748612540686
 MonoBehaviour:
   m_ObjectHideFlags: 1

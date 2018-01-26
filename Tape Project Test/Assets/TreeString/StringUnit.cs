@@ -34,7 +34,7 @@ public class StringUnit : Connecter
 		if (Cartridge != null)
 		{
 			m_StringStock = Instantiate(m_StringStockPrefab, Cartridge).GetComponent<StringStock>();
-			m_StringStock.SetWidth(4.8f * m_Cost * 0.1f);
+			m_StringStock.SetCost(m_Cost);
 		}
 		foreach (var item in m_ConnectingTree)
 		{
