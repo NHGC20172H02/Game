@@ -371,8 +371,8 @@ public partial class Player : Character
         if (m_hitinfo.collider == null) return null;
         var state = m_StateManager.StateProcassor.State;
         if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
-            return null;
-        return m_hitinfo.collider.gameObject;
+            return m_hitinfo.collider.gameObject;
+        return null;
     }
     //ターゲットしている木を取得
     public GameObject GetTargetTree()
@@ -380,8 +380,8 @@ public partial class Player : Character
         if (jump_target.collider == null) return null;
         var state = m_StateManager.StateProcassor.State;
         if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
-            return null;
-        return jump_target.collider.gameObject;
+            return jump_target.collider.gameObject;
+        return null;
     }
 
     void OnTriggerEnter(Collider other)
