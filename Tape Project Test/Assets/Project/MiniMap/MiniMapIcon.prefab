@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222092362268281522}
   - component: {fileID: 114009304751745484}
   - component: {fileID: 114915617382622796}
+  - component: {fileID: 223734466388311268}
   m_Layer: 16
   m_Name: MiniMapIcon
   m_TagString: Untagged
@@ -75,6 +76,26 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1964656498366062}
+--- !u!223 &223734466388311268
+Canvas:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1964656498366062}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 1
+  m_TargetDisplay: 0
 --- !u!224 &224185127104632182
 RectTransform:
   m_ObjectHideFlags: 1
