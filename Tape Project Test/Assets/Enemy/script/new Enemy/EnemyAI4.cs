@@ -15,16 +15,14 @@ public partial class EnemyAI4 : Character
     private Vector3 jump_end;
     private RaycastHit jump_target;         //ジャンプの対象
     [Header("地面から跳べる木の探知範囲")]
-    public float ground_detection = 15.0f;
+    public float ground_detection = 10.0f;
     [Header("木の探知範囲")]
     public float tree_Detection = 100.0f;
     [Header("Playerの探知範囲")]
     public float player_Detection = 80.0f;
 
-    [Header("Enemyのゲージのためる量（通常時）")]
+    [Header("Enemyのゲージのためる量")]
     public float thought_Gauge = -100.0f;
-    [Header("Enemyのゲージのためる量（優勢時）")]
-    public float predominance_Thought_Gauge = -100.0f;
     //糸を奪う失敗する確率(1～10)
     int m_netrob = 4;
 
@@ -330,7 +328,7 @@ public partial class EnemyAI4 : Character
         //{
         //    m_StateProcessor.State = m_Fall;
         //}
-        //Debug.Log(nearObj.transform.name);
+        //Debug.Log(m_randomCount);
         //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
@@ -343,20 +341,20 @@ public partial class EnemyAI4 : Character
     /*** 地面移動 ***/
     private void GroundMove()
     {
-        if(m_randomCount != 1 && m_randomCount != 2)
+        if(m_randomCount == 0)
         m_randomCount = Random.Range(1, 3);
 
         anim.SetBool("move_front", true);
-   
+
+        //歩く目標位置
         if (m_randomCount == 1)
         {
             m_targetPos = GetPosition();
-            m_randomCount = 0;
         }
         if (m_randomCount == 2)
         {
+            m_randomCount = 5;
             m_targetPos = GetPosition2();
-            m_randomCount = 0;
         }
 
         
@@ -372,9 +370,8 @@ public partial class EnemyAI4 : Character
             }
         }
 
-
         float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
-
+        //木に飛び乗る
         if (dist <= ground_detection)
         {
             anim.SetBool("move_front", false);
@@ -405,6 +402,10 @@ public partial class EnemyAI4 : Character
         anim.SetBool("jumpair", false);
         anim.SetBool("avoidance", false);
         anim.SetBool("move_front", true);
+
+        anim.SetBool("move_back", false);
+        anim.SetBool("move_left", false);
+        anim.SetBool("move_right", false);
 
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
@@ -437,9 +438,8 @@ public partial class EnemyAI4 : Character
 
                 m_targetPos = GetPosition();
 
-
                 float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
-
+                //木に飛び乗る
                 if (dist <= ground_detection)
                 {
                     anim.SetBool("move_front", false);
@@ -1294,7 +1294,7 @@ public partial class EnemyAI4 : Character
                 m_StateProcessor.State = m_SearchTreeGauge;
             }
         }
-        else if (m_gauge <= predominance_Thought_Gauge)
+        else if (m_gauge <= thought_Gauge)
         {
             m_StateProcessor.State = m_PredominanceStringCount;
         }
