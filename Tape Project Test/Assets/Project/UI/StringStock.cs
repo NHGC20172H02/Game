@@ -9,11 +9,14 @@ public class StringStock : MonoBehaviour {
 	public Sprite m_PlayerImage;
 	public Sprite m_EnemyImage;
 	public float m_Width;
+
+	public float m_Height;
+	public float m_WidthMAX;
 	// Use this for initialization
 	IEnumerator Start () {
 		for (float timer = 0; timer < 1.0f; timer += Time.deltaTime)
 		{
-			m_Image.rectTransform.sizeDelta = new Vector2(m_Width*timer, 75);
+			m_Image.rectTransform.sizeDelta = new Vector2(m_Width*timer, m_Height);
 			yield return null;
 		}
 		transform.localScale = Vector3.one;
@@ -29,14 +32,14 @@ public class StringStock : MonoBehaviour {
 	{
 		for (float timer = 1; timer > 0.0f; timer-=Time.deltaTime)
 		{
-			m_Image.rectTransform.sizeDelta = new Vector2(m_Width*timer, 75);
+			m_Image.rectTransform.sizeDelta = new Vector2(m_Width*timer, m_Height);
 			yield return null;
 		}
 		Destroy(gameObject);
 	}
 
-	public void SetWidth(float width)
+	public void SetCost(float cost)
 	{
-		m_Width = width;
+		m_Width = cost * 0.001f * m_WidthMAX;
 	}
 }
