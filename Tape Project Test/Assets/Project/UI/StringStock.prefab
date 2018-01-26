@@ -44,6 +44,8 @@ MonoBehaviour:
   m_PlayerImage: {fileID: 21300000, guid: f86ab367696bb764d8c06f2ea7f8891b, type: 3}
   m_EnemyImage: {fileID: 21300000, guid: 226ce3b2316345f4e800666c8e90e9b2, type: 3}
   m_Width: 0
+  m_Height: 69
+  m_WidthMAX: 658
 --- !u!114 &114818723342479244
 MonoBehaviour:
   m_ObjectHideFlags: 1
