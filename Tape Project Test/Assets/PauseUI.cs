@@ -26,20 +26,26 @@ public class PauseUI : MonoBehaviour
 
         audioSource = gameObject.GetComponent<AudioSource>();
 
-        EventSystem.current.SetSelectedGameObject(m_ReturnToGame);
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetButtonDown("Start"))
+        if (Input.GetButtonDown("Start") && PauseManager.Instance.Pausing())
         {
+            PauseManager.Instance.Pause(false);
+            
             m_PausePanel.SetActive(true);
             m_PauseImage.SetActive(true);
             m_PauseBackGround.SetActive(true);
             m_ReturnToGame.SetActive(true);
             m_ReturnToTitle.SetActive(true);
 
+            audioSource.Play();
+
+            // 一旦わざと選択を解除してから、Return to Gameを選択しなおす。
+            //そうしないと、Highlightedトリガーが発行されないため
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(m_ReturnToGame);
         }
 

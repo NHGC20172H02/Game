@@ -16,8 +16,6 @@ public class MyButtons : MonoBehaviour {
     public GameObject titleCamera;
     public GameObject selectCamera;
 
-    
-
     public GameObject m_Select;
     public GameObject m_Select4;
     public GameObject m_Select5;

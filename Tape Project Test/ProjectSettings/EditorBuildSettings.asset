@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Title/Title.unity
     guid: 0916e86a781a4ee4db31fa428f9b47ec
   - enabled: 1
+    path: Assets/SpownSelect/SpownSelect.unity
+    guid: b29af3f926c7dfa41889f05bc441260f
+  - enabled: 1
     path: Assets/Scene.unity
     guid: 4dfe30ce81515c64bb5f990c21189ec8
   - enabled: 1
