@@ -1486,7 +1486,6 @@ MonoBehaviour:
   tree_Detection: 150
   player_Detection: 100
   thought_Gauge: -70
-  predominance_Thought_Gauge: -90
 --- !u!95 &236844023
 Animator:
   serializedVersion: 3
@@ -6568,6 +6567,34 @@ Transform:
   - {fileID: 451414253}
   m_Father: {fileID: 282846054}
   m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1029855278
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1029855279}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1029855279
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1029855278}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 207.08, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1033221293
 GameObject:
@@ -12308,8 +12335,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1888384749}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 217, y: 122, z: 0}
-  m_LocalScale: {x: 0.5425, y: 0.5425, z: 0.5425}
+  m_LocalPosition: {x: 222.5, y: 125, z: 0}
+  m_LocalScale: {x: 0.55625, y: 0.55625, z: 0.55625}
   m_Children:
   - {fileID: 753977532}
   m_Father: {fileID: 0}
