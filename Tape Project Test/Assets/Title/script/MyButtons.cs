@@ -74,6 +74,7 @@ public class MyButtons : MonoBehaviour {
             }
         }
 
+
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
 
         if (currentSelected != lastSelectedGameObject && lastSelectedGameObject != null)
