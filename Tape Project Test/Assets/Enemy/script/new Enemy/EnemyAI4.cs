@@ -33,6 +33,7 @@ public partial class EnemyAI4 : Character
     int EnemyTree_Count;  //Enemyの木の本数
     int color_number;     //木の色
     int myString_number;  //自分の糸の色
+    int player_number;    //Playerの乗っている木の色
 
     //木に付いている糸の数の差
     int Thread_count_difference1;
@@ -64,8 +65,10 @@ public partial class EnemyAI4 : Character
     bool player_onTree;
     bool bodyBlow = true;
     bool noGaugeJump = false;
+    bool attack;
 
     bool on_trigger = false;
+    bool speed_attack = false;
 
     //検索した木
     GameObject nearObj0;
@@ -88,6 +91,7 @@ public partial class EnemyAI4 : Character
     GameObject stringNet;  //近くの相手のネット
 
     GameObject playerObj;
+    GameObject playerObj_Tree;
 
     [System.NonSerialized]
     public GameObject reObj;
@@ -188,7 +192,7 @@ public partial class EnemyAI4 : Character
         nearObj3 = GetComponent<NearObj>().m_nearObj3;
 
         //3番目のオブジェクト（木）
-        nearObj4 = GetComponent<NearObj>().m_nearObj4;     
+        nearObj4 = GetComponent<NearObj>().m_nearObj4;
 
         //近くの自分の陣地ではない木
         nearObj40 = GetComponent<NearObj>().m_nearObj40;
@@ -218,7 +222,7 @@ public partial class EnemyAI4 : Character
 
         //Playerの木の本数
         PlayerTree_Count = TerritoryManager.Instance.GetTreeCount(1);
-        
+
         //Enemyの木の本数
         EnemyTree_Count = TerritoryManager.Instance.GetTreeCount(2);
 
@@ -276,7 +280,7 @@ public partial class EnemyAI4 : Character
                 mytreecount3[item.m_SideNumber]++;
             }
         }
- 
+
         if (nearObj != null)
         {
             //自分のいる木のゲージ量
@@ -315,12 +319,12 @@ public partial class EnemyAI4 : Character
         }
         //近くの相手の糸の距離
         if (stringObj1 != null)
-        { 
+        {
             distThread = Vector3.Distance(stringObj1.transform.position, this.transform.position);
         }
 
         //近くの自分の木の距離
-        if(myTreeObj != null)
+        if (myTreeObj != null)
         {
             myTreeDist = Vector3.Distance(myTreeObj.transform.position, this.transform.position);
         }
@@ -336,8 +340,8 @@ public partial class EnemyAI4 : Character
         //    m_StateProcessor.State = m_Fall;
         //}
 
-        //Debug.Log(PlayerTree_Count);
-        Debug.Log(m_StateProcessor.State);
+        //Debug.Log(player_number);
+        //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
@@ -530,7 +534,7 @@ public partial class EnemyAI4 : Character
             }
         }
 
-        
+
         //自分が優勢の時
         if (EnemyTree_Count > PlayerTree_Count)
         {
@@ -539,8 +543,16 @@ public partial class EnemyAI4 : Character
         else if (playerDist > 25 && playerDist <= player_Detection &&
            player_onTree == playerObj.GetComponent<Player>().IsOnTree()) //Playerに攻撃、playerが木にいるか？
         {
-            if (m_gauge <= -75f)
+            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
+            if (playerObj != null)
+                playerObj_Tree = playerObj.GetComponent<Player>().GetOnTree();
+            if (playerObj_Tree != null)
+                player_number = playerObj_Tree.GetComponent<Tree>().m_SideNumber;
+
+            if (sidenumber == player_number)
             {
+                wait_time = 0;
+                speed_attack = true;
                 m_playerTarget = GetPlayerPosition();
                 m_StateProcessor.State = m_AttackJump;
             }
@@ -1061,6 +1073,25 @@ public partial class EnemyAI4 : Character
                     jump_end = jump_target.point;
                     m_StateProcessor.State = m_JumpMove;
                 }
+
+                //Playerに攻撃、playerが赤い木にいるか？
+                if (playerDist > 25 && playerDist <= player_Detection &&
+                    player_onTree == playerObj.GetComponent<Player>().IsOnTree())
+                {
+                    int sidenumber = GetComponent<StringShooter>().m_SideNumber;
+
+                    if (playerObj != null)
+                        playerObj_Tree = playerObj.GetComponent<Player>().GetOnTree();
+                    if (playerObj_Tree != null)
+                        player_number = playerObj_Tree.GetComponent<Tree>().m_SideNumber;
+                    if (sidenumber == player_number)
+                    {
+                        wait_time = 0;
+                        speed_attack = true;
+                        m_playerTarget = GetPlayerPosition();
+                        m_StateProcessor.State = m_AttackJump;
+                    }
+                }
             }
         }
         else
@@ -1128,7 +1159,7 @@ public partial class EnemyAI4 : Character
                 }
             }
         }
-
+        
         bodyBlow = true;
 
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
@@ -1146,14 +1177,23 @@ public partial class EnemyAI4 : Character
             }
             else if (jump_target.transform == playerObj.transform && playerDist <= player_Detection) //飛びたいところの間に障害物がなければ
             {
-                if (m_gauge <= thought_Gauge || color_number == myString_number)　//ゲージをためる
+                //ゲージをためる
+                if (m_gauge <= thought_Gauge || color_number == myString_number || speed_attack == true)
                 {
-                    dead_bool = true;
-                    net_bool = true;
-                    anim.SetBool("jump", true);
-                    jump_start = transform.position;
-                    jump_end = jump_target.point;
-                    m_StateProcessor.State = m_AttackJumpMove;
+                    attack = true;
+
+                    //1秒後に攻撃
+                    wait_time += Time.deltaTime + 1;
+                    if (wait_time >= 1)
+                    {
+                        attack = false;
+                        dead_bool = true;
+                        net_bool = true;
+                        anim.SetBool("jump", true);
+                        jump_start = transform.position;
+                        jump_end = jump_target.point;
+                        m_StateProcessor.State = m_AttackJumpMove;
+                    }
                 }
                 if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
                 {
@@ -1177,7 +1217,9 @@ public partial class EnemyAI4 : Character
     /*** 攻撃ジャンプ移動中 ***/
     private void AttackJumpMove()
     {
-        if (playerDist <= 4) //攻撃
+        speed_attack = false;
+
+        if (playerDist <= 3) //攻撃
         {
             anim.SetBool("Attack", true);
             if(bodyBlow == true)
@@ -1200,9 +1242,7 @@ public partial class EnemyAI4 : Character
             m_StateProcessor.State = m_TreeDecision;   
         }
 
-
         int sidenumber = GetComponent<StringShooter>().m_SideNumber;
-
         
         //糸を奪う
         if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
@@ -1231,6 +1271,12 @@ public partial class EnemyAI4 : Character
                 stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
             }
         }
+    }
+
+    //攻撃しようとしているか？
+    public bool AttackPreparation()
+    {
+        return attack;
     }
 
 
@@ -1412,9 +1458,7 @@ public partial class EnemyAI4 : Character
                 m_StateProcessor.State = m_Jumping;
             }
         }
-    }
-
-
+    } 
 
 
     //落下
