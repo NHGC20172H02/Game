@@ -74,7 +74,7 @@ public class NearObj : MonoBehaviour {
         //2番目に近くの自分の陣地の木
         m_myTreeObj2 = MyTreeSerch2(this.gameObject, "Tree");
 
-        //2番目に近くの自分の陣地の木
+        //3番目に近くの自分の陣地の木
         m_myTreeObj3 = MyTreeSerch3(this.gameObject, "Tree");
 
         //近くの相手の糸
