@@ -33,6 +33,7 @@ public class DebugPlayer : Character
     private Vector3 move_start;                         //ジャンプ始点
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
+    private JumpMode m_jumpMode = JumpMode.NormalJump;
     private bool isCursor = false;
     private bool isEscape = false;
     private int waitFrame = 0;

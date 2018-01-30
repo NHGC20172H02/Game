@@ -46,6 +46,14 @@ public partial class Player {
         if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("LB"))
             m_StateManager.StateProcassor.State = m_StateManager.TreeFp;
 
+        //近接攻撃（テスト）
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            m_Animator.SetTrigger("Proximity");
+            m_StateManager.StateProcassor.State = m_StateManager.ProximityAttack;
+            return;
+        }
+
         Vector3 origin = start + (m_Camera.position - start).normalized;
         Ray ray = new Ray(origin, m_Camera.forward);
         int[] layers = new int[1];
@@ -54,6 +62,7 @@ public partial class Player {
         {
             IntersectString(layers);
         }
+
         if (m_hitinfo.collider != null)
             Jump(ray, m_hitinfo);
     }

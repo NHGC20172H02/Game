@@ -32,6 +32,7 @@ public class CameraMove : MonoBehaviour
         m_StateManager.Falling.c_exeDelegate = TreeTpMove;
         m_StateManager.BodyBlow.c_exeDelegate = TreeTpMove;
         m_StateManager.GroundJump.c_exeDelegate = TreeTpMove;
+        m_StateManager.ProximityAttack.c_exeDelegate = TreeTpMove;
         g_distance = Vector3.Distance(transform.position, m_Camera.position);
         t_distance = g_distance * 2f;
         m_Animator = m_target.GetComponent<Player>().m_Animator;

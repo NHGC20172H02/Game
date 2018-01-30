@@ -9,7 +9,7 @@ public partial class Player {
     {
         ResetTrigger();
         m_Animator.SetBool("IsString", false);
-        m_Prediction.gameObject.SetActive(false);
+        m_Prediction.SetActive(false);
         m_WindLine.Stop();
         Vector3 start = transform.position + transform.up * 0.5f;
         //足元の情報取得（地面優先）
@@ -28,18 +28,16 @@ public partial class Player {
         if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("GroundMove"))
             move = Move(m_Camera.right, m_hitinfo.normal);
 
-        RaycastHit hit;
-        if (Physics.Raycast(start + Vector3.up * m_GroundJumpHeight, transform.forward, out hit, m_GroundJumpForward, m_TreeLayer))
+        if (Physics.Raycast(start + Vector3.up * m_GroundJumpHeight, transform.forward, out jump_target, m_GroundJumpForward, m_TreeLayer))
         {
-            m_Prediction.gameObject.SetActive(true);
-            m_Prediction.SetParameter(transform.position, hit.point, m_Angle, m_Shooter.m_SideNumber);
+            m_Prediction.SetActive(true);
+            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber);
             m_Prediction.Calculation();
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
-                m_hitinfo = hit;
                 move_start = transform.position;
-                move_end = hit.point;
-                m_Prediction.gameObject.SetActive(false);
+                move_end = jump_target.point;
+                m_Prediction.SetActive(false);
                 m_Animator.SetTrigger("NormalJump");
                 JumpCalculation(move_start, move_end, m_Angle);
                 m_StateManager.StateProcassor.State = m_StateManager.GroundJump;
@@ -47,11 +45,13 @@ public partial class Player {
             }
         }
         else
-            m_Prediction.gameObject.SetActive(false);
+            m_Prediction.SetActive(false);
 
+        RaycastHit hit;
         //木に登る
-        if (Physics.Raycast(start, move, out m_hitinfo, 1f, m_TreeLayer))
+        if (Physics.Raycast(start, move, out hit, 1f, m_TreeLayer))
         {
+            m_hitinfo = hit;
             transform.position = m_hitinfo.point;
             transform.rotation = Quaternion.LookRotation(Vector3.Cross(transform.right, m_hitinfo.normal), m_hitinfo.normal);
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;

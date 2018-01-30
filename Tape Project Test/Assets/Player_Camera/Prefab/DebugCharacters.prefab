@@ -1933,7 +1933,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1950901887340726
 GameObject:
   m_ObjectHideFlags: 1
@@ -4208,6 +4208,10 @@ MonoBehaviour:
   m_IsString: 0
   m_Collision: {fileID: 1449203891991992, guid: ce0bd3666db87844e9d3683332d63656,
     type: 2}
+  m_Colors:
+  - {r: 0, g: 0.7058824, b: 0, a: 0.23529412}
+  - {r: 0.7058824, g: 0, b: 0, a: 0.23529412}
+  - {r: 0, g: 0, b: 0.7058824, a: 0.23529412}
 --- !u!114 &114124742234079432
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4320,6 +4324,8 @@ MonoBehaviour:
     m_Bits: 512
   m_Cartridge: {fileID: 0}
   m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
+  m_IsMoving: 0
+  m_Prepos: {x: 0, y: 0, z: 0}
 --- !u!114 &114680808338400286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4388,6 +4394,10 @@ MonoBehaviour:
   m_IsString: 0
   m_Collision: {fileID: 1449203891991992, guid: ce0bd3666db87844e9d3683332d63656,
     type: 2}
+  m_Colors:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &114856817846457926
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4414,6 +4424,8 @@ MonoBehaviour:
     m_Bits: 512
   m_Cartridge: {fileID: 0}
   m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
+  m_IsMoving: 0
+  m_Prepos: {x: 0, y: 0, z: 0}
 --- !u!114 &114916365868936200
 MonoBehaviour:
   m_ObjectHideFlags: 1

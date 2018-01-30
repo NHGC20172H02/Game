@@ -8,7 +8,7 @@ public partial class Player {
     void GroundJump()
     {
         if (!Depression()) return;
-        if (Projection(move_start, move_end, m_hitinfo.normal, m_Angle))
+        if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
             waitFrame = 0;
             m_Animator.ResetTrigger("Landing");
