@@ -55,5 +55,5 @@ Shader "Custom/LeafShader" {
 		}
 		ENDCG
 	}
-	FallBack "Diffuse"
+	FallBack "Transprent/Cutout/Diffuse"
 }
