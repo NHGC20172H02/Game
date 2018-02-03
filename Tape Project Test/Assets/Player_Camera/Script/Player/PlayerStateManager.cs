@@ -58,6 +58,11 @@ public class PlayerStateManager : MonoBehaviour {
     {
         get { return m_groundJump; }
     }
+    private ProximityAttack m_proximityAttack = new ProximityAttack();
+    public ProximityAttack ProximityAttack
+    {
+        get { return m_proximityAttack; }
+    }
 
     // Use this for initialization
     void Start () {

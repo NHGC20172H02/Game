@@ -17,15 +17,18 @@ public partial class Player {
         LayerMask playerLayer = LayerMask.GetMask(new string[] { "Player" });
         if (Physics.CheckSphere(move_end, 2f, playerLayer) && !isLanding)
         {
-            if (!Physics.CheckSphere(move_end, 2f, m_EnemyLayer)) return;
-            m_Animator.SetTrigger("Tackle");
-            m_AudioSource.PlayOneShot(m_AudioClips[1]);
-            SendingBodyBlow(m_enemy.gameObject);
-            isLanding = true;
-            if (jump_target.collider.tag == "String")
-                m_Animator.SetBool("IsString", true);
+            if (Physics.CheckSphere(move_end, 2f, m_EnemyLayer))
+            {
+                m_Animator.SetTrigger("Tackle");
+                m_AudioSource.PlayOneShot(m_AudioClips[1]);
+                SendingBodyBlow(m_enemy.gameObject);
+                isLanding = true;
+            }
             else
-                m_Animator.SetBool("IsString", false);
+            {
+                m_Animator.SetTrigger("Failure");
+                m_Animator.SetTrigger("Landing");
+            }
         }
     }
 

@@ -3834,7 +3834,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_JumpSpeed: 1
-  m_speed: 5
+  m_speed: 4
   m_Shooter: {fileID: 114130872222264282}
   ground_detection: 10
   tree_Detection: 100

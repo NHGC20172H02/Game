@@ -116,6 +116,12 @@ namespace PlayerState
             return "GroundJump";
         }
     }
-
+    public class ProximityAttack : PlayerState
+    {
+        public override string getStateName()
+        {
+            return "ProximityAttack";
+        }
+    }
 
 }

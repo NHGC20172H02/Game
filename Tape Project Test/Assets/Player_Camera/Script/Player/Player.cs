@@ -36,6 +36,7 @@ public partial class Player : Character
     static readonly float MIN = -100f;                   //行動範囲
     static readonly float MAX = 100f;                    //行動範囲
     static readonly float EscapeTime = 0.5f;             //回避入力の間隔
+    private Vector3 m_center;                           //中心点
     private RaycastHit m_hitinfo;                       //足元の情報
     private Vector3 m_prevPos;
     private Vector3 move_start;                         //ジャンプ始点
@@ -50,9 +51,11 @@ public partial class Player : Character
     private bool isLanding = false;
     private Collider m_enemy = null;
     private float m_escapeInterval = 0;
+    private float m_treeWaitTime = 0;                   //同じ木の滞在時間
 
     protected override void Start()
     {
+        m_center = transform.position + transform.up * 0.5f;
         m_StateManager.GroundTp.p_exeDelegate = GroundMove;
         m_StateManager.TreeTp.p_exeDelegate = TreeTpMove;
         m_StateManager.TreeFp.p_exeDelegate = TreeFpMove;
@@ -61,17 +64,20 @@ public partial class Player : Character
         m_StateManager.Falling.p_exeDelegate = FallingMove;
         m_StateManager.BodyBlow.p_exeDelegate = BodyBlowMove;
         m_StateManager.GroundJump.p_exeDelegate = GroundJump;
-        m_Prediction.gameObject.SetActive(true);
+        m_StateManager.ProximityAttack.p_exeDelegate = ProximityAttack;
+        m_Prediction.SetActive(true);
     }
 
     protected override void Update()
     {
+        m_center = transform.position + transform.up * 0.5f;
         transform.position = MoveRange(transform.position, new Vector3(MIN, 0, MIN), new Vector3(MAX, 50f, MAX));
         if (isBodyblow)
         {
             m_StateManager.StateProcassor.State = m_StateManager.Falling;
         }
         //Debug.Log(m_StateManager.StateProcassor.State);
+        //Debug.Log(m_treeWaitTime);
     }
 
     //移動
@@ -143,23 +149,19 @@ public partial class Player : Character
                 }
             }
         }
-
         if (jump)
         {
             if (hit.collider.gameObject == jump_target.collider.gameObject)
             {
                 if (Vector3.Distance(transform.position, jump_target.point) < jumpLower)
                 {
-                    m_Prediction.gameObject.SetActive(false);
+                    m_Prediction.SetActive(false);
                     return;
                 }
             }
             if (jump_target.transform.tag == "String" || jump_target.transform.tag == "Net")
                 if (jump_target.transform.GetComponent<Connecter>().m_SideNumber != m_Shooter.m_SideNumber)
                     return;
-            //if (jump_target.collider.tag == "Net")
-            //    if (jump_target.transform.GetComponent<Net>().m_SideNumber != m_Shooter.m_SideNumber)
-            //        return;
 
             float dis = Vector3.Distance(transform.position, jump_target.point);
             if (dis > m_JumpLimit)
@@ -172,19 +174,28 @@ public partial class Player : Character
             else
                 m_JumpMode = JumpMode.NormalJump;
             //予測線、カーソル表示
-            m_Prediction.gameObject.SetActive(true);
-            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode);
+            m_Prediction.SetActive(true);
+            if(!isTarget)
+            {
+                if(m_hitinfo.collider != jump_target.collider)
+                    m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.Tree);
+                m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.None);
+            }
+            else if(isTarget)
+                m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.None);
             if (m_enemy != null)
-                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle, m_Shooter.m_SideNumber, m_JumpMode);
+                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.Enemy);
             m_Prediction.Calculation();
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
-                m_Prediction.gameObject.SetActive(false);
+                m_Prediction.SetActive(false);
                 move_start = transform.position;
                 move_end = jump_target.point;
                 m_Animator.SetTrigger("Jump");
                 m_escapeInterval = 0;
+                if (m_hitinfo.collider != jump_target.collider)
+                    m_treeWaitTime = 0;
                 if (m_enemy != null)
                 {
                     Physics.Raycast(m_enemy.transform.position, -m_enemy.transform.up, out jump_target, 1f, m_TreeLayer);
@@ -198,7 +209,17 @@ public partial class Player : Character
             }
             return;
         }
-        m_Prediction.gameObject.SetActive(false);
+        else if (!jump && Physics.Raycast(ray, m_JumpLimit + 100f, m_TreeLayer))
+        {
+            m_Prediction.SetActive(true);
+            m_Prediction.SetParameter(
+                transform.position,
+                m_Camera.position + m_Camera.forward * (m_JumpLimit + addLimit), 
+                m_Angle, m_Shooter.m_SideNumber, m_JumpMode, false);
+            m_Prediction.Calculation();
+            return;
+        }
+        m_Prediction.SetActive(false);
         m_Prediction.m_HitStringPoint = Vector3.zero;
         m_enemy = null;
     }
@@ -260,7 +281,25 @@ public partial class Player : Character
             if (i > 0 && result.collider != null) break;
             foreach (RaycastHit hit in Physics.SphereCastAll(transform.position + Vector3.up, 0.3f, Vector3.down, 1f, layerMask[i]))
             {
-                Comparision(hit.point, hit, ref result, ref shortest);
+                if ((hit.collider.tag == "String" || hit.collider.tag == "Net")
+                    && (hit.collider.GetComponent<Connecter>().m_SideNumber != m_Shooter.m_SideNumber))
+                    continue;
+
+                bool isChild = false;
+                var connecter = m_hitinfo.collider.GetComponent<Connecter>();
+                GameObject hitObject = hit.collider.gameObject;
+                foreach (var c in connecter.m_Child)
+                {
+                    if (c.gameObject != hitObject)
+                        continue;
+                    isChild = true;
+                }
+
+                if(!isChild && (hitObject == connecter.m_StartConnecter.gameObject || hitObject == connecter.m_EndConnecter.gameObject))
+                    isChild = true;
+
+                if (isChild)
+                    Comparision(hit.point, hit, ref result, ref shortest);
             }
         }
         if (result.collider == null) return;
@@ -330,7 +369,7 @@ public partial class Player : Character
                         m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
                     else
                         m_Shooter.StringShoot(move_start, move_end);
-                    if (m_hitinfo.collider != jump_target.collider)
+                    if (m_hitinfo.collider != jump_target.collider && m_hitinfo.collider.tag == "Tree")
                         m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= Vector3.Distance(move_start, move_end);
                     break;
                 }
@@ -348,6 +387,7 @@ public partial class Player : Character
         ResetBodyblow();
         elapse_time = 0;
         m_failureTime = 0;
+        m_treeWaitTime = 0;
         m_AudioSource.PlayOneShot(m_AudioClips[3]);
         m_Animator.SetTrigger("Landing");
         if (other.transform.tag == "Ground")
@@ -356,6 +396,7 @@ public partial class Player : Character
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
     }
 
+    /*** プレイヤー以外が必要な関数 ***/
     //木に乗ってるかどうか
     public bool IsOnTree()
     {
@@ -378,11 +419,24 @@ public partial class Player : Character
     public GameObject GetTargetTree()
     {
         if (jump_target.collider == null) return null;
+        if (m_hitinfo.collider == null) return null;
         var state = m_StateManager.StateProcassor.State;
-        if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
+        if (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp
+            || state == m_StateManager.StringTp || state == m_StateManager.GroundTp)
             return jump_target.collider.gameObject;
         return null;
     }
+    //同じ木にプレイヤーが一定時間滞在しているか（引数 : 秒数）
+    public bool IsOnTreeTime(float second)
+    {
+        if (m_hitinfo.collider == null) return false;
+        if (m_hitinfo.collider.tag != "Tree") return false;
+        var state = m_StateManager.StateProcassor.State;
+        if (!(state == m_StateManager.TreeTp || state == m_StateManager.TreeFp)) return false;
+        if (m_treeWaitTime < second) return false;
+        return true;
+    }
+    /*******************************************/
 
     void OnTriggerEnter(Collider other)
     {

@@ -25,7 +25,8 @@ public partial class Player {
         //上方向ベクトル
         Vector3 up = Vector3.Cross(m_Camera.right, stringVec);
         //糸のベクトルを90度回転したベクトル
-        Vector3 stringVertical = Quaternion.Euler(0, 90f, 0) * stringVec;
+        Vector3 stringVertical = Quaternion.AngleAxis(90f, m_hitinfo.transform.up) * stringVec;
+        Debug.DrawRay(transform.position, stringVertical, Color.red);
         float angle = Vector3.Angle(m_Camera.right, stringVec);
         Vector3 vec = Vector3.zero;
         Vector3 move = Vector3.zero;
@@ -53,7 +54,7 @@ public partial class Player {
             m_Animator.SetFloat("StringMoveZ", 0);
             m_Animator.SetFloat("StringMoveX", Input.GetAxis("Horizontal"));
         }
-        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, vec, 0.2f));
+        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, vec, 0.2f), m_hitinfo.transform.up);
         transform.Translate(move * m_Speed * 1.3f * Time.deltaTime, Space.World);
         transform.position = MoveRange(transform.position, line.GetPosition(0), line.GetPosition(1));
 

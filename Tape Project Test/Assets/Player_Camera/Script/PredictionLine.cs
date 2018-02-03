@@ -2,17 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TargetCategory
+{
+    Tree = 0,
+    Enemy,
+    None
+}
+
 //予測線
 public class PredictionLine : MonoBehaviour {
 
     public LineRenderer m_LineRenderer;
-    public Transform m_Cursor;
+    //public Transform m_Cursor;
+    public RectTransform m_Cursor;
+    public Camera m_UICamera;
     public Vector3 m_HitStringPoint;
     public StringUnit m_HitString;
     public Net m_HitNet;
     public bool m_IsString = false;
     public GameObject m_Collision;
     public List<Color> m_Colors;
+    public List<GameObject> m_CursorAssist;
+    public List<Material> m_Materials;
 
     private Vector3 m_start;             //始点
     private Vector3 m_end;               //終点
@@ -21,6 +32,7 @@ public class PredictionLine : MonoBehaviour {
     private Vector3 m_forward;          //予測線の方向
     private List<GameObject> m_collisions;
     private int m_shooterNum = 0;
+    private bool m_isCursorActive = true;
 
     void Start () {
         m_collisions = new List<GameObject>();
@@ -38,20 +50,46 @@ public class PredictionLine : MonoBehaviour {
         Prediction();
         SetLines();
         //カーソル関連
-        m_Cursor = transform.GetChild(0);
-        m_Cursor.gameObject.SetActive(true);
-        m_Cursor.position = m_end - m_forward * 0.3f;
-        m_Cursor.rotation = Quaternion.LookRotation(m_forward);
+        //m_Cursor = transform.GetChild(0);
+        m_Cursor.gameObject.SetActive(m_isCursorActive);
+        //m_Cursor.position = m_end - m_forward * 0.3f;
+        Vector2 pos = Vector2.zero;
+        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, m_end);
+        var parentRect = m_Cursor.parent.GetComponent<RectTransform>();
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, screenPos, m_UICamera, out pos);
+        m_Cursor.localPosition = pos;
+        //m_Cursor.rotation = Quaternion.LookRotation(m_forward);
     }
 
     //始点、終点、射角、シューター番号、色の設定
-    public void SetParameter(Vector3 start, Vector3 end, float angle, int shooterNum, JumpMode mode = JumpMode.NormalJump)
+    public void SetParameter(Vector3 start, Vector3 end, float angle, int shooterNum, 
+        JumpMode mode = JumpMode.NormalJump, bool isCursorActive = true, TargetCategory category = TargetCategory.Tree)
     {
         m_start = start;
         m_end = end;
         m_angle = angle;
         m_shooterNum = shooterNum;
+        m_LineRenderer.material = m_Materials[0];
         m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode]);
+        m_isCursorActive = isCursorActive;
+        if (!isCursorActive)
+        {
+            m_LineRenderer.material = m_Materials[1];
+            m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode] / 2);
+        }
+        if (category == TargetCategory.None)
+        {
+            m_CursorAssist[0].gameObject.SetActive(false);
+            m_CursorAssist[1].gameObject.SetActive(false);
+            return;
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            if (i == (int)category)
+                m_CursorAssist[i].SetActive(true);
+            else
+                m_CursorAssist[i].SetActive(false);
+        }
     }
 
     //弾道計算
@@ -133,5 +171,12 @@ public class PredictionLine : MonoBehaviour {
             if (hitNumber == m_shooterNum) return;
             m_HitStringPoint = point.point;
         }
+    }
+
+    //表示するかどうか
+    public void SetActive(bool active)
+    {
+        m_Cursor.gameObject.SetActive(active);
+        gameObject.SetActive(active);
     }
 }

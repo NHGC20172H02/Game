@@ -9,6 +9,7 @@ public partial class Player {
     {
         if (IsChangedNumber())
             return;
+        m_treeWaitTime += Time.deltaTime;
         Vector3 start = transform.position + transform.up * 0.5f;
         if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("LB"))
         {

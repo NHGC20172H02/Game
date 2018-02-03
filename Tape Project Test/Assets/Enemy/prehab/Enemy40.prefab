@@ -3835,9 +3835,10 @@ MonoBehaviour:
   m_JumpSpeed: 1
   m_speed: 3
   m_Shooter: {fileID: 114465954249624788}
-  m_detection: 30
-  tree_Detection: 150
-  latter_half_time: 45
+  ground_detection: 10
+  tree_Detection: 100
+  player_Detection: 80
+  thought_Gauge: 100
 --- !u!124 &124216028360915816
 Behaviour:
   m_ObjectHideFlags: 1

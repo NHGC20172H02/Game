@@ -38,7 +38,7 @@ public partial class Player {
         {
             m_EscapeSphere.SetActive(true);
             m_EscapeSphere.transform.position = m_Prediction.m_HitStringPoint;
-            if (Physics.CheckSphere(m_Prediction.m_HitStringPoint, 4f, playerLayer))
+            if (Physics.CheckSphere(m_Prediction.m_HitStringPoint, 5f, playerLayer))
             {
                 //回避行動
                 if ((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")) && m_escapeInterval <= 0)
@@ -53,7 +53,7 @@ public partial class Player {
                     m_EscapeSphere.SetActive(false);
                     isEscape = true;
                 }
-                else if (Physics.CheckSphere(m_Prediction.m_HitStringPoint, 0.5f, playerLayer) && !isEscape)
+                else if (Physics.CheckSphere(m_Prediction.m_HitStringPoint, 0.3f, playerLayer) && !isEscape)
                 {
                     waitFrame = 0;
                     m_Prediction.m_HitStringPoint = Vector3.zero;
