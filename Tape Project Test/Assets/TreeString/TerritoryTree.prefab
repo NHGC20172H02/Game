@@ -153,7 +153,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1517785892951614}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -42.2, y: 0, z: 36.1}
+  m_LocalPosition: {x: -174.88269, y: 344.56534, z: -2068.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4326763244708746}
@@ -366,7 +366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -425,6 +425,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 5aa301b5c694f8c4893f534d1b884c1d, type: 2}
   m_Zahyou: C3
   m_Gauge: {fileID: 114747284519522566}
+  m_GaugeRed: {fileID: 0}
+  m_GaugeBlue: {fileID: 0}
   m_TerritoryRateMAX: 0
   m_TerritoryRate: 0
   m_TerritoryRatePre: 0

@@ -8,6 +8,8 @@ public class Tree : Connecter
 
 	public string m_Zahyou;
 	public Image m_Gauge;
+	public Sprite m_GaugeRed;
+	public Sprite m_GaugeBlue;
 
 	public float m_TerritoryRateMAX;
 	public float m_TerritoryRate;
@@ -106,7 +108,6 @@ public class Tree : Connecter
 		m_TerritoryRatePre = m_TerritoryRate;
 
 		m_Gauge.color = m_TerritoryRate >= 0 ? Color.blue : Color.red;
-		m_Gauge.fillClockwise = m_TerritoryRate >= 0;
 		m_Gauge.fillAmount = Mathf.Abs(m_TerritoryRate / 100f);
 
 		if (m_SideNumber == sideNumber) return;
