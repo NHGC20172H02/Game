@@ -107,7 +107,7 @@ public class Tree : Connecter
 		}
 		m_TerritoryRatePre = m_TerritoryRate;
 
-		m_Gauge.sprite = m_TerritoryRate >= 0 ? m_GaugeBlue : m_GaugeRed;
+		m_Gauge.color = m_TerritoryRate >= 0 ? Color.blue : Color.red;
 		m_Gauge.fillAmount = Mathf.Abs(m_TerritoryRate / 100f);
 
 		if (m_SideNumber == sideNumber) return;

@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GaugeIn: {fileID: 114457833370066580}
-  m_GaugeBlue: {fileID: 21300000, guid: b2ff533a9d5c9664e850dd49b25e9040, type: 3}
+  m_GaugeBlue: {fileID: 21300000, guid: 6c6b5c920120f5b4f8925674cbb4e25c, type: 3}
   m_GaugeRed: {fileID: 21300000, guid: b2ff533a9d5c9664e850dd49b25e9040, type: 3}
 --- !u!222 &222186231389270498
 CanvasRenderer:
