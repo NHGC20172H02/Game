@@ -24,6 +24,9 @@ public partial class Player {
 
         if (IsChangedNumber())
             return;
+
+        m_treeWaitTime += Time.deltaTime;
+
         m_prevPos = transform.position;
         //位置補正
         transform.position = Vector3.Lerp(transform.position, m_hitinfo.point, 0.8f);

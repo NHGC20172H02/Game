@@ -171,10 +171,9 @@ public class Tree : Connecter
 		if (ss != null)
 		{
 			m_IsHitChara[ss.m_SideNumber - 1] = true;
-            m_IsMoveChara[ss.m_SideNumber - 1] = false;
-            //m_IsMoveChara[ss.m_SideNumber - 1] = ss.m_IsMoving;
-        }
-    }
+			m_IsMoveChara[ss.m_SideNumber - 1] = false;// ss.m_IsMoving;
+		}
+	}
 	private void LogGenerate(int newSide, int preSide)
 	{
 		if (preSide == 0)

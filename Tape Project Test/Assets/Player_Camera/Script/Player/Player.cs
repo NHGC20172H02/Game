@@ -51,6 +51,7 @@ public partial class Player : Character
     private bool isLanding = false;
     private Collider m_enemy = null;
     private float m_escapeInterval = 0;
+    private float m_treeWaitTime = 0;                   //同じ木の滞在時間
 
     protected override void Start()
     {
@@ -76,6 +77,7 @@ public partial class Player : Character
             m_StateManager.StateProcassor.State = m_StateManager.Falling;
         }
         //Debug.Log(m_StateManager.StateProcassor.State);
+        //Debug.Log(m_treeWaitTime);
     }
 
     //移動
@@ -160,9 +162,6 @@ public partial class Player : Character
             if (jump_target.transform.tag == "String" || jump_target.transform.tag == "Net")
                 if (jump_target.transform.GetComponent<Connecter>().m_SideNumber != m_Shooter.m_SideNumber)
                     return;
-            //if (jump_target.collider.tag == "Net")
-            //    if (jump_target.transform.GetComponent<Net>().m_SideNumber != m_Shooter.m_SideNumber)
-            //        return;
 
             float dis = Vector3.Distance(transform.position, jump_target.point);
             if (dis > m_JumpLimit)
@@ -195,6 +194,8 @@ public partial class Player : Character
                 move_end = jump_target.point;
                 m_Animator.SetTrigger("Jump");
                 m_escapeInterval = 0;
+                if (m_hitinfo.collider != jump_target.collider)
+                    m_treeWaitTime = 0;
                 if (m_enemy != null)
                 {
                     Physics.Raycast(m_enemy.transform.position, -m_enemy.transform.up, out jump_target, 1f, m_TreeLayer);
@@ -386,6 +387,7 @@ public partial class Player : Character
         ResetBodyblow();
         elapse_time = 0;
         m_failureTime = 0;
+        m_treeWaitTime = 0;
         m_AudioSource.PlayOneShot(m_AudioClips[3]);
         m_Animator.SetTrigger("Landing");
         if (other.transform.tag == "Ground")
@@ -394,6 +396,7 @@ public partial class Player : Character
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
     }
 
+    /*** プレイヤー以外が必要な関数 ***/
     //木に乗ってるかどうか
     public bool IsOnTree()
     {
@@ -423,6 +426,17 @@ public partial class Player : Character
             return jump_target.collider.gameObject;
         return null;
     }
+    //同じ木にプレイヤーが一定時間滞在しているか（引数 : 秒数）
+    public bool IsOnTreeTime(float second)
+    {
+        if (m_hitinfo.collider == null) return false;
+        if (m_hitinfo.collider.tag != "Tree") return false;
+        var state = m_StateManager.StateProcassor.State;
+        if (!(state == m_StateManager.TreeTp || state == m_StateManager.TreeFp)) return false;
+        if (m_treeWaitTime < second) return false;
+        return true;
+    }
+    /*******************************************/
 
     void OnTriggerEnter(Collider other)
     {
