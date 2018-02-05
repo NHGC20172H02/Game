@@ -76,6 +76,16 @@ public partial class EnemyAI4 {
         return new Vector3(nearObj3.transform.position.x, nearObj3.transform.position.y, nearObj3.transform.position.z);
     }
 
+    //誰の陣地でもない近くの木のポジション
+    public Vector3 GetPosition0()
+    {
+        return new Vector3(nearObj0.transform.position.x, nearObj0.transform.position.y, nearObj0.transform.position.z);
+    }
+    //誰の陣地でもない２番目に近くの木
+    public Vector3 GetPosition02()
+    {
+        return new Vector3(nearObj02.transform.position.x, nearObj02.transform.position.y, nearObj02.transform.position.z);
+    }
 
     //近くの木にジャンプするポジション
     public Vector3 GetPosition3()
