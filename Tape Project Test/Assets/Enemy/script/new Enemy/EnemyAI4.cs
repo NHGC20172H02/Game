@@ -521,12 +521,6 @@ public partial class EnemyAI4 : Character
             dist50 = Vector3.Distance(nearObj50.transform.position, this.transform.position);
         }
 
-        //今いる木とPlayerのいる木のゲージ量の差
-        if(nearObj != null && playerObj_Tree != null)
-        {
-            difference_gauge = playerTree_gauge - m_gauge;
-        }
-
         wait_time = 0;
 
         RaycastHit hit;
@@ -1116,6 +1110,7 @@ public partial class EnemyAI4 : Character
                     jump_end = jump_target.point;
                     m_StateProcessor.State = m_JumpMove;
                 }
+                //playerが近くにいた場合
                 if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
                 {
                     if (nearObj0 != null)
@@ -1285,6 +1280,8 @@ public partial class EnemyAI4 : Character
                         m_StateProcessor.State = m_AttackJumpMove;
                     }
                 }
+
+                //playerが近くにいた場合
                 if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
                 {
                     if (nearObj0 != null)
@@ -1386,6 +1383,12 @@ public partial class EnemyAI4 : Character
 
         wait_time = 0;
 
+        //今いる木とPlayerのいる木のゲージ量の差
+        if (nearObj != null && playerObj_Tree != null)
+        {
+            difference_gauge = playerTree_gauge - m_gauge;
+        }
+
         //Playerに当たった時
         if (dead_bool == false)
         {
@@ -1452,7 +1455,7 @@ public partial class EnemyAI4 : Character
                 m_playerTarget = GetPlayerPosition();
                 m_StateProcessor.State = m_AttackJump;
             }
-            else if (difference_gauge >= 0)
+            else if (difference_gauge >= 0) //
             {
                 speed_attack = true;
                 m_playerTarget = GetPlayerPosition();
