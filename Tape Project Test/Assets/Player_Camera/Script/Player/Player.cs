@@ -52,7 +52,6 @@ public partial class Player : Character
     private Collider m_enemy = null;
     private float m_escapeInterval = 0;
     private float m_treeWaitTime = 0;                   //同じ木の滞在時間
-    private bool isAttack = false;
 
     protected override void Start()
     {
@@ -197,7 +196,6 @@ public partial class Player : Character
                     m_treeWaitTime = 0;
                 if (m_enemy != null)
                 {
-                    isAttack = true;
                     Physics.Raycast(m_enemy.transform.position, -m_enemy.transform.up, out jump_target, 1f, m_TreeLayer);
                     move_end = jump_target.point;
                     JumpCalculation(move_start, move_end, m_Angle);
@@ -377,7 +375,6 @@ public partial class Player : Character
         waitFrame = 0;
         isEscape = false;
         isLanding = false;
-        isAttack = false;
         m_Prediction.m_HitStringPoint = Vector3.zero;
         m_EscapeSphere.SetActive(false);
         m_WindLine.Stop();
@@ -386,7 +383,6 @@ public partial class Player : Character
     private void LandingReset(Collider other)
     {
         ResetBodyblow();
-        isAttack = false;
         elapse_time = 0;
         m_failureTime = 0;
         m_treeWaitTime = 0;
@@ -441,12 +437,7 @@ public partial class Player : Character
     //攻撃の瞬間
     public bool IsAttack()
     {
-        if (isAttack)
-        {
-            isAttack = false;
-            return true;
-        }
-        return false;
+        return m_StateManager.StateProcassor.State == m_StateManager.BodyBlow;
     }
     /*******************************************/
 
