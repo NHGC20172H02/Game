@@ -666,12 +666,7 @@ public partial class EnemyAI4 : Character
         //    }
         //}
 
-        if(difference_gauge >= 0)
-        {
-            speed_attack = true;
-            m_playerTarget = GetPlayerPosition();
-            m_StateProcessor.State = m_AttackJump;
-        }
+        
     }
 
     /*** 木での移動 ***/
@@ -1437,14 +1432,32 @@ public partial class EnemyAI4 : Character
             if (playerObj != null)
                 playerObj_Tree = playerObj.GetComponent<Player>().GetOnTree();
             if (playerObj_Tree != null)
+            {
+                //Playerのいる木の色
                 player_number = playerObj_Tree.GetComponent<Tree>().m_SideNumber;
+                //Playerのいる木のゲージ量
+                playerTree_gauge = playerObj_Tree.GetComponent<Tree>().m_TerritoryRate;
+            }
 
-            if (sidenumber == player_number)
+
+            if (m_randomCount != 1 && m_randomCount != 2)
+                m_randomCount = Random.Range(1, 3);
+            if (m_randomCount == 1)
+            {
+                //playerが赤い木にいたら
+                if (sidenumber == player_number)
+                {
+                    speed_attack = true;
+                }
+                m_playerTarget = GetPlayerPosition();
+                m_StateProcessor.State = m_AttackJump;
+            }
+            else if (difference_gauge >= 0)
             {
                 speed_attack = true;
+                m_playerTarget = GetPlayerPosition();
+                m_StateProcessor.State = m_AttackJump;
             }
-            m_playerTarget = GetPlayerPosition();
-            m_StateProcessor.State = m_AttackJump;
         }
         else if (nearObj0 != null) //無色の木
         {
