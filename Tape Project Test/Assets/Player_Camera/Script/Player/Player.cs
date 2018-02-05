@@ -179,7 +179,8 @@ public partial class Player : Character
             {
                 if(m_hitinfo.collider != jump_target.collider)
                     m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.Tree);
-                m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.None);
+                else
+                    m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.None);
             }
             else if(isTarget)
                 m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.None);
