@@ -7715,6 +7715,11 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 458700460}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &460384094 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4892629081077272, guid: 79a920dda0992094dad987c6cd6606a0,
+    type: 2}
+  m_PrefabInternal: {fileID: 801866127}
 --- !u!224 &461613501 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224800561286724850, guid: 648a573cf7c0e7143b461c149af1b032,
@@ -11928,12 +11933,12 @@ Prefab:
         type: 2}
       propertyPath: m_Position
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 460384094}
     - target: {fileID: 114915617382622796, guid: 431f699645573434ba34a22ce6199bf2,
         type: 2}
       propertyPath: m_Rotation
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 460384094}
     - target: {fileID: 1964656498366062, guid: 431f699645573434ba34a22ce6199bf2, type: 2}
       propertyPath: m_Name
       value: MiniMapIcon (1)
