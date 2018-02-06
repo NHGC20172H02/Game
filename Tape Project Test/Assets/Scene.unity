@@ -25260,7 +25260,7 @@ Prefab:
         type: 2}
       propertyPath: m_Enemy
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 460384094}
     - target: {fileID: 114019168407754530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
         type: 2}
       propertyPath: m_Circle
@@ -25271,6 +25271,11 @@ Prefab:
       propertyPath: m_Timer
       value: 
       objectReference: {fileID: 454695640}
+    - target: {fileID: 23758846955569472, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 164b6b6069c3ad848b491cab10350f1c, type: 2}
     m_RemovedComponents:
     - {fileID: 114179476544423502, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
     - {fileID: 114402373923178540, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
