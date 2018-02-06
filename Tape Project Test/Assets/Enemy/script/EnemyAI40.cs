@@ -64,7 +64,7 @@ public class EnemyAI40 : Character
     float m_ground_jump_time;
 
     bool m_moveStart = false;
-    bool net_bool = false;
+    bool string_Rob = false;
     bool dead_bool = false;
     bool player_onTree;
     bool bodyBlow = true;
@@ -325,7 +325,8 @@ public class EnemyAI40 : Character
         //    m_StateProcessor.State = m_Fall;
         //}
 
-        Debug.DrawLine(transform.position, m_targetPos, Color.blue);
+        //Debug.Log(m_StateProcessor.State);
+        //Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
     }
@@ -336,21 +337,10 @@ public class EnemyAI40 : Character
     /*** 地面移動 ***/
     private void GroundMove()
     {
-        if (m_randomCount == 0)
-            m_randomCount = Random.Range(1, 3);
-
         anim.SetBool("move_front", true);
 
         //歩く目標位置
-        if (m_randomCount == 1)
-        {
-            m_targetPos = GetPosition();
-        }
-        if (m_randomCount == 2)
-        {
-            m_randomCount = 5;
-            m_targetPos = GetPosition2();
-        }
+        m_targetPos = GetPosition();
 
 
         RaycastHit hit;
@@ -790,8 +780,8 @@ public class EnemyAI40 : Character
     /*** 木をランダムに検索 ***/
     private void SearchRandom()
     {
-        if (m_randomCount != 5 && m_randomCount != 4 && m_randomCount != 6)
-            m_randomCount = Random.Range(4, 7);
+        if (m_randomCount != 5 && m_randomCount != 4)
+            m_randomCount = Random.Range(4, 6);
         if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
             noGaugeJump = true;
 
@@ -811,15 +801,6 @@ public class EnemyAI40 : Character
             m_randomCount = 0;
             //２番目の近くの木に飛ぶ
             m_targetPos = GetUpPosition3();
-
-            m_StateProcessor.State = m_Jumping;
-        }
-        if (m_randomCount == 6)
-        {
-            eyeObj = nearObj3;
-            m_randomCount = 0;
-            //3番目の近くの木に飛ぶ
-            m_targetPos = GetUpPosition4();
 
             m_StateProcessor.State = m_Jumping;
         }
@@ -998,7 +979,7 @@ public class EnemyAI40 : Character
             {
                 if (m_gauge <= thought_Gauge || color_number == myString_number)　//ゲージをためる
                 {
-                    net_bool = true;
+                    string_Rob = true;
                     anim.SetBool("jump", true);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
@@ -1019,7 +1000,7 @@ public class EnemyAI40 : Character
                 if (noGaugeJump == true)
                 {
                     noGaugeJump = false;
-                    net_bool = true;
+                    string_Rob = true;
                     anim.SetBool("jump", true);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
@@ -1052,10 +1033,10 @@ public class EnemyAI40 : Character
         if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
-            if (net_bool == true)
+            if (string_Rob == true)
             {
                 netCount = Random.Range(1, 11);
-                net_bool = false;
+                string_Rob = false;
             }
 
             if (netCount <= m_netrob) //失敗したとき
@@ -1108,7 +1089,7 @@ public class EnemyAI40 : Character
                 if (m_gauge <= thought_Gauge || color_number == myString_number)　//ゲージをためる
                 {
                     dead_bool = true;
-                    net_bool = true;
+                    string_Rob = true;
                     anim.SetBool("jump", true);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
@@ -1167,10 +1148,10 @@ public class EnemyAI40 : Character
         if (distThread >= 0.5f && distThread <= 2 || distNet >= 0.5f && distNet <= 2)
         {
             //奪う確率
-            if (net_bool == true)
+            if (string_Rob == true)
             {
                 netCount = Random.Range(1, 11);
-                net_bool = false;
+                string_Rob = false;
             }
 
             if (netCount <= m_netrob) //失敗したとき
@@ -1509,12 +1490,6 @@ public class EnemyAI40 : Character
     {
         return new Vector3(nearObj2.transform.position.x, nearObj2.transform.position.y, nearObj2.transform.position.z);
     }
-    //２番目の近くの木のポジション
-    public Vector3 GetPosition2()
-    {
-        return new Vector3(nearObj3.transform.position.x, nearObj3.transform.position.y, nearObj3.transform.position.z);
-    }
-
 
     //近くの木にジャンプするポジション
     public Vector3 GetPosition3()
