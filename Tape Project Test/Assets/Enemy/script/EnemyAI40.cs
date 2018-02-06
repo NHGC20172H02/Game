@@ -326,7 +326,7 @@ public class EnemyAI40 : Character
         //}
 
         //Debug.Log(m_StateProcessor.State);
-        Debug.DrawLine(transform.position, m_targetPos, Color.blue);
+        //Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
     }

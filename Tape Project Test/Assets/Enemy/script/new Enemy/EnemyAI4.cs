@@ -28,12 +28,13 @@ public partial class EnemyAI4 : Character
 
     int m_randomCount;
     int treeObj = 0;
-    int netCount;         //糸を奪う時の確率（randomカウント）
-    int PlayerTree_Count; //Playerの木の本数
-    int EnemyTree_Count;  //Enemyの木の本数
-    int color_number;     //木の色
-    int myString_number;  //自分の糸の色
-    int player_number;    //Playerの乗っている木の色
+    int netCount;            //糸を奪う時の確率（randomカウント）
+    int PlayerTree_Count;    //Playerの木の本数
+    int EnemyTree_Count;     //Enemyの木の本数
+    int color_number;        //木の色
+    int myString_number;     //Enemyの糸の色
+    int playerString_number; //Playerの糸の色
+    int player_number;       //Playerの乗っている木の色
 
     //木に付いている糸の数の差
     int Thread_count_difference1;
@@ -286,6 +287,14 @@ public partial class EnemyAI4 : Character
             //自分のいる木の色
             color_number = nearObj.GetComponent<Tree>().m_SideNumber;
         }
+        //playerの情報
+        if (playerObj != null)
+        {
+            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
+            player_onTree = true;
+            playerString_number = playerObj.GetComponent<StringShooter>().m_SideNumber;
+            //player_onTree = playerObj.GetComponent<Player>().IsOnTree();
+        }
 
         //１つ前にいた木を保持
         if (treeObj == 1 && reObj == null)
@@ -302,14 +311,6 @@ public partial class EnemyAI4 : Character
             treeObj = 2;
         }
 
-
-        //playerとの距離と木にいるか
-        if (playerObj != null)
-        {
-            playerDist = Vector3.Distance(playerObj.transform.position, this.transform.position);
-            player_onTree = true;
-            //player_onTree = playerObj.GetComponent<Player>().IsOnTree();
-        }
         //近くのネットとの距離
         if (stringNet != null)
         {
@@ -338,9 +339,9 @@ public partial class EnemyAI4 : Character
         //    m_StateProcessor.State = m_Fall;
         //}
 
-        //Debug.Log(EnemyTree_Count);
+        //Debug.Log(noGaugeJump);
         //Debug.Log(m_StateProcessor.State);
-        Debug.DrawLine(transform.position, m_targetPos, Color.blue);
+        //Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
     }
@@ -495,8 +496,6 @@ public partial class EnemyAI4 : Character
 
         on_trigger = false;
 
-        
-
         //Playerに当たった時
         if (dead_bool == false)
         {
@@ -599,13 +598,12 @@ public partial class EnemyAI4 : Character
                 m_StateProcessor.State = m_ColorlessTree;
             }
 
-            if (color_number != myString_number)//今いる木が相手の木の場合
+            if (color_number == playerString_number)//今いる木が相手の木の場合
             {
                 noGaugeJump = true;
                 m_StateProcessor.State = m_ColorlessTree;
             }
-        }
-        
+        }   
         else if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree()) //playerが近くにいた場合近くの木に飛ぶ
         {
             if (nearObj0 != null)
@@ -637,6 +635,26 @@ public partial class EnemyAI4 : Character
         else
         {
             m_StateProcessor.State = m_SearchRandom;
+        }
+
+        //今いる木が自分の色だったら
+        if(color_number == myString_number)
+        {
+            noGaugeJump = true;
+
+            //ゲージで判断するか、糸で判断するか
+            if (m_randomCount != 1 && m_randomCount != 2)
+                m_randomCount = Random.Range(1, 3);
+            if (m_randomCount == 1)
+            {
+                m_randomCount = 0;
+                m_StateProcessor.State = m_SearchTreeGauge;
+            }
+            else
+            {
+                m_randomCount = 0;
+                m_StateProcessor.State = m_StringCount;
+            }
         }
 
         //playerが一定時間同じ木にいたら攻撃
@@ -783,7 +801,10 @@ public partial class EnemyAI4 : Character
         }
         
         if(nearObj02 != null)
-        near_Gauge2 = nearObj02.GetComponent<Tree>().m_TerritoryRate;    
+        near_Gauge2 = nearObj02.GetComponent<Tree>().m_TerritoryRate;
+
+        if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
+            noGaugeJump = true;
 
         if (dist0 <= tree_Detection && nearObj0 != null && nearObj02 != null)
         {
@@ -902,6 +923,9 @@ public partial class EnemyAI4 : Character
         near_Gauge = nearObj40.GetComponent<Tree>().m_TerritoryRate;
         if(nearObj50 != null)
         near_Gauge2 = nearObj50.GetComponent<Tree>().m_TerritoryRate;
+
+        if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
+            noGaugeJump = true;
 
         if (near_Gauge <= near_Gauge2)
         {
@@ -1111,7 +1135,8 @@ public partial class EnemyAI4 : Character
                     m_StateProcessor.State = m_JumpMove;
                 }
                 //playerが近くにいた場合
-                if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
+                if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree() &&
+                    playerObj.GetComponent<Player>().IsAttack() == false)
                 {
                     if (nearObj0 != null)
                     {
@@ -1282,7 +1307,8 @@ public partial class EnemyAI4 : Character
                 }
 
                 //playerが近くにいた場合
-                if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
+                if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree() &&
+                    playerObj.GetComponent<Player>().IsAttack() == false)
                 {
                     if (nearObj0 != null)
                     {
@@ -1503,6 +1529,26 @@ public partial class EnemyAI4 : Character
         else
         {
             m_StateProcessor.State = m_SearchRandom;
+        }
+
+        //今いる木が自分の色だったら
+        if (color_number == myString_number)
+        {
+            noGaugeJump = true;
+
+            //ゲージで判断するか、糸で判断するか
+            if (m_randomCount != 1 && m_randomCount != 2)
+                m_randomCount = Random.Range(1, 3);
+            if (m_randomCount == 1)
+            {
+                m_randomCount = 0;
+                m_StateProcessor.State = m_SearchTreeGauge;
+            }
+            else
+            {
+                m_randomCount = 0;
+                m_StateProcessor.State = m_StringCount;
+            }
         }
     }
 
