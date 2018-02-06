@@ -297,19 +297,19 @@ public partial class EnemyAI4 : Character
         }
 
         //１つ前にいた木を保持
-        if (treeObj == 1 && reObj == null)
-        {
-            reObj = nearObj;
-        }
-        if (treeObj >= 2)
-        {
-            reObj2 = nearObj;
-        }
-        if (treeObj >= 3)
-        {
-            reObj = reObj2;
-            treeObj = 2;
-        }
+        //if (treeObj == 1 && reObj == null)
+        //{
+        //    reObj = nearObj;
+        //}
+        //if (treeObj >= 2)
+        //{
+        //    reObj2 = nearObj;
+        //}
+        //if (treeObj >= 3)
+        //{
+        //    reObj = reObj2;
+        //    treeObj = 2;
+        //}
 
         //近くのネットとの距離
         if (stringNet != null)
@@ -341,7 +341,7 @@ public partial class EnemyAI4 : Character
 
         //Debug.Log(noGaugeJump);
         //Debug.Log(m_StateProcessor.State);
-        //Debug.DrawLine(transform.position, m_targetPos, Color.blue);
+        Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
     }
@@ -1103,6 +1103,7 @@ public partial class EnemyAI4 : Character
             {
                 if (isBodyblow)
                 {
+                    anim.SetBool("dead", true);
                     m_StateProcessor.State = m_Fall;
                     return;
                 }
@@ -1201,10 +1202,10 @@ public partial class EnemyAI4 : Character
                 }
             }
         }
-        //else
-        //{
-        //    m_StateProcessor.State = m_SearchRandom;
-        //}
+        else
+        {
+            m_StateProcessor.State = m_SearchTree;
+        }
     }
 
     /*** ジャンプ移動中 ***/
@@ -1263,6 +1264,7 @@ public partial class EnemyAI4 : Character
             {
                 if (isBodyblow)
                 {
+                    anim.SetBool("dead", true);
                     m_StateProcessor.State = m_Fall;
                     return;
                 }
@@ -1327,7 +1329,7 @@ public partial class EnemyAI4 : Character
         }
         else
         {
-            m_StateProcessor.State = m_SearchRandom;
+            m_StateProcessor.State = m_SearchTree;
         }
     }
 
