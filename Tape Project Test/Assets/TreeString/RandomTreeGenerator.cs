@@ -12,11 +12,11 @@ public class RandomTreeGenerator : MonoBehaviour
 
 	private void Start()
 	{
-		Generat(5);
+		Generat(Random.Range(0, 3) * 2 + 5);
 	}
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.LeftControl)) Generat(5);
+		if (Input.GetKeyDown(KeyCode.LeftControl)) Generat(Random.Range(0, 3) * 2 + 5);
 	}
 	public void Generat(int count)
 	{
