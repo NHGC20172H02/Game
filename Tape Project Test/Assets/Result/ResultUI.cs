@@ -41,25 +41,13 @@ public class ResultUI : MonoBehaviour
 	{
 		TerritoryManager territoryManager = TerritoryManager.Instance;
 
-		int StringLength = territoryManager.GetStringLenth(1);
-		int StringCount = territoryManager.GetStringCount(1) + territoryManager.GetNetCount(1);
-		int TreeCount = territoryManager.GetTreeCount(1);
-		int PScore = StringLength * m_StringLengthScore + StringCount * m_StringCountScore + TreeCount * m_TreeCountScore;
+		int PScore = territoryManager.GetTreeCount(1);
 
-		m_PStringLength.text = StringLength.ToString();
-		m_PStringCount.text = StringCount.ToString();
-		m_PTreeCount.text = TreeCount.ToString();
-		m_PScore.text = PScore.ToString();
+		m_PTreeCount.text = PScore.ToString();
 
-		StringLength = territoryManager.GetStringLenth(2);
-		StringCount = territoryManager.GetStringCount(2) + territoryManager.GetNetCount(2);
-		TreeCount = territoryManager.GetTreeCount(2);
-		int EScore = StringLength * m_StringLengthScore + StringCount * m_StringCountScore + TreeCount * m_TreeCountScore;
+		int EScore = territoryManager.GetTreeCount(2);
 
-		m_EStringLength.text = StringLength.ToString();
-		m_EStringCount.text = StringCount.ToString();
-		m_ETreeCount.text = TreeCount.ToString();
-		m_EScore.text = EScore.ToString();
+		m_ETreeCount.text = EScore.ToString();
 
 		m_BGM.clip = m_LoseBGM;
 		if (PScore > EScore)

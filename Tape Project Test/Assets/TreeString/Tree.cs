@@ -29,6 +29,11 @@ public class Tree : Connecter
 	private static string[] Xstring = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 	private static string[] Ystring = new string[] { "8", "7", "6", "5", "4", "3", "2", "1" };
 
+	float m_AddRateSpider = 2.5f; // 0.4s 1%
+	float m_AddRateString = 1.25f; // 0.8s 1%
+	float m_DownRateNeutral = 1; // 1.0s 1%
+	float m_DownRate = 1/1.5f; // 1.5s 1%
+
 	private void Start()
 	{
 		TerritoryManager.Instance.m_Trees.Add(this);
