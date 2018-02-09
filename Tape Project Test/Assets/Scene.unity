@@ -4543,7 +4543,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 10, y: 10}
-  m_SizeDelta: {x: 130, y: 60}
+  m_SizeDelta: {x: 250, y: 60}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &286371972
 MonoBehaviour:
@@ -4579,7 +4579,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: fe8d0e1827244d04ea8e54c289a20087, type: 3}
     m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
@@ -10612,7 +10612,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: fe8d0e1827244d04ea8e54c289a20087, type: 3}
     m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 1
@@ -22043,23 +22043,6 @@ Transform:
   m_Father: {fileID: 191666462}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!1 &1299907408 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1925801734536530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
-    type: 2}
-  m_PrefabInternal: {fileID: 1470673595}
---- !u!114 &1299907415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1299907408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: 9b3de62af3b8e02478b6bdc87eec6f18, type: 2}
 --- !u!1 &1305675394
 GameObject:
   m_ObjectHideFlags: 0
@@ -25234,7 +25217,11 @@ Prefab:
       propertyPath: m_UICamera
       value: 
       objectReference: {fileID: 634646648}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114179476544423502, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
+    - {fileID: 114402373923178540, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
+    - {fileID: 114258985897448952, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
+    - {fileID: 114613819584874756, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
   m_IsPrefabParent: 0
 --- !u!114 &1470673596 stripped
