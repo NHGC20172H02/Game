@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyDirectionCircle : MonoBehaviour
 {
     static readonly Vector3 offset = new Vector3(0, 0.2f, 0);
+    static readonly Vector3 sideTextPos = new Vector3(60.0f, 0, 0);
 
     public Transform m_Player;
     public Transform m_Enemy;
@@ -13,11 +14,13 @@ public class EnemyDirectionCircle : MonoBehaviour
     public GameObject m_Circle;
     public Transform m_Ring;
 
-    private RectTransform m_directionIcon; 
+    private RectTransform m_directionIcon;
+    private RectTransform m_IconText;
 
     void Start()
     {
         m_directionIcon = m_Circle.transform.GetChild(0).GetComponent<RectTransform>();
+        m_IconText = m_Circle.transform.GetChild(1).GetComponent<RectTransform>();
     }
 
     void LateUpdate()
@@ -46,11 +49,13 @@ public class EnemyDirectionCircle : MonoBehaviour
         //カメラに映っていたら表示しない
         if (viewPos.x > 0 && viewPos.x < 1.0f && viewPos.y > 0 && viewPos.y < 1.0f && viewPos.z > 0)
         {
-            m_directionIcon.gameObject.SetActive(false);
+            m_Circle.SetActive(false);
             return;
         }
         else
-            m_directionIcon.gameObject.SetActive(true);
+        {
+            m_Circle.SetActive(true);
+        }
 
         Vector3 playerPos = m_Player.position;
         Vector3 dir = (enemyPos - playerPos).normalized;
@@ -78,6 +83,14 @@ public class EnemyDirectionCircle : MonoBehaviour
 
         //敵の方向へ回転
         m_directionIcon.localRotation = Quaternion.AngleAxis(-angle * Mathf.Rad2Deg, Vector3.forward);
+
+        //Textの位置を更新
+        Vector3 sidePos;
+        if (screenDir.x > 0)
+            sidePos = sideTextPos;
+        else
+            sidePos = -sideTextPos;
+        m_IconText.localPosition = m_directionIcon.localPosition + sidePos;
     }
 
     private void RingUpdate()

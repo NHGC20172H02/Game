@@ -434,7 +434,7 @@ public partial class Player : Character
         if (m_treeWaitTime < second) return false;
         return true;
     }
-    //攻撃の瞬間
+    //攻撃中かどうか
     public bool IsAttack()
     {
         return m_StateManager.StateProcassor.State == m_StateManager.BodyBlow;
