@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyDirectionCircle : MonoBehaviour
 {
     static readonly Vector3 offset = new Vector3(0, 0.2f, 0);
     static readonly Vector3 sideTextPos = new Vector3(60.0f, 0, 0);
+    static readonly float ringRadius = 1.5f;
+    static readonly float treeRingRadius = 1.3f;
 
     public Transform m_Player;
     public Transform m_Enemy;
@@ -13,76 +16,146 @@ public class EnemyDirectionCircle : MonoBehaviour
     public Camera m_MainCamera;
     public GameObject m_Circle;
     public Transform m_Ring;
+    public Transform m_RingArrow;
+    public GameObject m_TreeArrowPrefab;
+    public GameObject m_TreeArrowIcon;
+    public RectTransform m_DirectionIcon;
+    public RectTransform m_IconText;
+    public Material m_RingMaterial;
+    public AnimationCurve m_Gradation_Yellow;
 
-    private RectTransform m_directionIcon;
-    private RectTransform m_IconText;
+    private List<GameObject> m_trees = new List<GameObject>();
+    private List<GameObject> m_treeRingArrows = new List<GameObject>();
+    private List<GameObject> m_treeArrowIcons = new List<GameObject>();
+
+    private bool isGradation = false;
+    private float gradationRate = 0;
+    private float gradationSpeed = 0.1f;
 
     void Start()
     {
-        m_directionIcon = m_Circle.transform.GetChild(0).GetComponent<RectTransform>();
-        m_IconText = m_Circle.transform.GetChild(1).GetComponent<RectTransform>();
+        m_RingMaterial.color = new Color(1f, 0f, 0f);
+        m_trees.AddRange(GameObject.FindGameObjectsWithTag("Tree"));
+        for (int i = 0; i < m_trees.Count; i++)
+        {
+            m_treeRingArrows.Add(Instantiate(m_TreeArrowPrefab, m_Ring));
+            m_treeArrowIcons.Add(Instantiate(m_TreeArrowIcon, m_Circle.transform.parent));
+        }
     }
 
     void LateUpdate()
     {
+        if (!isGradation)
+            isGradation = m_Enemy.GetComponent<EnemyAI4>().AttackPreparation();
+        AttackAlert();
+
         float dis = Vector3.Distance(m_Player.position, m_MainCamera.transform.position);
         if(dis < 2.5f)
         {
             m_Ring.gameObject.SetActive(false);
+            m_RingArrow.gameObject.SetActive(false);
             m_Circle.SetActive(true);
+            foreach (GameObject t in m_treeArrowIcons)
+            {
+                if (t == null) continue;
+                t.SetActive(true);
+            }
             CircleUpdate();
         }
         else
         {
+            foreach (GameObject t in m_treeArrowIcons)
+            {
+                if (t == null) continue;
+                t.SetActive(false);
+            }
             m_Circle.gameObject.SetActive(false);
             m_Ring.gameObject.SetActive(true);
+            m_RingArrow.gameObject.SetActive(true);
             RingUpdate();
-
         }
     }
 
+    //サークル状態での更新
     private void CircleUpdate()
     {
-        Vector3 enemyPos = m_Enemy.position;
+        bool isActive = false;
+        Vector3 position = Vector3.zero;
+        Quaternion rotation = Quaternion.identity;
+
+        CircleIconUpdate(m_Enemy, ref isActive, ref position, ref rotation, true);
+        m_DirectionIcon.gameObject.SetActive(isActive);
+        if (isActive)
+        {
+            m_DirectionIcon.localPosition = position;
+            m_DirectionIcon.localRotation = rotation;
+        }
+
+        for (int i = 0; i < m_trees.Count; i++)
+        {
+            Tree tree = m_trees[i].GetComponent<Tree>();
+            if (tree.m_SideNumber != 0)
+            {
+                if (m_treeRingArrows[i] != null)
+                    Destroy(m_treeRingArrows[i]);
+                continue;
+            }
+            if (tree.m_SideNumber == 0 && m_treeRingArrows[i] == null)
+                m_treeRingArrows[i] = Instantiate(m_TreeArrowPrefab);
+            CircleIconUpdate(m_trees[i].transform, ref isActive, ref position, ref rotation, false);
+            m_treeArrowIcons[i].SetActive(isActive);
+            if (!isActive) continue;
+            m_treeArrowIcons[i].transform.localPosition = position;
+            m_treeArrowIcons[i].transform.localRotation = rotation;
+        }
+    }
+
+    void CircleIconUpdate(Transform target, ref bool isActive, ref Vector3 position, ref Quaternion rotation, bool isEnemy)
+    {
+        Vector3 targetPos = target.position;
         //ビューポート変換
-        Vector3 viewPos = m_MainCamera.WorldToViewportPoint(enemyPos);
+        Vector3 viewPos = m_MainCamera.WorldToViewportPoint(targetPos);
         //カメラに映っていたら表示しない
         if (viewPos.x > 0 && viewPos.x < 1.0f && viewPos.y > 0 && viewPos.y < 1.0f && viewPos.z > 0)
         {
-            m_Circle.SetActive(false);
+            isActive = false;
+            if (isEnemy)
+                m_IconText.gameObject.SetActive(false);
             return;
         }
         else
         {
-            m_Circle.SetActive(true);
+            isActive = true;
         }
 
         Vector3 playerPos = m_Player.position;
-        Vector3 dir = (enemyPos - playerPos).normalized;
+        Vector3 dir = (targetPos - playerPos).normalized;
         //Playerの前方向ベクトル
         Vector3 forward = Vector3.Cross(m_CameraPivot.transform.right, Vector3.up);
 
-        //前方向から敵の方向の角度(Degree)
+        //前方向から対象の方向の角度(Degree)
         float angle = Mathf.Atan2(dir.x, dir.z) - Mathf.Atan2(forward.x, forward.z);
 
-        //スクリーン座標系での敵への方向ベクトル
+        //スクリーン座標系での対象への方向ベクトル
         Vector3 screenDir = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.up) * Vector3.forward;
         screenDir = new Vector3(screenDir.x, screenDir.z, 0);
 
         //上下反転
-        if (m_CameraPivot.transform.forward.y > 0 && screenDir.y > 0)
+        if (m_CameraPivot.transform.forward.y > 0/* && screenDir.y > 0*/)
         {
             screenDir = new Vector3(screenDir.x, -screenDir.y, 0);
             angle -= Mathf.PI + angle * 2;
         }
         //移動
-        m_directionIcon.localPosition = screenDir * 250f;
+        position = screenDir * 250f;
 
-        float posX = m_directionIcon.localPosition.x;
-        float posY = m_directionIcon.localPosition.y;
+        float posX = position.x;
+        float posY = position.y;
 
-        //敵の方向へ回転
-        m_directionIcon.localRotation = Quaternion.AngleAxis(-angle * Mathf.Rad2Deg, Vector3.forward);
+        //対象の方向へ回転
+        rotation = Quaternion.AngleAxis(-angle * Mathf.Rad2Deg, Vector3.forward);
+
+        if (!isEnemy) return;
 
         //Textの位置を更新
         Vector3 sidePos;
@@ -90,17 +163,67 @@ public class EnemyDirectionCircle : MonoBehaviour
             sidePos = sideTextPos;
         else
             sidePos = -sideTextPos;
-        m_IconText.localPosition = m_directionIcon.localPosition + sidePos;
+        m_IconText.localPosition = m_DirectionIcon.localPosition + sidePos;
     }
 
+    //リング状態での更新
     private void RingUpdate()
     {
-        m_Ring.position = m_Player.position + offset;
-        Vector3 enemyPos = m_Enemy.position;
-        Vector3 playerPos = m_Player.position;
-        Vector3 dir = (enemyPos - playerPos);
+        Vector3 pos = Vector3.zero;
+        Quaternion rotation = Quaternion.identity;
+        ArrowUpdate(m_Enemy, ringRadius, ref pos, ref rotation);
+        m_RingArrow.position = pos;
+        m_RingArrow.rotation = rotation;
 
+        for(int i = 0; i < m_trees.Count; i++)
+        {
+            Tree tree = m_trees[i].GetComponent<Tree>();
+            if (tree.m_SideNumber != 0)
+            {
+                if (m_treeRingArrows[i] != null)
+                    Destroy(m_treeRingArrows[i]);
+                continue;
+            }
+            if (tree.m_SideNumber == 0 && m_treeRingArrows[i] == null)
+                m_treeRingArrows[i] = Instantiate(m_TreeArrowPrefab);
+            ArrowUpdate(m_trees[i].transform, treeRingRadius, ref pos, ref rotation);
+            m_treeRingArrows[i].transform.position = pos;
+            m_treeRingArrows[i].transform.rotation = rotation;
+        }
+    }
+
+    private void ArrowUpdate(Transform target, float radius, ref Vector3 position, ref Quaternion rotation)
+    {
+        m_Ring.position = m_Player.position + offset;
+        Vector3 targetPos = target.position;
+        Vector3 playerPos = m_Player.position;
+        Vector3 dir = (targetPos - playerPos);
+        //平面での敵の方向
         dir.y = 0;
-        m_Ring.rotation = Quaternion.LookRotation(dir, Vector3.up);
+
+        Vector3 forward = Vector3.Cross(m_Player.right, m_CameraPivot.up);
+        forward.y = 0;
+        Vector3 up = Vector3.Cross(forward, dir);
+        //角度算出（-180度 ∼ 180度）
+        float angle = Vector3.Angle(forward, dir) * (up.y < 0 ? -1 : 1);
+        //リング基準の方向
+        Vector3 ringToDir = Quaternion.AngleAxis(angle, m_Player.up) * m_Ring.forward;
+        rotation = Quaternion.LookRotation(ringToDir, m_Ring.up);
+        position = playerPos + offset + ringToDir * radius;
+    }
+
+    private void AttackAlert()
+    {
+        if (!isGradation) return;
+        gradationRate = Mathf.Clamp(gradationRate + gradationSpeed, 0, 2f);
+        Color color = m_RingMaterial.color;
+        color.g = m_Gradation_Yellow.Evaluate(gradationRate);
+        m_RingMaterial.color = color;
+
+        if (gradationRate == 2f)
+        {
+            gradationRate = 0;
+            isGradation = false;
+        }
     }
 }
