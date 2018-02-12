@@ -715,7 +715,7 @@ public partial class EnemyAI4 : Character
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
-        if (Physics.SphereCast(ray, 1f, out hit, 1f, treeLayer))
+        if (Physics.SphereCast(ray, 0.8f, out hit, 1f, treeLayer))
         {
             transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
@@ -1221,7 +1221,8 @@ public partial class EnemyAI4 : Character
         {
             transform.position = jump_end;
             m_Shooter.StringShoot(jump_start, jump_end);
-            m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += Vector3.Distance(jump_start, jump_end);
+            //m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += Vector3.Distance(jump_start, jump_end);
+            m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += 20;
             m_StateProcessor.State = m_TreeDecision;
         }
 
@@ -1361,7 +1362,8 @@ public partial class EnemyAI4 : Character
         {
             transform.position = jump_end;
             m_Shooter.StringShoot(jump_start, jump_end);
-            m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += Vector3.Distance(jump_start, jump_end);
+            //m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += Vector3.Distance(jump_start, jump_end);
+            m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += 20;
             m_StateProcessor.State = m_TreeDecision;
         }
 
