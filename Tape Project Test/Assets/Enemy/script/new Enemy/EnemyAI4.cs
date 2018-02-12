@@ -1302,7 +1302,6 @@ public partial class EnemyAI4 : Character
                     wait_time += Time.deltaTime * 1;
                     if (wait_time >= 1)
                     {
-                        attack = false;
                         string_Rob = true;
                         anim.SetBool("jump", true);
                         jump_start = transform.position;
@@ -1311,7 +1310,6 @@ public partial class EnemyAI4 : Character
                         m_StateProcessor.State = m_AttackJumpMove;
                     }
                 }
-
                 //playerが近くにいた場合
                 if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree() &&
                     playerObj.GetComponent<Player>().IsAttack() == false)
@@ -1360,6 +1358,7 @@ public partial class EnemyAI4 : Character
 
         if (Projection(jump_start, jump_end, jump_target.normal, 30.0f))
         {
+            attack = false;
             transform.position = jump_end;
             m_Shooter.StringShoot(jump_start, jump_end);
             //m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += Vector3.Distance(jump_start, jump_end);
