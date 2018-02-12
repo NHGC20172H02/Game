@@ -11,8 +11,8 @@
 		_DetailBumpMap("Normalmap(Detail)", 2D) = "bump" {}
 		_DetailScale("DetailScale", Range(0.01, 1)) = 0.4
 		_Stencil("Stencil", float) = 2
-		[Enum(Off, 0, On, 1)]
-		_ZWrite("Zwrite", float) = 0
+		[Enum(UnityEngine.Rendering.CompareFunction)]
+		_ZTest("ZTest", float) = 4
 
 	}
 
@@ -68,12 +68,12 @@
 	}
 	ENDCG
 
+		ZTest [_ZTest]
+
 		Stencil{
 		Ref [_Stencil]
 		Comp notequal
 	}
-
-		
 
 		CGPROGRAM
 
