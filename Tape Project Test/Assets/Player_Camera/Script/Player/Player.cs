@@ -353,12 +353,13 @@ public partial class Player : Character
         {
             case JumpMode.CapturingJump:
                 {
-                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= Vector3.Distance(move_start, move_end);
+                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                     break;
                 }
             case JumpMode.StringJump:
                 {
-                    m_hitinfo.collider.GetComponent<StringUnit>().Delete();
+                    //m_hitinfo.collider.GetComponent<StringUnit>().Delete();
+                    StringAllMinus();
                     break;
                 }
             default:
@@ -368,7 +369,7 @@ public partial class Player : Character
                     else
                         m_Shooter.StringShoot(move_start, move_end);
                     if (m_hitinfo.collider != jump_target.collider && m_hitinfo.collider.tag == "Tree")
-                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= Vector3.Distance(move_start, move_end);
+                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                     break;
                 }
         }
@@ -379,6 +380,45 @@ public partial class Player : Character
         m_EscapeSphere.SetActive(false);
         m_WindLine.Stop();
     }
+    //対象の糸に繋がっている木をすべてマイナス
+    private void StringAllMinus()
+    {
+        List<Connecter> connecters = new List<Connecter>();
+        Connecter origin = m_hitinfo.collider.GetComponent<Connecter>();
+        connecters.Add(origin);
+        StringSearch(origin, ref connecters);
+    }
+    private void StringSearch(Connecter connecter, ref List<Connecter> connecters)
+    {
+        foreach(Connecter c in connecter.m_Child)
+        {
+            IsUsedConnecter(c, ref connecters);
+        }
+
+        Connecter start = connecter.m_StartConnecter;
+        Connecter end = connecter.m_EndConnecter;
+        IsUsedConnecter(start, ref connecters);
+        IsUsedConnecter(end, ref connecters);
+
+    }
+    //すでに調べた糸かどうか(調べていない場合は検索)
+    private void IsUsedConnecter(Connecter connecter, ref List<Connecter> connecters)
+    {
+        foreach(Connecter c in connecters)
+        {
+            if (c.gameObject == connecter.gameObject) return;
+        }
+        if(connecter.gameObject.tag == "Tree")
+        {
+            connecter.GetComponent<Tree>().m_TerritoryRate -= StringDemeritRate;
+            connecters.Add(connecter);
+            return;
+        }
+
+        connecters.Add(connecter);
+        StringSearch(connecter, ref connecters);
+    }
+
     //落下着地時の各値リセット
     private void LandingReset(Collider other)
     {

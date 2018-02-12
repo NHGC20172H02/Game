@@ -7,7 +7,7 @@ public partial class Player {
     //体当たり状態
     void BodyBlowMove()
     {
-        if (!Depression()) return;
+        //if (!Depression()) return;
         if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
             JumpReset();
