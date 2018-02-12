@@ -26210,6 +26210,7 @@ GameObject:
   - component: {fileID: 1571437103}
   - component: {fileID: 1571437105}
   - component: {fileID: 1571437104}
+  - component: {fileID: 1571437106}
   m_Layer: 15
   m_Name: MiniMap
   m_TagString: Untagged
@@ -26267,6 +26268,21 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1571437102}
+--- !u!114 &1571437106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1571437102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ae71b262652364394110c15fa54503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Scales:
+  - 1
+  - 1.2
+  - 1.5
 --- !u!1 &1575756334
 GameObject:
   m_ObjectHideFlags: 0
@@ -36289,6 +36305,11 @@ Prefab:
       propertyPath: m_LogParent
       value: 
       objectReference: {fileID: 1567750673}
+    - target: {fileID: 114457213470144440, guid: 6977bb53dda9ef442877569032dc5179,
+        type: 2}
+      propertyPath: m_BattleScene
+      value: 
+      objectReference: {fileID: 454695640}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6977bb53dda9ef442877569032dc5179, type: 2}
   m_IsPrefabParent: 0

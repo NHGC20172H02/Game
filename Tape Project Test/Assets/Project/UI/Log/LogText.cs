@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class LogText : MonoBehaviour {
 	public Text m_Text;
+	public Text m_TimeStamp;
 	public float m_Time;
 	public Image m_Image;
 	public Animator m_Animator;
