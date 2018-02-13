@@ -8,7 +8,7 @@ public class SpownPoint : MonoBehaviour
 	void Start ()
     {
         //PlayerSpownで決めた座標をバトルシーンの座標に変換
-        Vector3 spownPosition = new Vector3 (PlayerSpown.spownPos.x * 1.29f, 0 ,PlayerSpown.spownPos.y * 1.17f);
+        Vector3 spownPosition = new Vector3 (PlayerSpown.spownPos.x * 0.5f, 0 ,PlayerSpown.spownPos.y * 0.5f);
         GameObject.Find("Player").transform.position = spownPosition;
     }
 }

@@ -58,7 +58,7 @@ public class PlayerSpown : MonoBehaviour
         }
 
         //ツリーとプレイヤーの距離がdis以下だったら色変更とボタン機能を消す
-        if (dis <= 30.0f)
+        if (dis <= 50.0f)
         {
             image.color = Color.red;
             buttonA.enabled = false;
@@ -79,8 +79,8 @@ public class PlayerSpown : MonoBehaviour
         y += Input.GetAxis("Vertical") * m_Speed * Time.deltaTime;
 
         //移動制限
-        x = Mathf.Clamp(x, -253, -170);
-        y = Mathf.Clamp(y, -146, 132);
+        x = Mathf.Clamp(x, -180.0f, -130.0f);
+        y = Mathf.Clamp(y, -200.0f, 150.0f);
 
         //移動した座標を現在の座標に変換
         m_RectTransform.anchoredPosition = new Vector2(x, y);

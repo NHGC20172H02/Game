@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemyspown : MonoBehaviour
+public class EnemySpown : MonoBehaviour
 {
     public static Vector2 spownPos2;
 
@@ -18,8 +18,8 @@ public class Enemyspown : MonoBehaviour
 
     Vector2 randomPos;
 
-    Vector2 lefttop = new Vector2(178.0f, 132.0f);
-    Vector2 rightbottom = new Vector2(259.0f,-146.0f);
+    Vector2 lefttop = new Vector2(120.0f, 150.0f);
+    Vector2 rightbottom = new Vector2(170.0f,-200.0f);
 
 
     float ramX;
@@ -34,8 +34,8 @@ public class Enemyspown : MonoBehaviour
         m_RectTransform = GetComponent<RectTransform>();
 
         //ランダムの変数
-        ramX = Random.Range(178, 259);
-        ramY = Random.Range(132, -146);   
+        ramX = Random.Range(120.0f, 150.0f);
+        ramY = Random.Range(170.0f, -200.0f);   
     }
 	
 	// Update is called once per frame
