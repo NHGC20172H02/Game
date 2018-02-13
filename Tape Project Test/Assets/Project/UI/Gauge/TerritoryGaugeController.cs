@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TerritoryGaugeController : MonoBehaviour
 {
@@ -13,7 +14,12 @@ public class TerritoryGaugeController : MonoBehaviour
 	public TerritoryGaugeUI m_TGUIMy;
 	public TerritoryGaugeUI m_TGUITarget;
 
-	void Update()
+	public Image m_TreeSideL;
+	public Image m_TreeSideR;
+
+	public Sprite[] m_TreeSide;
+
+	void LateUpdate()
 	{
 		var stay = m_Player.GetOnTree();
 		var target = m_Player.GetTargetTree();
@@ -48,5 +54,12 @@ public class TerritoryGaugeController : MonoBehaviour
 		active = m_TGUIMy.gameObject.activeSelf && m_TGUITarget.gameObject.activeSelf;
 		m_TGUIMiniL.gameObject.SetActive(active);
 		m_TGUIMiniR.gameObject.SetActive(active);
+		if (active)
+		{
+			m_TreeSideL.sprite = m_TreeSide[stay.GetComponent<Tree>().m_SideNumber];
+			m_TreeSideR.sprite = m_TreeSide[target.GetComponent<Tree>().m_SideNumber];
+		}
+		m_TreeSideL.enabled = active;
+		m_TreeSideR.enabled = active;
 	}
 }
