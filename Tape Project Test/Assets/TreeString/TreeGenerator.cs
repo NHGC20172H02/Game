@@ -27,7 +27,7 @@ public class TreeGenerator : MonoBehaviour {
 		m_Trees.Clear();
 		foreach (var item in m_PMD.m_TreePpositions)
 		{
-			m_Trees.Add(Instantiate(m_Prefab, new Vector3(item.x * 25 - 87.5f, 0, item.y * 25 - 87.5f), Quaternion.identity, transform));
-		}
+            m_Trees.Add(Instantiate(m_Prefab, new Vector3(item.x * 25 - 87.5f, 0, item.y * 25 - 87.5f), Quaternion.identity, transform));
+        }
 	}
 }

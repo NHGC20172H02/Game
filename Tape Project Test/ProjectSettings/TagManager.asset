@@ -10,6 +10,7 @@ TagManager:
   - Undefined
   - Net
   - Enemy
+  - SpownSelectTree
   layers:
   - Default
   - TransparentFX

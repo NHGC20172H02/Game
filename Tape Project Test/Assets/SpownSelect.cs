@@ -12,8 +12,9 @@ public class SpownSelect : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-
         audioSource = gameObject.GetComponent<AudioSource>();
+
+        
     }
 	
 	// Update is called once per frame
