@@ -74,7 +74,6 @@ public class EnemyAI40 : Character
 
     //検索した木
     GameObject nearObj0;
-    GameObject nearObj02;
     [System.NonSerialized]
     public GameObject nearObj;
     GameObject nearObj2;
@@ -177,9 +176,6 @@ public class EnemyAI40 : Character
     {
         //誰の陣地でもない近くの木
         nearObj0 = GetComponent<NearObj40>().m_nearObj0;
-
-        //誰の陣地でもない２番目に近くの木
-        nearObj02 = GetComponent<NearObj40>().m_nearObj02;
 
         //近かったオブジェクト（木）を取得
         nearObj2 = GetComponent<NearObj40>().m_nearObj2;
@@ -673,21 +669,12 @@ public class EnemyAI40 : Character
             dist0 = Vector3.Distance(nearObj0.transform.position, this.transform.position);
         }
 
-        if (nearObj02 != null)
-            near_Gauge2 = nearObj02.GetComponent<Tree>().m_TerritoryRate;
-
-        if (dist0 <= tree_Detection && nearObj0 != null && nearObj02 != null)
+        if (dist0 <= tree_Detection && nearObj0 != null)
         {
-            if (near_Gauge <= 1 || nearObj02 != null)
+            if (near_Gauge <= 1)
             {
                 eyeObj = nearObj0;
                 m_targetPos = GetUpPosition00();
-                m_StateProcessor.State = m_Jumping;
-            }
-            else if (near_Gauge2 <= 1)
-            {
-                eyeObj = nearObj02;
-                m_targetPos = GetUpPosition02();
                 m_StateProcessor.State = m_Jumping;
             }
             else //相手のゲージが少ない方
@@ -696,12 +683,6 @@ public class EnemyAI40 : Character
                 {
                     eyeObj = nearObj0;
                     m_targetPos = GetUpPosition00();
-                    m_StateProcessor.State = m_Jumping;
-                }
-                if (near_Gauge >= near_Gauge2)
-                {
-                    eyeObj = nearObj02;
-                    m_targetPos = GetUpPosition02();
                     m_StateProcessor.State = m_Jumping;
                 }
             }
@@ -1451,10 +1432,6 @@ public class EnemyAI40 : Character
     public Vector3 GetUpPosition00()
     {
         return new Vector3(nearObj0.transform.position.x, Random.Range(4, 20), nearObj0.transform.position.z);
-    }
-    public Vector3 GetUpPosition02()
-    {
-        return new Vector3(nearObj02.transform.position.x, Random.Range(jumpPos_Min, jumpPos_Max), nearObj02.transform.position.z);
     }
 
 
