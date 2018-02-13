@@ -7602,6 +7602,11 @@ MonoBehaviour:
   m_UIAnimator: {fileID: 1436097655}
   m_Timer: 300
   m_TimerUI: {fileID: 632160130}
+  m_Time_Cost:
+  - {x: 300, y: 250}
+  - {x: 200, y: 500}
+  - {x: 100, y: 1000}
+  m_PMD: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
 --- !u!4 &454695641
 Transform:
   m_ObjectHideFlags: 0
@@ -19557,7 +19562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dd0e4879a49a946ae632fed39318d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Type: 3
+  m_Type: 0
 --- !u!4 &1117682913
 Transform:
   m_ObjectHideFlags: 0
