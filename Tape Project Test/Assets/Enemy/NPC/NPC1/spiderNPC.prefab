@@ -756,8 +756,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4478760882273660}
   - component: {fileID: 95140201496288716}
-  - component: {fileID: 114635794943989896}
   - component: {fileID: 114744797581381608}
+  - component: {fileID: 114635794943989896}
   - component: {fileID: 114776416112248808}
   m_Layer: 0
   m_Name: spiderNPC
@@ -1728,7 +1728,6 @@ MonoBehaviour:
   m_JumpSpeed: 1
   m_speed: 4
   ground_detection: 10
-  NPCSpawn: {fileID: 0}
 --- !u!114 &114744797581381608
 MonoBehaviour:
   m_ObjectHideFlags: 1
