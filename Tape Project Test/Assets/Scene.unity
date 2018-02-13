@@ -4615,7 +4615,7 @@ MonoBehaviour:
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 7d8da8d2c882f034584a86e025865044, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -7600,8 +7600,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIAnimator: {fileID: 1436097655}
-  m_Timer: 600
+  m_Timer: 300
   m_TimerUI: {fileID: 632160130}
+  m_Time_Cost:
+  - {x: 300, y: 250}
+  - {x: 200, y: 500}
+  - {x: 100, y: 1000}
+  m_PMD: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
 --- !u!4 &454695641
 Transform:
   m_ObjectHideFlags: 0
@@ -9110,7 +9115,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 7d8da8d2c882f034584a86e025865044, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -10607,7 +10612,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 7d8da8d2c882f034584a86e025865044, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -10843,7 +10848,7 @@ MonoBehaviour:
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 7d8da8d2c882f034584a86e025865044, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -10966,8 +10971,6 @@ GameObject:
   m_Component:
   - component: {fileID: 634646649}
   - component: {fileID: 634646648}
-  - component: {fileID: 634646647}
-  - component: {fileID: 634646646}
   m_Layer: 0
   m_Name: UICamera
   m_TagString: Untagged
@@ -10975,20 +10978,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &634646646
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 634646645}
-  m_Enabled: 0
---- !u!124 &634646647
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 634646645}
-  m_Enabled: 1
 --- !u!20 &634646648
 Camera:
   m_ObjectHideFlags: 0
@@ -10998,7 +10987,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -11018,10 +11007,10 @@ Camera:
   m_TargetTexture: {fileID: 8400000, guid: bdb4f04553584344e9c853418becfe2d, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &634646649
@@ -16428,7 +16417,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 7d8da8d2c882f034584a86e025865044, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
@@ -19573,7 +19562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dd0e4879a49a946ae632fed39318d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Type: 3
+  m_Type: 0
 --- !u!4 &1117682913
 Transform:
   m_ObjectHideFlags: 0
@@ -23681,7 +23670,7 @@ Prefab:
     - target: {fileID: 224942614142439594, guid: e25066c4dfbc9ff42bca5322fe5b6958,
         type: 2}
       propertyPath: m_LocalPosition.x
-      value: -185
+      value: -1930
       objectReference: {fileID: 0}
     - target: {fileID: 224942614142439594, guid: e25066c4dfbc9ff42bca5322fe5b6958,
         type: 2}
@@ -23767,6 +23756,10 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338214701646596, guid: e25066c4dfbc9ff42bca5322fe5b6958, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e25066c4dfbc9ff42bca5322fe5b6958, type: 2}
@@ -26445,7 +26438,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 4c0fdb252e4c664419cfbb00c62c76fe, type: 2}
+  m_Material: {fileID: 2100000, guid: 7d8da8d2c882f034584a86e025865044, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -26571,7 +26564,7 @@ MonoBehaviour:
   m_Script: {fileID: -98529514, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 2bc302ab71b3ff94ba9fe66246e453bb, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -29841,7 +29834,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 7d8da8d2c882f034584a86e025865044, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -35842,7 +35835,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2067591209}
   - component: {fileID: 2067591208}
-  - component: {fileID: 2067591207}
   m_Layer: 0
   m_Name: MiniMapCamera
   m_TagString: Untagged
@@ -35850,13 +35842,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
---- !u!124 &2067591207
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2067591206}
-  m_Enabled: 1
 --- !u!20 &2067591208
 Camera:
   m_ObjectHideFlags: 0
@@ -35866,7 +35851,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -35886,10 +35871,10 @@ Camera:
   m_TargetTexture: {fileID: 8400000, guid: 463dec475c4d97742816645df5d141bc, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &2067591209
@@ -36986,7 +36971,7 @@ MonoBehaviour:
   m_Script: {fileID: -98529514, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 2bc302ab71b3ff94ba9fe66246e453bb, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:

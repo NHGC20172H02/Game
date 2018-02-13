@@ -53,18 +53,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f2cdc018297da4980ac73f9d3afe15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Type: 0
   m_SideNumber: 0
+  m_StringShooter: {fileID: 0}
+  m_StartConnecter: {fileID: 0}
+  m_EndConnecter: {fileID: 0}
   m_Child: []
+  m_ConnectingTree: []
   m_Materials:
   - {fileID: 2100000, guid: 8ad8f0d5efad8d247bc0344f62875aac, type: 2}
   - {fileID: 2100000, guid: 7e1d8e4eda20ab546aa1e8940269864e, type: 2}
   - {fileID: 2100000, guid: c8d4e59a01a717e46a4ac46be7a47099, type: 2}
-  m_StartConnecter: {fileID: 0}
-  m_EndConnecter: {fileID: 0}
   m_LineRenderer: {fileID: 120552317581310650}
   m_Collider: {fileID: 136776381644261574}
   m_Cost: 0
-  m_StringShooter: {fileID: 0}
   m_PointA: {x: 0, y: 0, z: 0}
   m_PointB: {x: 0, y: 0, z: 0}
   m_StringStockPrefab: {fileID: 1802979472427602, guid: bbef6904cd562ee4292407805b4ca153,
@@ -109,7 +111,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 2
-    widthMultiplier: 0.05
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
