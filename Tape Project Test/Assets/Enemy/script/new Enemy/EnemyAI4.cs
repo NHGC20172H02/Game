@@ -329,7 +329,7 @@ public partial class EnemyAI4 : Character
         //    m_StateProcessor.State = m_Fall;
         //}
 
-        Debug.Log(attack);
+        //Debug.Log(attack);
         //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position, m_targetPos, Color.blue);
 
