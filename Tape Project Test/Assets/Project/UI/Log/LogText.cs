@@ -17,6 +17,7 @@ public class LogText : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		return;
 		float t = m_Timer / m_Time;
 		float a = 1.0f - t * t * t;
 		var c = m_Text.color;

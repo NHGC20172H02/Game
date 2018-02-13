@@ -54,12 +54,10 @@ public class Tree : Connecter
 		int sideNumber = m_SideNumber;
 		if (m_SideNumber == 0 && m_TerritoryRatePre < 100 && m_TerritoryRate >= 100)
 		{
-			m_TerritoryRate = Mathf.Max(m_TerritoryRate, 100);
 			sideNumber = 1;
 		}
 		if (m_SideNumber == 0 && m_TerritoryRatePre > -100 && m_TerritoryRate <= -100)
 		{
-			m_TerritoryRate = Mathf.Min(m_TerritoryRate, -100);
 			sideNumber = 2;
 		}
 		if(m_SideNumber == 1 && m_TerritoryRate < 0)
@@ -70,6 +68,8 @@ public class Tree : Connecter
 		{
 			sideNumber = 0;
 		}
+		m_TerritoryRate = Mathf.Min(m_TerritoryRate, 100);
+		m_TerritoryRate = Mathf.Max(m_TerritoryRate, -100);
 		m_TerritoryRatePre = m_TerritoryRate;
 
 		m_Gauge.color = m_TerritoryRate >= 0 ? Color.blue : Color.red;
