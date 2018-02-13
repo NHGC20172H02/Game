@@ -15952,7 +15952,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 930233534}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -15976,7 +15976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.39215687, g: 0.78431374, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -15985,7 +15985,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 24
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -21721,6 +21721,11 @@ Transform:
   m_Father: {fileID: 998130281}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1261566899 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4225799375381644, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+    type: 2}
+  m_PrefabInternal: {fileID: 1470673595}
 --- !u!1001 &1264867260
 Prefab:
   m_ObjectHideFlags: 0
@@ -25510,11 +25515,31 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 23043377908542964, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+    - target: {fileID: 114132865610725492, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
         type: 2}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: m_Timer
       value: 
-      objectReference: {fileID: 2100000, guid: 164b6b6069c3ad848b491cab10350f1c, type: 2}
+      objectReference: {fileID: 454695640}
+    - target: {fileID: 114019168407754530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+        type: 2}
+      propertyPath: m_Enemy
+      value: 
+      objectReference: {fileID: 460384094}
+    - target: {fileID: 114019168407754530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+        type: 2}
+      propertyPath: m_Circle
+      value: 
+      objectReference: {fileID: 1730489184}
+    - target: {fileID: 114019168407754530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+        type: 2}
+      propertyPath: m_DirectionIcon
+      value: 
+      objectReference: {fileID: 1759254077}
+    - target: {fileID: 114019168407754530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
+        type: 2}
+      propertyPath: m_IconText
+      value: 
+      objectReference: {fileID: 930233535}
     - target: {fileID: 114430037697892728, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
         type: 2}
       propertyPath: m_Cursor
@@ -25535,31 +25560,7 @@ Prefab:
       propertyPath: m_CursorAssist.Array.data[1]
       value: 
       objectReference: {fileID: 897391361}
-    - target: {fileID: 114019168407754530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
-        type: 2}
-      propertyPath: m_Enemy
-      value: 
-      objectReference: {fileID: 460384094}
-    - target: {fileID: 114019168407754530, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
-        type: 2}
-      propertyPath: m_Circle
-      value: 
-      objectReference: {fileID: 1730489184}
-    - target: {fileID: 114132865610725492, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
-        type: 2}
-      propertyPath: m_Timer
-      value: 
-      objectReference: {fileID: 454695640}
-    - target: {fileID: 23758846955569472, guid: 8d47eb49147b3784dbda6c62a9ef8bad,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 164b6b6069c3ad848b491cab10350f1c, type: 2}
-    m_RemovedComponents:
-    - {fileID: 114179476544423502, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
-    - {fileID: 114402373923178540, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
-    - {fileID: 114258985897448952, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
-    - {fileID: 114613819584874756, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d47eb49147b3784dbda6c62a9ef8bad, type: 2}
   m_IsPrefabParent: 0
 --- !u!114 &1470673596 stripped
@@ -29767,7 +29768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.39215687, g: 0.78431374, b: 0, a: 0.78431374}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -30427,7 +30428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.39215687, g: 0.78431374, b: 0, a: 0.78431374}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
