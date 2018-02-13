@@ -7,7 +7,7 @@ public partial class Player {
     //ジャンプ中の動作
     void JumpTpMove()
     {
-        if (!Depression()) return;
+        //if (!Depression()) return;
         if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
             JumpReset();
@@ -23,7 +23,7 @@ public partial class Player {
             return;
         }
         float dif = Mathf.Abs(flightDuration - elapse_time / m_JumpSpeed);
-        if (dif < 0.3f && !isLanding)
+        if (dif < 0.2f && !isLanding)
         {
             m_Animator.SetTrigger("Landing");
             isLanding = true;

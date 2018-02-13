@@ -7,7 +7,7 @@ public partial class Player {
     //地面上でのジャンプ
     void GroundJump()
     {
-        if (!Depression()) return;
+        //if (!Depression()) return;
         if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
             waitFrame = 0;
@@ -16,7 +16,7 @@ public partial class Player {
             return;
         }
         float dif = Mathf.Abs(flightDuration - elapse_time / flightDuration);
-        if (dif < 0.3f)
+        if (dif < 0.2f)
         {
             m_Animator.SetTrigger("Landing");
         }
