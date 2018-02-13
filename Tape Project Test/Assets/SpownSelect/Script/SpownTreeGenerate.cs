@@ -19,7 +19,7 @@ public class SpownTreeGenerate : MonoBehaviour
     {
         foreach (var treeSpown in m_PMD.m_TreePpositions)
         {
-            m_Trees.Add(Instantiate(m_Prefab, new Vector3(treeSpown.x * 50 + 300.0f , treeSpown.y * 50 + 60,0f), Quaternion.identity, transform));
+            m_Trees.Add(Instantiate(m_Prefab, new Vector3(treeSpown.x * 50 + 300.0f,treeSpown.y * 50 + 100,0f), Quaternion.identity, transform));
         }
     }
 }

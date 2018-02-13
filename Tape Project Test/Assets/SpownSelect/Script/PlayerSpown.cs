@@ -79,8 +79,8 @@ public class PlayerSpown : MonoBehaviour
         y += Input.GetAxis("Vertical") * m_Speed * Time.deltaTime;
 
         //移動制限
-        x = Mathf.Clamp(x, -180.0f, -130.0f);
-        y = Mathf.Clamp(y, -200.0f, 150.0f);
+        x = Mathf.Clamp(x, -160.0f, -113.0f);
+        y = Mathf.Clamp(y, -188.0f, 135.0f);
 
         //移動した座標を現在の座標に変換
         m_RectTransform.anchoredPosition = new Vector2(x, y);

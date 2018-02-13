@@ -18,8 +18,8 @@ public class EnemySpown : MonoBehaviour
 
     Vector2 randomPos;
 
-    Vector2 lefttop = new Vector2(120.0f, 150.0f);
-    Vector2 rightbottom = new Vector2(170.0f,-200.0f);
+    //Vector2 lefttop = new Vector2(120.0f, 150.0f);
+    //Vector2 rightbottom = new Vector2(170.0f,-200.0f);
 
 
     float ramX;
@@ -34,8 +34,8 @@ public class EnemySpown : MonoBehaviour
         m_RectTransform = GetComponent<RectTransform>();
 
         //ランダムの変数
-        ramX = Random.Range(120.0f, 150.0f);
-        ramY = Random.Range(170.0f, -200.0f);   
+        ramX = Random.Range(115.0f, 164.0f);
+        ramY = Random.Range(-190.0f, 135.0f);
     }
 	
 	// Update is called once per frame
