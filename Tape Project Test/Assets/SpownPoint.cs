@@ -7,26 +7,12 @@ public class SpownPoint : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        if(PlayerSpown.spownData == 1)
-        {
-            Vector3 spownPosition = GameObject.Find("SpownPoint1").transform.position;
-            GameObject.Find("PlayerCamera").transform.position = new Vector3(spownPosition.x, spownPosition.y, spownPosition.z);
-            var spownRotation = GameObject.Find("SpownPoint1").transform.rotation;
-            GameObject.Find("PlayerCamera").transform.rotation = spownRotation;
-        }
+        //PlayerSpownで決めた座標をバトルシーンの座標に変換
+        Vector3 spownPosition = new Vector3 (PlayerSpown.spownPos.x * 0.5f, 0 ,PlayerSpown.spownPos.y * 0.5f);
+        GameObject.Find("Player").transform.position = spownPosition;
 
-        if (PlayerSpown.spownData == 2)
-        {
-            Vector3 spownPosition2 = GameObject.Find("SpownPoint2").transform.position;
-            GameObject.Find("PlayerCamera").transform.position = new Vector3(spownPosition2.x, spownPosition2.y, spownPosition2.z);
-            var spownRotation2 = GameObject.Find("SpownPoint2").transform.rotation;
-            GameObject.Find("PlayerCamera").transform.rotation = spownRotation2;
-        }
+        var playerRotate = this.gameObject.transform.rotation;
+        GameObject.Find("Player").transform.Rotate(new Vector3(0,playerRotate.y,0));
 
-        if (PlayerSpown.spownData == 3)
-        {
-            Vector3 spownPosition3 = GameObject.Find("SpownPoint3").transform.position;
-            GameObject.Find("PlayerCamera").transform.position = new Vector3(spownPosition3.x, spownPosition3.y, spownPosition3.z);
-        }
     }
 }

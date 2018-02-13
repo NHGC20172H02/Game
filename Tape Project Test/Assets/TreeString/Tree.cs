@@ -29,7 +29,7 @@ public class Tree : Connecter
 	private static string[] Xstring = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 	private static string[] Ystring = new string[] { "8", "7", "6", "5", "4", "3", "2", "1" };
 
-	float m_AddRateSpider = 2.5f; // 0.4s 1%
+	float m_AddRateSpider = 10;//2.5f; // 0.4s 1%
 	float m_AddRateString = 1.25f; // 0.8s 1%
 	float m_DownRateNeutral = 1; // 1.0s 1%
 	float m_DownRate = 1/1.5f; // 1.5s 1%
@@ -47,59 +47,17 @@ public class Tree : Connecter
 
 	private void Update()
 	{
-		int i = Mathf.Abs(m_ConnectCounts[0, 0] + m_ConnectCounts[0, 1] - m_ConnectCounts[1, 0] - m_ConnectCounts[1, 1]);
-		if (m_SideNumber == 0)
-		{
-			if (m_IsHitChara[0] && !m_IsMoveChara[0])
-			{
-				m_TerritoryRate += Time.deltaTime * 2;
-				if (m_ConnectCounts[0, 0] + m_ConnectCounts[0, 1] > m_ConnectCounts[1, 0] + m_ConnectCounts[1, 1])
-				{
-					float f = 2.4f - (Mathf.Min(m_ActivCounts[0, 2], i) + Mathf.Min(m_ActivCounts[0, 0], i) + Mathf.Min(m_ActivCounts[0, 1], i)) * 0.2f;
-					m_TerritoryRate += Time.deltaTime / f;
-				}
-			}
-			if (m_IsHitChara[1] && !m_IsMoveChara[1])
-			{
-				m_TerritoryRate -= Time.deltaTime * 2;
-				if (m_ConnectCounts[0, 0] + m_ConnectCounts[0, 1] < m_ConnectCounts[1, 0] + m_ConnectCounts[1, 1])
-				{
-					float f = 2.4f - (Mathf.Min(m_ActivCounts[1, 2], i) + Mathf.Min(m_ActivCounts[1, 0], i) + Mathf.Min(m_ActivCounts[1, 1], i)) * 0.2f;
-					m_TerritoryRate -= Time.deltaTime / f;
-				}
-			}
-			if (m_IsHitChara[0] == false && m_IsHitChara[1] == false && Mathf.Abs(m_TerritoryRate) < 100 && m_TerritoryRate != 0)
-			{
-				m_TerritoryRate = Mathf.Max(0, Mathf.Abs(m_TerritoryRate) - Time.deltaTime * 100 / 60f) * Mathf.Sign(m_TerritoryRate);
-			}
-		}
-		else if (m_SideNumber == 2)
-		{
-			if (m_IsHitChara[0] && !m_IsMoveChara[0])
-			{
-				m_TerritoryRate += Time.deltaTime * 2;
-			}
-		}
-		else
-		{
-			if (m_IsHitChara[1] && !m_IsMoveChara[1])
-			{
-				m_TerritoryRate -= Time.deltaTime * 2;
-			}
-
-		}
+		TerritoryUpdate();
 
 		m_IsHitChara = new bool[] { false, false };
 
 		int sideNumber = m_SideNumber;
 		if (m_SideNumber == 0 && m_TerritoryRatePre < 100 && m_TerritoryRate >= 100)
 		{
-			m_TerritoryRate = Mathf.Max(m_TerritoryRate, 100);
 			sideNumber = 1;
 		}
 		if (m_SideNumber == 0 && m_TerritoryRatePre > -100 && m_TerritoryRate <= -100)
 		{
-			m_TerritoryRate = Mathf.Min(m_TerritoryRate, -100);
 			sideNumber = 2;
 		}
 		if(m_SideNumber == 1 && m_TerritoryRate < 0)
@@ -110,6 +68,8 @@ public class Tree : Connecter
 		{
 			sideNumber = 0;
 		}
+		m_TerritoryRate = Mathf.Min(m_TerritoryRate, 100);
+		m_TerritoryRate = Mathf.Max(m_TerritoryRate, -100);
 		m_TerritoryRatePre = m_TerritoryRate;
 
 		m_Gauge.color = m_TerritoryRate >= 0 ? Color.blue : Color.red;
@@ -119,6 +79,53 @@ public class Tree : Connecter
 
 		ChangeSide(sideNumber);
 	}
+	private void TerritoryUpdate()
+	{
+		int i = Mathf.Abs(m_ConnectCounts[0, 0] + m_ConnectCounts[0, 1] - m_ConnectCounts[1, 0] - m_ConnectCounts[1, 1]);
+		TouchedSpider(0);
+		TouchedSpider(1);
+		TouchedString(0);
+		TouchedString(1);
+		if (m_SideNumber == 0)
+		{
+			if (m_IsHitChara[0] == false && m_IsHitChara[1] == false && m_TerritoryRate != 0)
+			{
+				m_TerritoryRate = Mathf.Max(0, Mathf.Abs(m_TerritoryRate) - m_DownRateNeutral * Time.deltaTime) * Mathf.Sign(m_TerritoryRate);
+			}
+		}
+		else if (m_SideNumber == 1)
+		{
+			if(m_ConnectCounts[0, 0] == 0)
+			{
+				m_TerritoryRate = Mathf.Max(0, m_TerritoryRate - m_DownRate * Time.deltaTime);
+			}
+		}
+		else
+		{
+			if (m_ConnectCounts[1, 0] == 0)
+			{
+				m_TerritoryRate = Mathf.Min(0, m_TerritoryRate + m_DownRate * Time.deltaTime);
+			}
+		}
+
+	}
+	private void TouchedSpider(int i)
+	{
+		if (m_IsHitChara[i])
+			m_TerritoryRate += m_AddRateSpider * Time.deltaTime * (i == 0 ? 1 : -1);
+	}
+	private void TouchedString(int i)
+	{
+		if (m_ConnectCounts[i, 0] + m_ConnectCounts[i, 1] > m_ConnectCounts[Mathf.Abs(i-1), 0] + m_ConnectCounts[Mathf.Abs(i - 1), 1])
+			m_TerritoryRate += m_AddRateString * Time.deltaTime * (i == 0 ? 1 : -1);
+	}
+	public void Jumped(float meter)
+	{
+		m_TerritoryRate -= meter;
+		m_TerritoryRateMAX = Mathf.Max(0, m_TerritoryRateMAX - meter);
+
+	}
+
 	private void ChangeSide(int sideNumber)
 	{
 		m_Renderer.material = m_Materials[sideNumber];

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class LogText : MonoBehaviour {
 	public Text m_Text;
+	public Text m_TimeStamp;
 	public float m_Time;
 	public Image m_Image;
 	public Animator m_Animator;
@@ -16,6 +17,7 @@ public class LogText : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		return;
 		float t = m_Timer / m_Time;
 		float a = 1.0f - t * t * t;
 		var c = m_Text.color;

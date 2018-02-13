@@ -12,11 +12,7 @@ public class MyButtons : MonoBehaviour {
     public GameObject m_ManualFont;
     public GameObject m_ManualBackButton;
     public GameObject m_GameEnd;
-
-    public GameObject titleCamera;
-    public GameObject selectCamera;
-
-    public GameObject m_Select;
+    
     public GameObject m_Select4;
     public GameObject m_Select5;
     public GameObject m_Select6;
@@ -38,11 +34,7 @@ public class MyButtons : MonoBehaviour {
         m_ManualFont.SetActive(false);
         m_ManualBackButton.SetActive(false);
         m_GameEnd.SetActive(false);
-
-        titleCamera.SetActive(true);
-        selectCamera.GetComponent<Camera>().enabled = false;
-
-        m_Select.SetActive(false);
+       
         m_Select4.SetActive(true);
         m_Select5.SetActive(true);
         m_Select6.SetActive(false);
