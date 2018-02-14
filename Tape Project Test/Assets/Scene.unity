@@ -3105,7 +3105,7 @@ MonoBehaviour:
   NPCSpawn2: {fileID: 1338071035}
   NPCSpawn3: {fileID: 606692997}
   NPCSpawn4: {fileID: 1464031501}
-  NPC1: {fileID: 1371989562530374, guid: 5e09aad3622a16c4195414a940866022, type: 2}
+  NPC1: {fileID: 1977836974201614, guid: 5e09aad3622a16c4195414a940866022, type: 2}
 --- !u!4 &205615180
 Transform:
   m_ObjectHideFlags: 0
