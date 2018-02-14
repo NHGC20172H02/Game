@@ -20,6 +20,8 @@ public class TerritoryGaugeController : MonoBehaviour
 
 	public Image m_FlashMask;
 
+	public JumpProgressSpider m_SpiderIcon;
+
 	void Start()
 	{
 		m_FlashMask.GetComponent<Animation>().Play();	
@@ -56,10 +58,12 @@ public class TerritoryGaugeController : MonoBehaviour
 				active = true;
 				m_TreeSideR.sprite = m_TreeSide[target.GetComponent<Tree>().m_SideNumber];
 				target.GetComponent<Tree>().SetOutLineColor(1 - m_FlashMask.color.a);
+				m_SpiderIcon.SetProgress(m_Player.JumpProgress());
 			}
 		}
 		//active = m_TGUIMy.gameObject.activeSelf && active;
 		m_TGUIMiniR.gameObject.SetActive(active);
 		m_TreeSideR.gameObject.SetActive(active);
+
 	}
 }

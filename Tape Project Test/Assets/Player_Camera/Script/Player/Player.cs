@@ -521,6 +521,12 @@ public partial class Player : Character
     {
         return isFlyable;
     }
+
+	// ジャンプ進行率
+	public float JumpProgress()
+	{
+		return flightDuration == 0 ? 0 : elapse_time/m_JumpSpeed / flightDuration;
+	}
     /*******************************************/
 
     void OnTriggerEnter(Collider other)
