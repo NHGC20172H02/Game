@@ -225,9 +225,9 @@ public class NPC1 : Character
         {
             if (hit.transform.tag == "Ground")
             {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+                transform.position = Vector3.Lerp(transform.position, hit.point, 0.5f);
                 transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.5f), hit.normal);
             }
         }
         transform.Translate(Vector3.forward * m_speed * Time.deltaTime);
