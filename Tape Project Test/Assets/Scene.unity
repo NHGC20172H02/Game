@@ -809,6 +809,7 @@ GameObject:
   m_Component:
   - component: {fileID: 58852001}
   - component: {fileID: 58852002}
+  - component: {fileID: 58852003}
   m_Layer: 15
   m_Name: GaugeSet
   m_TagString: Untagged
@@ -863,6 +864,21 @@ MonoBehaviour:
   m_FlashMask: {fileID: 690882651}
   m_SpiderIcon: {fileID: 683538227}
   m_JumpOKNG: {fileID: 34768248}
+--- !u!114 &58852003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 58852000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7905857de4ce73d48a7796802d946368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Scripts:
+  - {fileID: 58852002}
+  m_Animator: []
+  m_Particles: []
 --- !u!1 &64231512
 GameObject:
   m_ObjectHideFlags: 0
