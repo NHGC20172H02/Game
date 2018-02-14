@@ -34,8 +34,8 @@ public class EnemySpown : MonoBehaviour
         m_RectTransform = GetComponent<RectTransform>();
 
         //ランダムの変数
-        ramX = Random.Range(115.0f, 164.0f);
-        ramY = Random.Range(-190.0f, 135.0f);
+        ramX = Random.Range(112.0f, 158.0f);
+        ramY = Random.Range(-190.0f, 137.0f);
     }
 	
 	// Update is called once per frame
