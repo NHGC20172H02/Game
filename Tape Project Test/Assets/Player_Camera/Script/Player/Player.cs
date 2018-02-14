@@ -513,6 +513,12 @@ public partial class Player : Character
     {
         return m_StateManager.StateProcassor.State == m_StateManager.BodyBlow;
     }
+
+	// ジャンプ進行率
+	public float JumpProgress()
+	{
+		return flightDuration == 0 ? 0 : elapse_time/m_JumpSpeed / flightDuration;
+	}
     /*******************************************/
 
     void OnTriggerEnter(Collider other)
