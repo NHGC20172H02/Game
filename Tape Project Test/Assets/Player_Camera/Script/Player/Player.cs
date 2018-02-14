@@ -53,6 +53,7 @@ public partial class Player : Character
     private int waitFrame = 0;
     private float m_failureTime = 0;
     private bool isLanding = false;
+    private bool isFlyable = false;
     private float m_escapeInterval = 0;
     private float m_treeWaitTime = 0;                   //同じ木の滞在時間
     private float m_attackRate = 0;
@@ -104,6 +105,7 @@ public partial class Player : Character
     //ジャンプ
     private void Jump(Ray ray, RaycastHit hit)
     {
+        isFlyable = false;
         bool jump = false;
         bool bodyBlow = false;
         float addLimit = 0;
@@ -179,6 +181,7 @@ public partial class Player : Character
             m_Prediction.SetActive(true);
             m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, m_category);
             m_Prediction.Calculation();
+            isFlyable = true;
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
@@ -190,6 +193,7 @@ public partial class Player : Character
                 m_Animator.SetTrigger("Jump");
                 m_Animator.SetBool("IsJump", true);
                 m_escapeInterval = 0;
+                isFlyable = false;
                 if (m_hitinfo.collider != jump_target.collider)
                     m_treeWaitTime = 0;
                 JumpCalculation(move_start, move_end, m_Angle);
@@ -511,6 +515,11 @@ public partial class Player : Character
     public bool IsAttack()
     {
         return m_StateManager.StateProcassor.State == m_StateManager.BodyBlow;
+    }
+    //ジャンプ可能かどうか
+    public bool IsFlyable()
+    {
+        return isFlyable;
     }
     /*******************************************/
 
