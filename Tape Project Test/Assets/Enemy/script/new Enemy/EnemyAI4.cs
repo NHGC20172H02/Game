@@ -19,7 +19,7 @@ public partial class EnemyAI4 : Character
     [Header("木の探知範囲")]
     public float tree_Detection = 180.0f;
     [Header("Playerの探知範囲")]
-    public float player_Detection = 200.0f;
+    public float player_Detection = 160.0f;
 
     [Header("Enemyのゲージのためる量")]
     public float thought_Gauge = -100.0f;
@@ -607,12 +607,12 @@ public partial class EnemyAI4 : Character
         if (EnemyTree_Count > PlayerTree_Count)
         {
             m_StateProcessor.State = m_PredominanceDecision;
-        }  
+        }
         else if (playerDist > 25 && playerDist <= player_Detection &&
            player_onTree == playerObj.GetComponent<Player>().IsOnTree()) //Playerに攻撃、playerが木にいるか？
         {
-            if (m_randomCount != 1 && m_randomCount != 2)
-                m_randomCount = Random.Range(1, 3);
+            if (m_randomCount != 1 && m_randomCount != 2 && m_randomCount != 3)
+                m_randomCount = Random.Range(1, 4);
 
             //playerが敵の木にいたら攻撃する
             if (sidenumber == player_number)
@@ -629,20 +629,25 @@ public partial class EnemyAI4 : Character
             //    m_StateProcessor.State = m_AttackJump;
             //}
             else switch (m_randomCount)
-            {
-                case 1: //ゲージを溜めてから攻撃
-                    m_randomCount = 0;
-                    m_playerTarget = GetPlayerPosition();
-                    m_StateProcessor.State = m_AttackJump;
-                    break;
+                {
+                    case 1: //ゲージを溜めてから攻撃
+                        m_randomCount = 0;
+                        m_playerTarget = GetPlayerPosition();
+                        m_StateProcessor.State = m_AttackJump;
+                        break;
 
-                case 2: //ゲージ関係なしに速攻攻撃
-                    m_randomCount = 0;
-                    speed_attack = true;
-                    m_playerTarget = GetPlayerPosition();
-                    m_StateProcessor.State = m_AttackJump;
-                    break;
-            }
+                    case 2: //ゲージ関係なしに速攻攻撃
+                        m_randomCount = 0;
+                        speed_attack = true;
+                        m_playerTarget = GetPlayerPosition();
+                        m_StateProcessor.State = m_AttackJump;
+                        break;
+
+                    case 3: //無色の木に飛ぶ
+                        m_randomCount = 0;
+                        m_StateProcessor.State = m_ColorlessTree;
+                        break;
+                }
         }
         else if (nearObj0 != null) //無色の木がある場合
         {
@@ -655,7 +660,7 @@ public partial class EnemyAI4 : Character
                 m_randomCount = 0;
                 m_StateProcessor.State = m_StringCount;
             }
-            else if(m_randomCount == 1)
+            else if (m_randomCount == 1)
             {
                 m_randomCount = 0;
                 m_StateProcessor.State = m_ColorlessTree;
@@ -671,7 +676,7 @@ public partial class EnemyAI4 : Character
                 noGaugeJump = true;
                 m_StateProcessor.State = m_ColorlessTree;
             }
-        }   
+        }
         else if (nearObj40 == null && nearObj50 == null) //青、白の木が近くにある場合
         {
             //ゲージで判断するか、糸で判断するか
