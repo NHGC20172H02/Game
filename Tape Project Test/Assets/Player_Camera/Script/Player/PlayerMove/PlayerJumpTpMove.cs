@@ -11,7 +11,7 @@ public partial class Player {
         if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
             JumpReset();
-            m_Animator.ResetTrigger("Landing");
+            //m_Animator.ResetTrigger("Landing");
             m_AudioSource.PlayOneShot(m_AudioClips[2]);
             if (jump_target.collider.tag == "String")
             {
