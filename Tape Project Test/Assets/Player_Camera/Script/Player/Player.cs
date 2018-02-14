@@ -23,6 +23,8 @@ public partial class Player : Character
     public float m_GroundJumpForward = 5f;
     public float jumpLower = 5f;
     public Transform m_Camera;
+    public GameObject m_CameraPivot;
+    public GameObject m_Enemy;
     public LayerMask m_GroundLayer, m_TreeLayer, m_StringLayer, m_NetLayer, m_EnemyLayer;
     public PredictionLine m_Prediction;
     public Animator m_Animator;
@@ -32,26 +34,27 @@ public partial class Player : Character
     public List<AudioClip> m_AudioClips;                //0:回避、1:攻撃、2:ジャンプ着地、3:落下着地、4:風、5:歩き
     public GameObject m_EscapeSphere;                   //回避の範囲
     public ParticleSystem m_WindLine;
+    public AnimationCurve m_AttackSpeed;
 
     static readonly float MIN = -100f;                   //行動範囲
     static readonly float MAX = 100f;                    //行動範囲
     static readonly float EscapeTime = 0.5f;             //回避入力の間隔
     private Vector3 m_center;                           //中心点
     private RaycastHit m_hitinfo;                       //足元の情報
-    private Vector3 m_prevPos;
+    private RaycastHit m_prevHit;
     private Vector3 move_start;                         //ジャンプ始点
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
     private JumpMode m_JumpMode = JumpMode.NormalJump;
-    private bool isTarget = false;
+    private bool isTargetString = false;
     private bool isEscape = false;
     private int waitFrame = 0;
     private float m_failureTime = 0;
-    private float m_attackTime = 0;
     private bool isLanding = false;
-    private Collider m_enemy = null;
     private float m_escapeInterval = 0;
     private float m_treeWaitTime = 0;                   //同じ木の滞在時間
+    private float m_attackRate = 0;
+    private TargetCategory m_category = TargetCategory.Connecter;
 
     protected override void Start()
     {
@@ -109,13 +112,13 @@ public partial class Player : Character
     private void Jump(Ray ray, RaycastHit hit)
     {
         bool jump = false;
+        bool bodyBlow = false;
         float addLimit = 0;
         //糸を狙うのかどうか
-        if (Input.GetKeyUp(KeyCode.K) || Input.GetButtonUp("RB"))
+        if (Input.GetKeyUp(KeyCode.K) || Input.GetButtonDown("LB"))
         {
-            m_attackTime = 0;
-            m_enemy = null;
-            isTarget = !isTarget;
+            //m_enemy = null;
+            isTargetString = !isTargetString;
         }
         if (hit.collider.tag == "Tree")
         {
@@ -129,7 +132,7 @@ public partial class Player : Character
             addLimit = Vector3.Distance(s.m_PointA, s.m_PointB);
         }
 
-        if (isTarget)
+        if (isTargetString)
         {
             if (!(jump = Physics.Raycast(ray, out jump_target, m_JumpLimit + addLimit, m_NetLayer)))
                 jump = Physics.SphereCast(ray, 1f, out jump_target, m_JumpLimit + addLimit, m_StringLayer);
@@ -137,17 +140,34 @@ public partial class Player : Character
         else
             jump = Physics.Raycast(ray, out jump_target, m_JumpLimit + addLimit, m_TreeLayer);
 
-        if (Input.GetKey(KeyCode.K) || Input.GetButton("RB"))
+        if (Input.GetKeyDown(KeyCode.K) || Input.GetButtonDown("RB"))
         {
-            m_attackTime += Time.deltaTime;
-            if (m_attackTime > 1f)
+            m_category = TargetCategory.Enemy;
+        }
+        if (Input.GetAxis("Horizontal2") != 0 || Input.GetAxis("Vertical2") != 0)
+        {
+            m_category = TargetCategory.Connecter;
+            m_Prediction.SetActive(false);
+            return;
+        }
+        if (m_category == TargetCategory.Enemy)
+        {
+            bodyBlow = true;
+            jump = false;
+            Vector3 dir = m_Enemy.transform.position - m_center;
+            m_CameraPivot.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+            Ray e_ray = new Ray(m_Enemy.transform.position, -m_Enemy.transform.up);
+            RaycastHit footHit;
+            if (Physics.Raycast(e_ray, out footHit, 1f, m_TreeLayer))
+                jump_target = footHit;
+            else
             {
-                foreach (Collider col in Physics.OverlapSphere(jump_target.point, 3f, m_EnemyLayer))
-                {
-                    m_enemy = col;
-                }
+                bodyBlow = false;
+                m_Prediction.SetActive(false);
+                return;
             }
         }
+
         if (jump)
         {
             if (hit.collider.gameObject == jump_target.collider.gameObject)
@@ -174,19 +194,12 @@ public partial class Player : Character
                 m_JumpMode = JumpMode.NormalJump;
             //予測線、カーソル表示
             m_Prediction.SetActive(true);
-            TargetCategory category = TargetCategory.None;
-            if(!isTarget)
-            {
-                if (m_hitinfo.collider != jump_target.collider)
-                    category = TargetCategory.Tree;
-            }
-            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, category);
-            if (m_enemy != null)
-                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, true, TargetCategory.Enemy);
+            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, m_category);
             m_Prediction.Calculation();
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
+                m_WindLine.Play();
                 m_Prediction.SetActive(false);
                 move_start = transform.position;
                 move_end = jump_target.point;
@@ -194,32 +207,50 @@ public partial class Player : Character
                 m_escapeInterval = 0;
                 if (m_hitinfo.collider != jump_target.collider)
                     m_treeWaitTime = 0;
-                if (m_enemy != null)
-                {
-                    Physics.Raycast(m_enemy.transform.position, -m_enemy.transform.up, out jump_target, 1f, m_TreeLayer);
-                    move_end = jump_target.point;
-                    JumpCalculation(move_start, move_end, m_Angle);
-                    m_StateManager.StateProcassor.State = m_StateManager.BodyBlow;
-                    return;
-                }
                 JumpCalculation(move_start, move_end, m_Angle);
                 m_StateManager.StateProcassor.State = m_StateManager.JumpTp;
             }
             return;
         }
+        else if (bodyBlow)
+        {
+            //体当たり
+            float len = Vector3.Distance(m_Enemy.transform.position, m_center);
+            bool isAttackable = (len < m_JumpLimit);
+            Ray dirRay = new Ray(m_center, (m_Enemy.transform.position - m_center));
+            m_Prediction.SetActive(true);
+            m_Prediction.SetParameter(transform.position, jump_target.point, 1f, m_Shooter.m_SideNumber, JumpMode.NormalJump, m_category, isAttackable);
+            m_Prediction.Calculation();
+            if (isAttackable && m_hitinfo.collider != jump_target.collider
+                && !Physics.Raycast(dirRay, len - 1f, m_TreeLayer)
+                && (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")))
+            {
+                //体当たり実行
+                m_WindLine.Play();
+                m_Prediction.SetActive(false);
+                move_start = transform.position;
+                move_end = jump_target.point;
+                m_Animator.SetTrigger("Jump");
+                m_escapeInterval = 0;
+                JumpCalculation(move_start, move_end, m_Angle);
+                m_StateManager.StateProcassor.State = m_StateManager.BodyBlow;
+            }
+            return;
+        }
         else if (!jump && Physics.Raycast(ray, m_JumpLimit + 100f, m_TreeLayer))
         {
+            //届かない場合の予測線描画
             m_Prediction.SetActive(true);
             m_Prediction.SetParameter(
                 transform.position,
                 m_Camera.position + m_Camera.forward * (m_JumpLimit + addLimit), 
-                m_Angle, m_Shooter.m_SideNumber, m_JumpMode, false);
+                m_Angle, m_Shooter.m_SideNumber, m_JumpMode, TargetCategory.None);
             m_Prediction.Calculation();
             return;
         }
         m_Prediction.SetActive(false);
         m_Prediction.m_HitStringPoint = Vector3.zero;
-        m_enemy = null;
+        //m_enemy = null;
     }
 
     private bool Depression()
@@ -360,6 +391,7 @@ public partial class Player : Character
                 {
                     //m_hitinfo.collider.GetComponent<StringUnit>().Delete();
                     StringAllMinus();
+                    m_Shooter.StringShoot(move_start, move_end);
                     break;
                 }
             default:
@@ -378,6 +410,7 @@ public partial class Player : Character
         isLanding = false;
         m_Prediction.m_HitStringPoint = Vector3.zero;
         m_EscapeSphere.SetActive(false);
+        m_category = TargetCategory.Connecter;
         m_WindLine.Stop();
     }
     //対象の糸に繋がっている木をすべてマイナス
@@ -428,6 +461,7 @@ public partial class Player : Character
         m_treeWaitTime = 0;
         m_AudioSource.PlayOneShot(m_AudioClips[3]);
         m_Animator.SetTrigger("Landing");
+        m_category = TargetCategory.Connecter;
         if (other.transform.tag == "Ground")
             m_StateManager.StateProcassor.State = m_StateManager.GroundTp;
         else

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum TargetCategory
 {
-    Tree = 0,
-    Enemy,
-    None
+    Connecter = 0,  //木、糸、ネット
+    Enemy,          //敵
+    None            //届かない場合
 }
 
 //予測線
@@ -22,7 +22,7 @@ public class PredictionLine : MonoBehaviour {
     public bool m_IsString = false;
     public GameObject m_Collision;
     public List<Color> m_Colors;
-    public List<GameObject> m_CursorAssist;
+    public List<GameObject> m_AttackableImage;
     public List<Material> m_Materials;
 
     private Vector3 m_start;             //始点
@@ -63,7 +63,7 @@ public class PredictionLine : MonoBehaviour {
 
     //始点、終点、射角、シューター番号、色の設定
     public void SetParameter(Vector3 start, Vector3 end, float angle, int shooterNum, 
-        JumpMode mode = JumpMode.NormalJump, bool isCursorActive = true, TargetCategory category = TargetCategory.Tree)
+        JumpMode mode = JumpMode.NormalJump, TargetCategory category = TargetCategory.Connecter, bool isAttackable = false)
     {
         m_start = start;
         m_end = end;
@@ -71,25 +71,14 @@ public class PredictionLine : MonoBehaviour {
         m_shooterNum = shooterNum;
         m_LineRenderer.material = m_Materials[0];
         m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode]);
-        m_isCursorActive = isCursorActive;
-        if (!isCursorActive)
+        m_isCursorActive = (category == TargetCategory.Enemy);
+        if (category == TargetCategory.None || (category == TargetCategory.Enemy && !isAttackable))
         {
             m_LineRenderer.material = m_Materials[1];
             m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode] / 2);
         }
-        if (category == TargetCategory.None)
-        {
-            m_CursorAssist[0].gameObject.SetActive(false);
-            m_CursorAssist[1].gameObject.SetActive(false);
-            return;
-        }
-        for (int i = 0; i < 2; i++)
-        {
-            if (i == (int)category)
-                m_CursorAssist[i].SetActive(true);
-            else
-                m_CursorAssist[i].SetActive(false);
-        }
+        m_AttackableImage[0].SetActive(isAttackable);
+        m_AttackableImage[1].SetActive(!isAttackable);
     }
 
     //弾道計算
