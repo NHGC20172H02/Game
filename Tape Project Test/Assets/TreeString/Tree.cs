@@ -76,9 +76,8 @@ public class Tree : Connecter
 		m_Gauge.color = m_TerritoryRate >= 0 ? Color.blue : Color.red;
 		m_Gauge.fillAmount = Mathf.Abs(m_TerritoryRate / 100f);
 
-		if (m_SideNumber == sideNumber) return;
-
-		ChangeSide(sideNumber);
+		if (m_SideNumber != sideNumber)ChangeSide(sideNumber);
+		SetOutLineColor(1);
 	}
 	private void TerritoryUpdate()
 	{
@@ -201,5 +200,12 @@ public class Tree : Connecter
 			m_IsMoveChara[ss.m_SideNumber - 1] = false;// ss.m_IsMoving;
 		}
 	}
-
+	public void SetOutLineColor(float a)
+	{
+		Color color = m_Materials[m_SideNumber].GetColor("_OutlineColor");
+		color.r *= a;
+		color.g *= a;
+		color.b *= a;
+		GetComponent<Renderer>().material.SetColor("_OutlineColor",color);
+	}
 }
