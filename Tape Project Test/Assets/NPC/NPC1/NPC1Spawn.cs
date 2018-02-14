@@ -27,12 +27,12 @@ public class NPC1Spawn : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(world_Timer <= 60) //前半１分間
+        if(world_Timer <= 42) //前半１分間
         {
             world_Timer += Time.deltaTime * 1;
         }
 
-        if(wait_time <= 20 && world_Timer >= 60)
+        if(wait_time <= 20 && world_Timer >= 40)
         wait_time += Time.deltaTime * 1;
 
         if(wait_time >= 20) //20秒後
