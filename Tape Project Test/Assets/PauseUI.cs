@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class PauseUI : MonoBehaviour
 {
     public GameObject m_PausePanel;
+    public GameObject m_PauseBackGround2;
     public GameObject m_PauseImage;
     public GameObject m_PauseBackGround;
     public GameObject m_ReturnToGame;
@@ -19,6 +20,7 @@ public class PauseUI : MonoBehaviour
     void Start ()
     {
         m_PausePanel.SetActive(false);
+        m_PauseBackGround2.SetActive(false);
         m_PauseImage.SetActive(false);
         m_PauseBackGround.SetActive(false);
         m_ReturnToGame.SetActive(false);
@@ -36,6 +38,7 @@ public class PauseUI : MonoBehaviour
             PauseManager.Instance.Pause(false);
             
             m_PausePanel.SetActive(true);
+            m_PauseBackGround2.SetActive(true);
             m_PauseImage.SetActive(true);
             m_PauseBackGround.SetActive(true);
             m_ReturnToGame.SetActive(true);

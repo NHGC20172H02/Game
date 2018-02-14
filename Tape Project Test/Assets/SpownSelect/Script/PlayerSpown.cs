@@ -9,6 +9,9 @@ public class PlayerSpown : MonoBehaviour
 
     public float m_Speed = 200f;
 
+    public GameObject m_SpownOK;
+    public GameObject m_SpownNG;
+
     RectTransform m_RectTransform;
     
     private Vector2 playerPos;
@@ -34,10 +37,19 @@ public class PlayerSpown : MonoBehaviour
         image = GetComponent<Image>();
         
         buttonA = GameObject.Find("PlayerSpown").GetComponent<Button>();
+
+        m_SpownOK.SetActive(false);
+        m_SpownNG.SetActive(false);
     }
 
     void Update()
     {
+        if(Input.GetButtonDown("Cancel"))
+        {
+            //タイトルシーンに遷移
+            SceneController.Instance.ChangeScenes(0);
+        }
+
         //ツリータグを探す
         trees = GameObject.FindGameObjectsWithTag("SpownSelectTree");
 
@@ -62,12 +74,16 @@ public class PlayerSpown : MonoBehaviour
         {
             image.color = Color.red;
             buttonA.enabled = false;
+            m_SpownNG.SetActive(true);
+            m_SpownOK.SetActive(false);
         }
         
         else
         {
             image.color = Color.blue;
             buttonA.enabled = true;
+            m_SpownOK.SetActive(true);
+            m_SpownNG.SetActive(false);
         }
 
         //移動(トランスフォームだとシーンビューとゲームビューで移動量が変わる可能性があるため)
