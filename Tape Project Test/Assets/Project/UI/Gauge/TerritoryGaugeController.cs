@@ -12,7 +12,6 @@ public class TerritoryGaugeController : MonoBehaviour
 	public TerritoryGaugeUI m_TGUIMiniR;
 
 	public TerritoryGaugeUI m_TGUIMy;
-	public TerritoryGaugeUI m_TGUITarget;
 
 	public Image m_TreeSideL;
 	public Image m_TreeSideR;
@@ -45,13 +44,10 @@ public class TerritoryGaugeController : MonoBehaviour
 			if (connecter.m_Type == Connecter.Type.Tree)
 			{
 				m_TGUIMiniR.SetTree((Tree)connecter);
-				m_TGUITarget.SetTree((Tree)connecter);
 				active = true;
 			}
 		}
-		m_TGUITarget.gameObject.SetActive(active);
-
-		active = m_TGUIMy.gameObject.activeSelf && m_TGUITarget.gameObject.activeSelf;
+		active = m_TGUIMy.gameObject.activeSelf && active;
 		m_TGUIMiniL.gameObject.SetActive(active);
 		m_TGUIMiniR.gameObject.SetActive(active);
 		if (active)
