@@ -3794,12 +3794,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a24ea6c2a4c974e9db36bc2e5b0dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_JumpSpeed: 1
+  m_JumpSpeed: 2
   m_speed: 4
   m_Shooter: {fileID: 114459320162942166}
   ground_detection: 10
-  tree_Detection: 100
-  player_Detection: 80
+  tree_Detection: 150
+  player_Detection: 150
   thought_Gauge: -100
 --- !u!114 &114459320162942166
 MonoBehaviour:

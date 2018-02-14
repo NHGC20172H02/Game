@@ -7,7 +7,7 @@ public partial class EnemyAI4 : Character
 {
 
     [SerializeField]
-    float m_speed = 4f;
+    float m_speed = 5f;
 
     public StringShooter m_Shooter;
 
@@ -17,9 +17,9 @@ public partial class EnemyAI4 : Character
     [Header("地面から跳べる木の探知範囲")]
     public float ground_detection = 10.0f;
     [Header("木の探知範囲")]
-    public float tree_Detection = 100.0f;
+    public float tree_Detection = 180.0f;
     [Header("Playerの探知範囲")]
-    public float player_Detection = 120.0f;
+    public float player_Detection = 200.0f;
 
     [Header("Enemyのゲージのためる量")]
     public float thought_Gauge = -100.0f;
@@ -1149,7 +1149,7 @@ public partial class EnemyAI4 : Character
                 m_StateProcessor.State = m_TreeMove;
             }
             else if (jump_target.transform == eyeObj.transform) //飛びたいところの間に障害物がなければ
-            {   
+            { 
                 if (m_gauge <= thought_Gauge || color_number == myString_number)　//ゲージをためる、今いる木が自分の木なら
                 {
                     //1秒後に攻撃
@@ -1162,34 +1162,8 @@ public partial class EnemyAI4 : Character
                         JumpCalculation(jump_start, jump_end, 30.0f);
                         m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate; //ジャンプでのゲージの減り量
                         m_StateProcessor.State = m_JumpMove;
+                        return;
                     }
-                }
-                //playerが近くにいた場合
-                if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree() &&
-                    playerObj.GetComponent<Player>().IsAttack() == false)
-                {
-                    m_randomCount = 0;
-                    //if (nearObj0 != null)
-                    //{
-                    //    m_StateProcessor.State = m_ColorlessTree;
-                    //}
-                    //else
-                    //{
-                    //    m_StateProcessor.State = m_SearchTreeGauge;
-                    //}
-
-                    m_StateProcessor.State = m_SearchRandom;
-                }
-
-                //ゲージ関係なしにジャンプ
-                if (noGaugeJump == true)
-                {
-                    noGaugeJump = false;
-                    string_Rob = true;
-                    anim.SetBool("jump", true);
-                    JumpCalculation(jump_start, jump_end, 30.0f);
-                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate; //ジャンプでのゲージの減り量
-                    m_StateProcessor.State = m_JumpMove;
                 }
 
                 //Playerに攻撃、playerが木にいるか？
@@ -1233,6 +1207,38 @@ public partial class EnemyAI4 : Character
                         m_StateProcessor.State = m_AttackJump;
                     }
                 }
+
+                //playerが近くにいた場合
+                if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree() &&
+                    playerObj.GetComponent<Player>().IsAttack() == false)
+                {
+                    m_randomCount = 0;
+                    //if (nearObj0 != null)
+                    //{
+                    //    m_StateProcessor.State = m_ColorlessTree;
+                    //}
+                    //else
+                    //{
+                    //    m_StateProcessor.State = m_SearchTreeGauge;
+                    //}
+
+                    m_StateProcessor.State = m_SearchRandom;
+                }
+
+                //ゲージ関係なしにジャンプ
+                if (noGaugeJump == true)
+                {
+                    noGaugeJump = false;
+                    string_Rob = true;
+                    anim.SetBool("jump", true);
+                    JumpCalculation(jump_start, jump_end, 30.0f);
+                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate; //ジャンプでのゲージの減り量
+                    m_StateProcessor.State = m_JumpMove;
+                }
+            }
+            else
+            {
+                m_StateProcessor.State = m_TreeDecision;
             }
         }
         else
@@ -1350,6 +1356,7 @@ public partial class EnemyAI4 : Character
                         JumpCalculation(jump_start, jump_end, 30.0f);
                         m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate; //ジャンプでのゲージの減り量
                         m_StateProcessor.State = m_AttackJumpMove;
+                        return;
                     }
                 }
                 //playerが近くにいた場合
