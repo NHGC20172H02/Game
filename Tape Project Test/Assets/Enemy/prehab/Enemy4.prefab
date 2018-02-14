@@ -3795,11 +3795,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_JumpSpeed: 2
-  m_speed: 4
+  m_speed: 5
   m_Shooter: {fileID: 114459320162942166}
   ground_detection: 10
-  tree_Detection: 150
-  player_Detection: 150
+  tree_Detection: 180
+  player_Detection: 200
   thought_Gauge: -100
 --- !u!114 &114459320162942166
 MonoBehaviour:

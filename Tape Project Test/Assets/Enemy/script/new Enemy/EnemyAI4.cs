@@ -64,8 +64,11 @@ public partial class EnemyAI4 : Character
     float dead_time;   //死んでる時間
     float m_moveTimer; //歩いてる時間
     float m_ground_jump_time;
-    float attack_timer; //攻撃のクールタイム
-    float attack_wait;  //攻撃行動までの時間
+    
+    float attack_wait;         //攻撃行動までの時間
+    float attack_timer;        //攻撃のクールタイム
+    float attack_time = 15.0f; //攻撃のクールタイム(指定秒数)
+
 
     bool m_moveStart = false;
     bool string_Rob = false;
@@ -321,7 +324,7 @@ public partial class EnemyAI4 : Character
             myTreeDist2 = Vector3.Distance(myTreeObj2.transform.position, this.transform.position);
         }
 
-        if(attack_timer <= 32)
+        if(attack_timer <= 17)
         {
             attack_timer += Time.deltaTime * 1;
         }
@@ -1186,8 +1189,8 @@ public partial class EnemyAI4 : Character
                         m_StateProcessor.State = m_AttackJump;
                     }
 
-                    //攻撃のクールタイムが20秒経ったら
-                    if (attack_timer >= 30)
+                    //攻撃のクールタイムが15秒経ったら
+                    if (attack_timer >= attack_time)
                     {
                         attack_timer = 0;
                         speed_attack = true;
@@ -1306,8 +1309,8 @@ public partial class EnemyAI4 : Character
             m_StateProcessor.State = m_Fall;
             return;
         }
-        //攻撃のクールタイムが20秒経ったら
-        if (attack_timer >= 30)
+        //攻撃のクールタイムが15秒経ったら
+        if (attack_timer >= attack_time)
         {
             attack_timer = 0;
             speed_attack = true;
@@ -1342,9 +1345,10 @@ public partial class EnemyAI4 : Character
                 {
                     attack = true;
       
+                    //攻撃ジャンプまでの時間
                     if(attack_wait == 0)
                     {
-                        attack_wait = Random.Range(1.0f, 3.0f);
+                        attack_wait = Random.Range(0.5f, 1.5f);
                     }
 
                     //1秒後に攻撃
