@@ -33,6 +33,9 @@ public class Tree : Connecter
 	float m_AddRateString = 1.25f; // 0.8s 1%
 	float m_DownRateNeutral = 1; // 1.0s 1%
 	float m_DownRate = 1/1.5f; // 1.5s 1%
+	float m_DownNPC = 2;
+
+	bool m_IsHitNPC;
 
 	private void Start()
 	{
@@ -86,6 +89,11 @@ public class Tree : Connecter
 		TouchedSpider(1);
 		TouchedString(0);
 		TouchedString(1);
+		if (m_IsHitNPC)
+		{
+			m_TerritoryRate = Mathf.Max(0, Mathf.Abs(m_TerritoryRate) - m_DownNPC * Time.deltaTime) * Mathf.Sign(m_TerritoryRate);
+			m_IsHitNPC = false;
+		}
 		if (m_SideNumber == 0)
 		{
 			if (m_IsHitChara[0] == false && m_IsHitChara[1] == false && m_TerritoryRate != 0)
@@ -199,6 +207,7 @@ public class Tree : Connecter
 			m_IsHitChara[ss.m_SideNumber - 1] = true;
 			m_IsMoveChara[ss.m_SideNumber - 1] = false;// ss.m_IsMoving;
 		}
+		if (other.tag == "NPC") m_IsHitNPC = true;
 	}
 	public void SetOutLineColor(float a)
 	{

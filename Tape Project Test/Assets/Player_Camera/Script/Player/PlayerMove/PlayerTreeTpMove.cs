@@ -18,16 +18,17 @@ public partial class Player {
 
         if (m_hitinfo.collider == null)
         {
-            transform.position = m_prevPos;
+            transform.position = m_prevHit.point;
             return;
         }
+        else
+            m_prevHit = m_hitinfo;
 
         if (IsChangedNumber())
             return;
 
         m_treeWaitTime += Time.deltaTime;
 
-        m_prevPos = transform.position;
         //位置補正
         transform.position = Vector3.Lerp(transform.position, m_hitinfo.point, 0.8f);
         Vector3 move = Vector3.zero;
@@ -46,11 +47,18 @@ public partial class Player {
             m_hitinfo = prevHit;
 
         //一人称視点変更
-        if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("LB"))
+        if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("Right Stick Click"))
             m_StateManager.StateProcassor.State = m_StateManager.TreeFp;
 
+        Vector3 dir = Vector3.zero;
+        var cols = Physics.OverlapSphere(m_center, 3f, m_EnemyLayer);
+        foreach (Collider c in cols)
+        {
+            dir = c.transform.position - transform.position;
+        }
+        float angle = Vector3.Angle(transform.forward, dir);
         //近接攻撃（テスト）
-        if (Input.GetKeyDown(KeyCode.H))
+        if (angle < 30f && Input.GetKeyDown(KeyCode.H))
         {
             m_Animator.SetTrigger("Proximity");
             m_StateManager.StateProcassor.State = m_StateManager.ProximityAttack;
@@ -61,7 +69,7 @@ public partial class Player {
         Ray ray = new Ray(origin, m_Camera.forward);
         int[] layers = new int[1];
         layers[0] = m_StringLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("A Button"))
         {
             IntersectString(layers);
         }

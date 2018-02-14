@@ -15,7 +15,7 @@ public class Character : MonoBehaviour {
 
     static float BodyblowForce = 5f;            //体当たりの威力
     static protected readonly float JumpDemeritRate = 20f;
-    static protected readonly float StringDemeritRate = 150f;
+    static protected readonly float StringDemeritRate = 10f;
 
     /*** ジャンプパラメータ ***/
     float targetDistance, V0, Vx, Vy;           //距離、初速度、速度

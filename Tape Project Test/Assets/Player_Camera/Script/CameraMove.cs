@@ -100,7 +100,7 @@ public class CameraMove : MonoBehaviour
         if (Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, Vector3.Distance(m_Camera.position, target_pos), treeLayer)
             || Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, Vector3.Distance(m_Camera.position, target_pos), groundLayer))
         {
-            m_Camera.position = Vector3.Lerp(m_Camera.position, hit.point, 0.5f);
+            m_Camera.position = Vector3.Lerp(m_Camera.position, hit.point + Vector3.up, 0.5f);
             Move(hit.point, 1.0f, 0.2f, 0.6f);
             Color current_color = m_Spider.GetComponent<Renderer>().material.color;
             m_Spider.GetComponent<Renderer>().material.color
