@@ -140,7 +140,7 @@ public class Tree : Connecter
 		switch (sideNumber)
 		{
 			case 0:
-				LogManager.Instance.Create(m_Zahyou + "の木が中立になった", Color.yellow, false);
+				LogManager.Instance.Create(m_Zahyou + "の木が中立になった", Color.black, false);
 				break;
 			case 1:
 				LogManager.Instance.Create(m_Zahyou + "の木を占領した", Color.blue, false);
