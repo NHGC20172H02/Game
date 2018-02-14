@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class EnemyDirectionCircle : MonoBehaviour
 {
-    static readonly Vector3 offset = new Vector3(0, 0.2f, 0);
+    static readonly float offset = 0.2f;
     static readonly Vector3 sideTextPos = new Vector3(60.0f, 0, 0);
     static readonly float ringRadius = 1.5f;
     static readonly float treeRingRadius = 1.3f;
@@ -96,12 +96,12 @@ public class EnemyDirectionCircle : MonoBehaviour
             Tree tree = m_trees[i].GetComponent<Tree>();
             if (tree.m_SideNumber != 0)
             {
-                if (m_treeRingArrows[i] != null)
-                    Destroy(m_treeRingArrows[i]);
+                if (m_treeArrowIcons[i] != null)
+                    Destroy(m_treeArrowIcons[i]);
                 continue;
             }
-            if (tree.m_SideNumber == 0 && m_treeRingArrows[i] == null)
-                m_treeRingArrows[i] = Instantiate(m_TreeArrowPrefab);
+            if (tree.m_SideNumber == 0 && m_treeArrowIcons[i] == null)
+                m_treeArrowIcons[i] = Instantiate(m_TreeArrowPrefab);
             CircleIconUpdate(m_trees[i].transform, ref isActive, ref position, ref rotation, false);
             m_treeArrowIcons[i].SetActive(isActive);
             if (!isActive) continue;
@@ -194,7 +194,7 @@ public class EnemyDirectionCircle : MonoBehaviour
 
     private void ArrowUpdate(Transform target, float radius, ref Vector3 position, ref Quaternion rotation)
     {
-        m_Ring.position = m_Player.position + offset;
+        m_Ring.position = m_Player.position + offset * m_Player.up;
         Vector3 targetPos = target.position;
         Vector3 playerPos = m_Player.position;
         Vector3 dir = (targetPos - playerPos);
@@ -209,18 +209,18 @@ public class EnemyDirectionCircle : MonoBehaviour
         //リング基準の方向
         Vector3 ringToDir = Quaternion.AngleAxis(angle, m_Player.up) * m_Ring.forward;
         rotation = Quaternion.LookRotation(ringToDir, m_Ring.up);
-        position = playerPos + offset + ringToDir * radius;
+        position = playerPos + offset * m_Player.up + ringToDir * radius;
     }
 
     private void AttackAlert()
     {
         if (!isGradation) return;
-        gradationRate = Mathf.Clamp(gradationRate + gradationSpeed, 0, 2f);
+        gradationRate = Mathf.Clamp(gradationRate + gradationSpeed * Time.deltaTime, 0, 1f);
         Color color = m_RingMaterial.color;
         color.g = m_Gradation_Yellow.Evaluate(gradationRate);
         m_RingMaterial.color = color;
 
-        if (gradationRate == 2f)
+        if (gradationRate == 1f)
         {
             gradationRate = 0;
             isGradation = false;

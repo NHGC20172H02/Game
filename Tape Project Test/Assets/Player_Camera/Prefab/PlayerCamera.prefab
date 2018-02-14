@@ -2503,7 +2503,7 @@ MonoBehaviour:
   - {r: 0, g: 0.7058824, b: 0, a: 0.23529412}
   - {r: 0.7058824, g: 0, b: 0, a: 0.23529412}
   - {r: 0, g: 0, b: 0.7058824, a: 0.23529412}
-  m_CursorAssist:
+  m_AttackableImage:
   - {fileID: 0}
   - {fileID: 0}
   m_Materials:
@@ -2564,6 +2564,8 @@ MonoBehaviour:
   m_GroundJumpForward: 5
   jumpLower: 5
   m_Camera: {fileID: 4116825024956602}
+  m_CameraPivot: {fileID: 1033112336792642}
+  m_Enemy: {fileID: 0}
   m_GroundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -2593,6 +2595,30 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bef7e79e0cc372840b00faa5baf5a395, type: 3}
   m_EscapeSphere: {fileID: 1490565171330538}
   m_WindLine: {fileID: 198651039020876628}
+  m_AttackSpeed:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 5
+      inSlope: 2
+      outSlope: 0
+      tangentMode: 65
+    - serializedVersion: 2
+      time: 0.4
+      value: 5
+      inSlope: -0.0675355
+      outSlope: -0.0675355
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 3
+      inSlope: -6.46352
+      outSlope: 0
+      tangentMode: 1
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &114762972871999870
 MonoBehaviour:
   m_ObjectHideFlags: 1

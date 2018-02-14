@@ -11,7 +11,7 @@ public partial class Player {
             return;
         m_treeWaitTime += Time.deltaTime;
         Vector3 start = transform.position + transform.up * 0.5f;
-        if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("LB"))
+        if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("Right Stick Click"))
         {
             if (m_hitinfo.collider.tag == "Tree" || m_hitinfo.collider.tag == "Net")
                 m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
