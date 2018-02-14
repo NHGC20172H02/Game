@@ -942,6 +942,7 @@ GameObject:
   - component: {fileID: 114762623522888212}
   - component: {fileID: 114161548239021076}
   - component: {fileID: 114217026755908360}
+  - component: {fileID: 114277311354891294}
   m_Layer: 0
   m_Name: NPC1
   m_TagString: NPC
@@ -1826,7 +1827,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: Infinity
   m_AngularDrag: Infinity
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -1838,10 +1839,10 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1977836974201614}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.4833152, y: 1.9768468, z: 4.2375984}
+  m_Size: {x: 2.4833152, y: 2.5, z: 4.2375984}
   m_Center: {x: 0.05719626, y: 0.3076449, z: 0.34658623}
 --- !u!95 &95082159855772416
 Animator:
@@ -1919,6 +1920,22 @@ MonoBehaviour:
   m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
   m_IsMoving: 0
   m_Prepos: {x: 0, y: 0, z: 0}
+--- !u!114 &114277311354891294
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1977836974201614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7905857de4ce73d48a7796802d946368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Scripts:
+  - {fileID: 114762623522888212}
+  m_Animator:
+  - {fileID: 95975023100633560}
+  m_Particles: []
 --- !u!114 &114762623522888212
 MonoBehaviour:
   m_ObjectHideFlags: 1
