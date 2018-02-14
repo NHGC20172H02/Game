@@ -104,7 +104,7 @@ public class NPC1 : Character
 
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-        if (Physics.Raycast(ray, out hit, 1.5f))
+        if (Physics.Raycast(ray, out hit, 2.0f))
         {
             if (hit.transform.tag == "Ground")
             {
@@ -207,7 +207,7 @@ public class NPC1 : Character
     private void FallGroundMove()
     {
         Start_Pos_Dist = Vector3.Distance(Start_pos, this.transform.position);
-        if(Start_Pos_Dist <= 1.0f) //初期位置に着いたら死亡
+        if(Start_Pos_Dist <= 2.0f) //初期位置に着いたら死亡
         {
             Spawn_time = 0;
             spawn_count = 0; 
@@ -219,6 +219,17 @@ public class NPC1 : Character
         m_animator.SetBool("dead", false);
         m_animator.SetBool("trap", false);
 
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
+        if (Physics.Raycast(ray, out hit, 2.0f))
+        {
+            if (hit.transform.tag == "Ground")
+            {
+                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+                transform.rotation = Quaternion.LookRotation(
+                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+            }
+        }
         transform.Translate(Vector3.forward * m_speed * Time.deltaTime);
         //ポジションの方に向く
         Quaternion targetRotation2 = Quaternion.LookRotation(Start_pos - transform.position);
