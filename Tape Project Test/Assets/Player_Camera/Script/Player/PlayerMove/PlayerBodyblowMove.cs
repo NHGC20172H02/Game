@@ -30,6 +30,7 @@ public partial class Player {
             Ray ray = new Ray(move_end, m_enemyBottom);
             Physics.Raycast(ray, out jump_target, 1f, m_TreeLayer);
             move_end = jump_target.point;
+            m_Animator.SetTrigger("Landing");
             JumpReset();
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
         }
@@ -94,7 +95,7 @@ public partial class Player {
 
         Vector3 dir = (end - start).normalized;
         transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-        transform.Translate(dir * 30f * Time.deltaTime, Space.World);
+        transform.Translate(dir * m_BodyblowSpeed * Time.deltaTime, Space.World);
         LayerMask playerLayer = LayerMask.GetMask(new string[] { "Player" });
 
         if (Physics.CheckBox(m_center, new Vector3(0.5f, 0.5f, 0.5f), transform.rotation, m_EnemyLayer))

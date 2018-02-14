@@ -23,6 +23,7 @@ public class EnemyDirectionCircle : MonoBehaviour
     public RectTransform m_IconText;
     public Material m_RingMaterial;
     public AnimationCurve m_Gradation_Yellow;
+    public GameObject m_DangerText;
 
     private List<GameObject> m_trees = new List<GameObject>();
     private List<GameObject> m_treeRingArrows = new List<GameObject>();
@@ -30,11 +31,11 @@ public class EnemyDirectionCircle : MonoBehaviour
 
     private bool isGradation = false;
     private float gradationRate = 0;
-    private float gradationSpeed = 0.1f;
+    private float gradationSpeed = 0.2f;
 
     void Start()
     {
-        m_RingMaterial.color = new Color(1f, 0f, 0f);
+        m_RingMaterial.color = new Color(0f, 0f, 1f);
         m_trees.AddRange(GameObject.FindGameObjectsWithTag("Tree"));
         for (int i = 0; i < m_trees.Count; i++)
         {
@@ -74,6 +75,8 @@ public class EnemyDirectionCircle : MonoBehaviour
             m_RingArrow.gameObject.SetActive(true);
             RingUpdate();
         }
+
+        m_DangerText.GetComponent<Flashing>().FlashUpdate();
     }
 
     //サークル状態での更新
@@ -215,13 +218,15 @@ public class EnemyDirectionCircle : MonoBehaviour
     private void AttackAlert()
     {
         if (!isGradation) return;
+        m_DangerText.SetActive(true);
         gradationRate = Mathf.Clamp(gradationRate + gradationSpeed * Time.deltaTime, 0, 1f);
         Color color = m_RingMaterial.color;
         color.g = m_Gradation_Yellow.Evaluate(gradationRate);
         m_RingMaterial.color = color;
 
-        if (gradationRate == 1f)
+        if (gradationRate == 1f || !m_Enemy.GetComponent<EnemyAI4>().AttackPreparation())
         {
+            m_DangerText.SetActive(false);
             gradationRate = 0;
             isGradation = false;
         }
