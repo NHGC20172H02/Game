@@ -67,7 +67,7 @@ public partial class EnemyAI4 : Character
     
     float attack_wait;         //攻撃行動までの時間
     float attack_timer;        //攻撃のクールタイム
-    float attack_time = 15.0f; //攻撃のクールタイム(指定秒数)
+    float attack_time = 20.0f; //攻撃のクールタイム(指定秒数)
 
 
     bool m_moveStart = false;
@@ -436,6 +436,8 @@ public partial class EnemyAI4 : Character
         anim.SetBool("move_left", false);
         anim.SetBool("move_right", false);
 
+        m_randomCount = 0;
+
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         if (Physics.Raycast(ray, out hit, 1.5f))
@@ -463,22 +465,12 @@ public partial class EnemyAI4 : Character
 
             if (wait_time >= 1.0f)
             {
-                anim.SetBool("move_front", true);
-
-                //近くの無職の木
-                if(nearObj0 != null)
-                {
-                    m_targetPos = GetPosition0();
-                }
-                else
-                {
-                    m_targetPos = GetPosition();
-                }
-                
+                anim.SetBool("move_front", true);   
 
                 float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
+                float dist2 = Vector3.Distance(nearObj.transform.position, this.transform.position);
                 //木に飛び乗る
-                if (dist <= ground_detection)
+                if (dist <= ground_detection && m_targetPos != nearObj.transform.position)
                 {
                     anim.SetBool("move_front", false);
 
@@ -488,6 +480,34 @@ public partial class EnemyAI4 : Character
                         m_ground_jump_time = 0;
                         dead_time = 0;
                         m_targetPos = GetPosition3();
+
+                        int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
+                        //移動先と自分の間のray
+                        if (Physics.Raycast(transform.position, m_targetPos - transform.position, out jump_target, 100f, treeLayer))
+                        {
+                            anim.SetBool("jump", true);
+                            jump_start = transform.position;
+                            jump_end = jump_target.point;
+                        }
+                        JumpCalculation(jump_start, jump_end, 30.0f);
+                        m_StateProcessor.State = m_GroundJumping;
+                    }
+                }
+                else if(m_targetPos == nearObj.transform.position) //落ちる前にいた木を目標にした場合
+                {
+                    //地面から木に飛ぶ距離までバックする
+                    if (dist2 >= ground_detection)
+                    {
+                        transform.Translate(Vector3.back * m_speed * Time.deltaTime);
+                        //ポジションの方に向く
+                        Quaternion targetRotation2 = Quaternion.LookRotation(m_targetPos - transform.position);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * 5.0f);
+                    }
+                    else //ジャンプする
+                    {
+                        m_ground_jump_time = 0;
+                        dead_time = 0;
+                        m_targetPos = new Vector3(nearObj.transform.position.x, 7.0f, nearObj.transform.position.z);
 
                         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
                         //移動先と自分の間のray
@@ -591,35 +611,35 @@ public partial class EnemyAI4 : Character
             if (m_randomCount != 1 && m_randomCount != 2)
                 m_randomCount = Random.Range(1, 3);
 
-            //playerが敵の木にいたら攻撃する || playerから逃げた後に攻撃する
+            //playerが敵の木にいたら攻撃する
             if (sidenumber == player_number)
             {
                 speed_attack = true;
                 m_playerTarget = GetPlayerPosition();
                 m_StateProcessor.State = m_AttackJump;
             }
-            else
-            {
-                m_randomCount = 0;
-                speed_attack = true;
-                m_playerTarget = GetPlayerPosition();
-                m_StateProcessor.State = m_AttackJump;
-            }
-            //else switch (m_randomCount)
+            //else
             //{
-            //    case 1: //ゲージを溜めてから攻撃
-            //        m_randomCount = 0;
-            //        m_playerTarget = GetPlayerPosition();
-            //        m_StateProcessor.State = m_AttackJump;
-            //        break;
+            //    m_randomCount = 0;
+            //    speed_attack = true;
+            //    m_playerTarget = GetPlayerPosition();
+            //    m_StateProcessor.State = m_AttackJump;
+            //}
+            else switch (m_randomCount)
+            {
+                case 1: //ゲージを溜めてから攻撃
+                    m_randomCount = 0;
+                    m_playerTarget = GetPlayerPosition();
+                    m_StateProcessor.State = m_AttackJump;
+                    break;
 
-            //    case 2: //ゲージ関係なしに速攻攻撃
-            //        m_randomCount = 0;
-            //        speed_attack = true;
-            //        m_playerTarget = GetPlayerPosition();
-            //        m_StateProcessor.State = m_AttackJump;
-            //        break;
-            //}            
+                case 2: //ゲージ関係なしに速攻攻撃
+                    m_randomCount = 0;
+                    speed_attack = true;
+                    m_playerTarget = GetPlayerPosition();
+                    m_StateProcessor.State = m_AttackJump;
+                    break;
+            }
         }
         else if (nearObj0 != null) //無色の木がある場合
         {
@@ -1138,6 +1158,7 @@ public partial class EnemyAI4 : Character
         if (Physics.Raycast(ray, out m_hit, 2f, treeLayer))
         {
             m_hitinfo = m_hit;
+            nearObj = m_hit.collider.gameObject;
         }
 
         //移動先と自分の間のray
@@ -1170,8 +1191,7 @@ public partial class EnemyAI4 : Character
                 }
 
                 
-
-                //playerが近くにいた場合
+                //playerが近くにいた場合逃げる行為
                 if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree() &&
                     playerObj.GetComponent<Player>().IsAttack() == false)
                 {
@@ -1217,6 +1237,10 @@ public partial class EnemyAI4 : Character
                 if (playerObj_Tree != null)
                     player_number = playerObj_Tree.GetComponent<Tree>().m_SideNumber;
 
+                //ランダムで攻撃か、木に飛ぶか決める
+                if (m_randomCount != 1 && m_randomCount != 2)
+                    m_randomCount = Random.Range(1, 3);
+
                 //playerが赤い木にいるか？
                 if (sidenumber == player_number)
                 {
@@ -1225,26 +1249,25 @@ public partial class EnemyAI4 : Character
                     m_playerTarget = GetPlayerPosition();
                     m_StateProcessor.State = m_AttackJump;
                 }
-
                 //攻撃のクールタイムが15秒経ったら
-                if (attack_timer >= attack_time)
+                else if (attack_timer >= attack_time)
                 {
                     attack_timer = 0;
                     speed_attack = true;
                     m_playerTarget = GetPlayerPosition();
                     m_StateProcessor.State = m_AttackJump;
-                }
-
-
-                //ランダムで攻撃か、木に飛ぶか決める
-                if (m_randomCount != 1 && m_randomCount != 2)
-                    m_randomCount = Random.Range(1, 3);
-                if (m_randomCount == 1)
+                }       
+                else if (m_randomCount == 1)
                 {
                     speed_attack = true;
                     m_randomCount = 0;
                     m_playerTarget = GetPlayerPosition();
                     m_StateProcessor.State = m_AttackJump;
+                }
+                else
+                {
+                    m_randomCount = 0;
+                    m_StateProcessor.State = m_SearchTreeGauge;
                 }
             }
         }
@@ -1328,6 +1351,7 @@ public partial class EnemyAI4 : Character
         if (Physics.Raycast(ray, out m_hit, 1f, treeLayer))
         {
             m_hitinfo = m_hit;
+            nearObj = m_hit.collider.gameObject;
         }
 
         //移動先と自分の間のray
@@ -1357,7 +1381,7 @@ public partial class EnemyAI4 : Character
 
                     //1秒後に攻撃
                     wait_time += Time.deltaTime * 1;
-                    if (wait_time >= attack_wait)
+                    if (wait_time >= attack_wait && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
                     {
                         string_Rob = true;
                         anim.SetBool("jump", true);    
@@ -1365,6 +1389,11 @@ public partial class EnemyAI4 : Character
                         m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate; //ジャンプでのゲージの減り量
                         m_StateProcessor.State = m_AttackJumpMove;
                         return;
+                    }
+                    else if(wait_time >= attack_wait + 0.5f)
+                    {
+                        string_Rob = true;
+                        m_StateProcessor.State = m_TreeDecision;
                     }
                 }
                 //playerが近くにいた場合
@@ -1424,7 +1453,7 @@ public partial class EnemyAI4 : Character
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
 
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-        if (Physics.Raycast(ray, out m_hit, 2f, treeLayer))
+        if (Physics.SphereCast(ray, 1, out m_hit, 2f, treeLayer))
         {
             transform.position = Vector3.Lerp(transform.position, m_hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
@@ -1662,6 +1691,22 @@ public partial class EnemyAI4 : Character
         if (animInfo.normalizedTime < 1.0f)
         {
             anim.SetBool("dead", true);
+        }
+
+        //落下後の移動先(近くの無職の木優先)
+        if (m_randomCount != 1 && m_randomCount != 2 && m_randomCount != 3)
+            m_randomCount = Random.Range(1, 4);
+        if (m_randomCount == 1)
+        {
+            m_targetPos = GetPosition0();
+        }
+        else if (m_randomCount == 2)
+        {
+            m_targetPos = GetPosition();
+        }
+        else
+        {
+            m_targetPos = new Vector3(nearObj.transform.position.x, nearObj.transform.position.y, nearObj.transform.position.z);
         }
 
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });

@@ -59,7 +59,7 @@ public partial class Player {
         transform.position = MoveRange(transform.position, line.GetPosition(0), line.GetPosition(1));
 
         //一人称視点変更
-        if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("LB"))
+        if (Input.GetKeyDown(KeyCode.L) || Input.GetButtonDown("Right Stick Click"))
         {
             m_StateManager.StateProcassor.State = m_StateManager.TreeFp;
         }

@@ -6,7 +6,8 @@ public enum JumpMode
 {
     NormalJump,         //通常
     CapturingJump,      //占領ジャンプ
-    StringJump          //糸ジャンプ
+    StringJump,          //糸ジャンプ
+    Bodyblow
 }
 
 public partial class Player : Character
@@ -21,6 +22,8 @@ public partial class Player : Character
     public float m_GroundJumpHeight = 5f;
     [Header("地面から木にジャンプする際の前方向の距離")]
     public float m_GroundJumpForward = 5f;
+    [Header("体当たりの速さ")]
+    public float m_BodyblowSpeed = 30f;
     public float jumpLower = 5f;
     public Transform m_Camera;
     public GameObject m_CameraPivot;
@@ -31,7 +34,7 @@ public partial class Player : Character
     public StringShooter m_Shooter;
     public PlayerStateManager m_StateManager;           //Player状態管理
     public AudioSource m_AudioSource;
-    public List<AudioClip> m_AudioClips;                //0:回避、1:攻撃、2:ジャンプ着地、3:落下着地、4:風、5:歩き
+    public List<AudioClip> m_AudioClips;                //0:回避、1:攻撃、2:ジャンプ着地、3:落下着地、4:風
     public GameObject m_EscapeSphere;                   //回避の範囲
     public ParticleSystem m_WindLine;
     public AnimationCurve m_AttackSpeed;
@@ -51,6 +54,7 @@ public partial class Player : Character
     private int waitFrame = 0;
     private float m_failureTime = 0;
     private bool isLanding = false;
+    private bool isFlyable = false;
     private float m_escapeInterval = 0;
     private float m_treeWaitTime = 0;                   //同じ木の滞在時間
     private float m_attackRate = 0;
@@ -95,15 +99,6 @@ public partial class Player : Character
         m_Animator.SetFloat("MoveZ", vertical);
         vertical = Mathf.Abs(vertical);
         horizontal = Mathf.Abs(horizontal);
-        if ((vertical >= 0.6f || horizontal >= 0.6f) && !m_AudioSource.isPlaying)
-        {
-            m_AudioSource.loop = true;
-            m_AudioSource.PlayOneShot(m_AudioClips[5]);
-        }
-        else if(move == Vector3.zero)
-        {
-            m_AudioSource.loop = false;
-        }
         transform.Translate(move * m_Speed * Time.deltaTime, Space.World);
         return move;
     }
@@ -111,6 +106,7 @@ public partial class Player : Character
     //ジャンプ
     private void Jump(Ray ray, RaycastHit hit)
     {
+        isFlyable = false;
         bool jump = false;
         bool bodyBlow = false;
         float addLimit = 0;
@@ -154,18 +150,9 @@ public partial class Player : Character
         {
             bodyBlow = true;
             jump = false;
+            m_JumpMode = JumpMode.Bodyblow;
             Vector3 dir = m_Enemy.transform.position - m_center;
             m_CameraPivot.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-            Ray e_ray = new Ray(m_Enemy.transform.position, -m_Enemy.transform.up);
-            RaycastHit footHit;
-            if (Physics.Raycast(e_ray, out footHit, 1f, m_TreeLayer))
-                jump_target = footHit;
-            else
-            {
-                bodyBlow = false;
-                m_Prediction.SetActive(false);
-                return;
-            }
         }
 
         if (jump)
@@ -196,15 +183,19 @@ public partial class Player : Character
             m_Prediction.SetActive(true);
             m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber, m_JumpMode, m_category);
             m_Prediction.Calculation();
+            isFlyable = true;
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
                 m_WindLine.Play();
+                m_AudioSource.PlayOneShot(m_AudioClips[4]);
                 m_Prediction.SetActive(false);
                 move_start = transform.position;
                 move_end = jump_target.point;
                 m_Animator.SetTrigger("Jump");
+                m_Animator.SetBool("IsJump", true);
                 m_escapeInterval = 0;
+                isFlyable = false;
                 if (m_hitinfo.collider != jump_target.collider)
                     m_treeWaitTime = 0;
                 JumpCalculation(move_start, move_end, m_Angle);
@@ -216,21 +207,22 @@ public partial class Player : Character
         {
             //体当たり
             float len = Vector3.Distance(m_Enemy.transform.position, m_center);
-            bool isAttackable = (len < m_JumpLimit);
-            Ray dirRay = new Ray(m_center, (m_Enemy.transform.position - m_center));
+            var enemy = m_Enemy.GetComponent<EnemyAI4>();
+            Ray dirRay = new Ray(m_center + transform.forward, (m_Enemy.transform.position - m_center));
+            bool isAttackable = len < m_JumpLimit && m_hitinfo.collider.gameObject != enemy.nearObj && !Physics.Raycast(dirRay, len - 1f, m_TreeLayer) && enemy.TreeDist();
             m_Prediction.SetActive(true);
-            m_Prediction.SetParameter(transform.position, jump_target.point, 1f, m_Shooter.m_SideNumber, JumpMode.NormalJump, m_category, isAttackable);
+            m_Prediction.SetParameter(transform.position, m_Enemy.transform.position, 1f, m_Shooter.m_SideNumber, JumpMode.NormalJump, m_category, isAttackable);
             m_Prediction.Calculation();
-            if (isAttackable && m_hitinfo.collider != jump_target.collider
-                && !Physics.Raycast(dirRay, len - 1f, m_TreeLayer)
-                && (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")))
+            if (isAttackable && (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")))
             {
                 //体当たり実行
                 m_WindLine.Play();
+                m_AudioSource.PlayOneShot(m_AudioClips[4]);
                 m_Prediction.SetActive(false);
                 move_start = transform.position;
-                move_end = jump_target.point;
+                move_end = m_Enemy.transform.position;
                 m_Animator.SetTrigger("Jump");
+                m_Animator.SetBool("IsJump", false);
                 m_escapeInterval = 0;
                 JumpCalculation(move_start, move_end, m_Angle);
                 m_StateManager.StateProcassor.State = m_StateManager.BodyBlow;
@@ -305,10 +297,22 @@ public partial class Player : Character
     {
         float shortest = 100000f;
         RaycastHit result = new RaycastHit();
+        Vector3 pos = Vector3.zero;
+        Vector3 dir = Vector3.zero;
         for (int i = 0; i < layerMask.Length; i++)
         {
             if (i > 0 && result.collider != null) break;
-            foreach (RaycastHit hit in Physics.SphereCastAll(transform.position + Vector3.up, 0.3f, Vector3.down, 1f, layerMask[i]))
+            if(layerMask[i] == m_StringLayer || layerMask[i] == m_NetLayer)
+            {
+                pos = transform.position + Vector3.up;
+                dir = Vector3.down;
+            }
+            else if(layerMask[i] == m_TreeLayer)
+            {
+                pos = transform.position + -transform.forward;
+                dir = transform.forward;
+            }
+            foreach (RaycastHit hit in Physics.SphereCastAll(pos, 1f, dir, 1f, layerMask[i]))
             {
                 if ((hit.collider.tag == "String" || hit.collider.tag == "Net")
                     && (hit.collider.GetComponent<Connecter>().m_SideNumber != m_Shooter.m_SideNumber))
@@ -333,6 +337,7 @@ public partial class Player : Character
         }
         if (result.collider == null) return;
         m_hitinfo = result;
+        transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_CameraPivot.transform.right, result.normal), result.normal);
         if (result.collider.tag == "Net" || result.collider.tag == "Tree")
         {
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
@@ -392,6 +397,11 @@ public partial class Player : Character
                     //m_hitinfo.collider.GetComponent<StringUnit>().Delete();
                     StringAllMinus();
                     m_Shooter.StringShoot(move_start, move_end);
+                    break;
+                }
+            case JumpMode.Bodyblow:
+                {
+                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                     break;
                 }
             default:
@@ -513,6 +523,17 @@ public partial class Player : Character
     {
         return m_StateManager.StateProcassor.State == m_StateManager.BodyBlow;
     }
+    //ジャンプ可能かどうか
+    public bool IsFlyable()
+    {
+        return isFlyable;
+    }
+
+	// ジャンプ進行率
+	public float JumpProgress()
+	{
+		return flightDuration == 0 ? 0 : elapse_time/m_JumpSpeed / flightDuration;
+	}
     /*******************************************/
 
     void OnTriggerEnter(Collider other)

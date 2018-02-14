@@ -18,10 +18,10 @@ public class CursorMove : MonoBehaviour {
 	void Update () {
         float dis = Vector3.Distance(m_Player.position, m_Enemy.position);
         float nRot = (dis - m_limit) / m_limit;
-        nRot = Mathf.Clamp(nRot, 0, 1f);
+        nRot = Mathf.Clamp(nRot, 0, 0.5f);
 
-        m_Icon1.rotation = Quaternion.Euler(0, 0, nRot * 180f);
-        m_Icon2.rotation = Quaternion.Euler(0, 0, -nRot * 180f);
+        m_Icon1.rotation = Quaternion.Euler(0, 0, nRot * 360f);
+        m_Icon2.rotation = Quaternion.Euler(0, 0, -nRot * 360f);
         
     }
 }
