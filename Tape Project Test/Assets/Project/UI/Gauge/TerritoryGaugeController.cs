@@ -18,6 +18,12 @@ public class TerritoryGaugeController : MonoBehaviour
 
 	public Sprite[] m_TreeSide;
 
+	public Image m_FlashMask;
+
+	void Start()
+	{
+		m_FlashMask.GetComponent<Animation>().Play();	
+	}
 	void LateUpdate()
 	{
 		var stay = m_Player.GetOnTree();
@@ -54,8 +60,9 @@ public class TerritoryGaugeController : MonoBehaviour
 		{
 			m_TreeSideL.sprite = m_TreeSide[stay.GetComponent<Tree>().m_SideNumber];
 			m_TreeSideR.sprite = m_TreeSide[target.GetComponent<Tree>().m_SideNumber];
+			target.GetComponent<Tree>().SetOutLineColor(1-m_FlashMask.color.a);
 		}
-		m_TreeSideL.enabled = active;
-		m_TreeSideR.enabled = active;
+		m_TreeSideL.gameObject.SetActive(active);
+		m_TreeSideR.gameObject.SetActive(active);
 	}
 }

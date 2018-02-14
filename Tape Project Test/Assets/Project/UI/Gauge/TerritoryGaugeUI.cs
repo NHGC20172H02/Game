@@ -10,6 +10,8 @@ public class TerritoryGaugeUI : MonoBehaviour
 	public Sprite m_GaugeBlue;
 	public Sprite m_GaugeRed;
 
+	public Animator m_Animator;
+
 	public void SetTree(Tree tree)
 	{
 		if (tree == null) return;
@@ -23,6 +25,7 @@ public class TerritoryGaugeUI : MonoBehaviour
 			m_GaugeIn.sprite = m_GaugeRed;
 		}
 		float fillAmount = Mathf.Abs(rate) * 0.01f;// 0~100 -> 0~1
+		m_Animator.SetBool("Active", m_GaugeIn.fillAmount != fillAmount);
 		m_GaugeIn.fillAmount = fillAmount;
 	}
 }
