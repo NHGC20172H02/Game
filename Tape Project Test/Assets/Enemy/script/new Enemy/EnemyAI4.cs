@@ -468,6 +468,7 @@ public partial class EnemyAI4 : Character
                 anim.SetBool("move_front", true);   
 
                 float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
+                float dist2 = Vector3.Distance(nearObj.transform.position, this.transform.position);
                 //木に飛び乗る
                 if (dist <= ground_detection && m_targetPos != nearObj.transform.position)
                 {
@@ -492,10 +493,10 @@ public partial class EnemyAI4 : Character
                         m_StateProcessor.State = m_GroundJumping;
                     }
                 }
-                else if(m_targetPos == nearObj.transform.position)
+                else if(m_targetPos == nearObj.transform.position) //落ちる前にいた木を目標にした場合
                 {
                     //地面から木に飛ぶ距離までバックする
-                    if (dist >= ground_detection)
+                    if (dist2 >= ground_detection)
                     {
                         transform.Translate(Vector3.back * m_speed * Time.deltaTime);
                         //ポジションの方に向く
