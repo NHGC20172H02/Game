@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -483,7 +483,7 @@ public partial class Player : Character
     {
         if (m_hitinfo.collider == null) return null;
         var state = m_StateManager.StateProcassor.State;
-        if (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
+        if (m_hitinfo.collider.tag == "Tree" )//&& (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp))
             return m_hitinfo.collider.gameObject;
         return null;
     }
@@ -493,8 +493,8 @@ public partial class Player : Character
         if (jump_target.collider == null) return null;
         if (m_hitinfo.collider == null) return null;
         var state = m_StateManager.StateProcassor.State;
-        if (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp
-            || state == m_StateManager.StringTp || state == m_StateManager.GroundTp)
+        //if (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp
+        //    || state == m_StateManager.StringTp || state == m_StateManager.GroundTp)
             return jump_target.collider.gameObject;
         return null;
     }
