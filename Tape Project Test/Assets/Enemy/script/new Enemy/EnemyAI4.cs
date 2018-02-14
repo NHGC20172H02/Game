@@ -29,6 +29,8 @@ public partial class EnemyAI4 : Character
     //攻撃を受けた後のダウン時間
     float down_time = 3.0f;
 
+    float jump_wait = 0.5f;
+
     int m_randomCount;
     int jump_random;
     int netCount;            //糸を奪う時の確率（randomカウント）
@@ -57,6 +59,7 @@ public partial class EnemyAI4 : Character
     float playerTree_gauge;    //Playerのいる木のゲージ量
     float playerNearDist = 17; //Playerとの距離（近くの範囲）
     float dist0;
+    float dist02;
     float difference_gauge;    //今いる木とPlayerのいる木のゲージ量の差
 
     int m_moveCount;   //歩く時の方向決め
@@ -852,7 +855,11 @@ public partial class EnemyAI4 : Character
         }
         
         if(nearObj02 != null)
-        near_Gauge2 = nearObj02.GetComponent<Tree>().m_TerritoryRate;
+        {
+            near_Gauge2 = nearObj02.GetComponent<Tree>().m_TerritoryRate;
+            dist02= Vector3.Distance(nearObj02.transform.position, this.transform.position);
+        }
+        
 
         if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
             noGaugeJump = true;
@@ -865,7 +872,7 @@ public partial class EnemyAI4 : Character
                 m_targetPos = GetUpPosition00();
                 m_StateProcessor.State = m_Jumping;
             }
-            else if(near_Gauge2 <= 1)
+            else if(near_Gauge2 <= 1 && dist02 <= tree_Detection)
             {
                 eyeObj = nearObj02;
                 m_targetPos = GetUpPosition02();
@@ -873,17 +880,21 @@ public partial class EnemyAI4 : Character
             }
             else //相手のゲージが少ない方
             {
-                if(near_Gauge2 >= near_Gauge)
+                if(near_Gauge2 >= near_Gauge && dist0 <= tree_Detection)
                 {
                     eyeObj = nearObj0;
                     m_targetPos = GetUpPosition00();
                     m_StateProcessor.State = m_Jumping;
                 }
-                if(near_Gauge >= near_Gauge2)
+                if(near_Gauge >= near_Gauge2 && dist02 <= tree_Detection)
                 {
                     eyeObj = nearObj02;
                     m_targetPos = GetUpPosition02();
                     m_StateProcessor.State = m_Jumping;
+                }
+                else
+                {
+                    m_StateProcessor.State = m_SearchTree;
                 }
             }
         }
@@ -1178,7 +1189,7 @@ public partial class EnemyAI4 : Character
                 {
                     //1秒後に攻撃
                     wait_time += Time.deltaTime * 1;
-                    if (wait_time >= 1)
+                    if (wait_time >= jump_wait)
                     {
                         m_randomCount = 0;
                         string_Rob = true;
@@ -1197,7 +1208,7 @@ public partial class EnemyAI4 : Character
                 {
                     //1秒後に攻撃
                     wait_time += Time.deltaTime * 1;
-                    if (wait_time >= 1)
+                    if (wait_time >= jump_wait)
                     {
                         wait_time = 0;
                         m_randomCount = 0;
@@ -1210,7 +1221,7 @@ public partial class EnemyAI4 : Character
                 {
                     //1秒後に攻撃
                     wait_time += Time.deltaTime * 1;
-                    if (wait_time >= 1)
+                    if (wait_time >= jump_wait)
                     {
                         noGaugeJump = false;
                         string_Rob = true;
