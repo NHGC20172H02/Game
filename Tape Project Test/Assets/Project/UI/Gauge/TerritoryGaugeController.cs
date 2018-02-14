@@ -38,9 +38,12 @@ public class TerritoryGaugeController : MonoBehaviour
 				m_TGUIMiniL.SetTree((Tree)connecter);
 				m_TGUIMy.SetTree((Tree)connecter);
 				active = true;
+				m_TreeSideL.sprite = m_TreeSide[stay.GetComponent<Tree>().m_SideNumber];
 			}
 		}
 		m_TGUIMy.gameObject.SetActive(active);
+		m_TGUIMiniL.gameObject.SetActive(active);
+		m_TreeSideL.gameObject.SetActive(active);
 
 
 		active = false;
@@ -51,18 +54,12 @@ public class TerritoryGaugeController : MonoBehaviour
 			{
 				m_TGUIMiniR.SetTree((Tree)connecter);
 				active = true;
+				m_TreeSideR.sprite = m_TreeSide[target.GetComponent<Tree>().m_SideNumber];
+				target.GetComponent<Tree>().SetOutLineColor(1 - m_FlashMask.color.a);
 			}
 		}
-		active = m_TGUIMy.gameObject.activeSelf && active;
-		m_TGUIMiniL.gameObject.SetActive(active);
+		//active = m_TGUIMy.gameObject.activeSelf && active;
 		m_TGUIMiniR.gameObject.SetActive(active);
-		if (active)
-		{
-			m_TreeSideL.sprite = m_TreeSide[stay.GetComponent<Tree>().m_SideNumber];
-			m_TreeSideR.sprite = m_TreeSide[target.GetComponent<Tree>().m_SideNumber];
-			target.GetComponent<Tree>().SetOutLineColor(1-m_FlashMask.color.a);
-		}
-		m_TreeSideL.gameObject.SetActive(active);
 		m_TreeSideR.gameObject.SetActive(active);
 	}
 }
