@@ -22,6 +22,7 @@ public class TerritoryGaugeController : MonoBehaviour
 
 	public JumpProgressSpider m_SpiderIcon;
 
+	public Text m_JumpOKNG;
 	void Start()
 	{
 		m_FlashMask.GetComponent<Animation>().Play();	
@@ -65,5 +66,6 @@ public class TerritoryGaugeController : MonoBehaviour
 		m_TGUIMiniR.gameObject.SetActive(active);
 		m_TreeSideR.gameObject.SetActive(active);
 
+		m_JumpOKNG.text = m_Player.IsFlyable() ? "JumpOK" : "JumpNG";
 	}
 }
