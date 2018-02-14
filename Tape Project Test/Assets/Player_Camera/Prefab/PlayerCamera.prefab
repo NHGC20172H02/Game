@@ -2181,7 +2181,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: ff974030036258a49a9d28dffc80786a, type: 2}
+  - {fileID: 2100000, guid: 1fadddad64c949a4ea2aad14bc44accf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2463,6 +2463,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+  m_DangerText: {fileID: 0}
 --- !u!114 &114132865610725492
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2562,6 +2563,7 @@ MonoBehaviour:
   m_Angle: 30
   m_GroundJumpHeight: 5
   m_GroundJumpForward: 5
+  m_BodyblowSpeed: 30
   jumpLower: 5
   m_Camera: {fileID: 4116825024956602}
   m_CameraPivot: {fileID: 1033112336792642}
@@ -2592,7 +2594,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 426e67527e6338d45835e12085d0d392, type: 3}
   - {fileID: 8300000, guid: b3976f240d06ff84f9aa83030535e20b, type: 3}
   - {fileID: 8300000, guid: 31e7e7903fb8de24bb9e5f9c9bb6707e, type: 3}
-  - {fileID: 8300000, guid: bef7e79e0cc372840b00faa5baf5a395, type: 3}
   m_EscapeSphere: {fileID: 1490565171330538}
   m_WindLine: {fileID: 198651039020876628}
   m_AttackSpeed:

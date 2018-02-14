@@ -68,13 +68,8 @@ public class Character : MonoBehaviour {
         //前方向、上方向の設定
         if(transform.tag == "Player")
         {
-            if (elapse_time > 0.1f)
-            {
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, normal), 0.2f), normal);
-                //transform.rotation
-                //    = Quaternion.LookRotation(Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, normal), 0.2f), normal);
-            }
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Lerp(transform.forward, Vector3.Cross(Camera.main.transform.right, normal), 0.6f), normal);
         }
         else
         {
@@ -110,15 +105,16 @@ public class Character : MonoBehaviour {
 
         if (character == null) return;
         character.isBodyblow = true;
-        Vector3 reflection = Reflection(target.transform.position - transform.position, target.transform.up).normalized;
+        Vector3 reflection = Reflection(target.transform.right, target.transform.up).normalized;
         character.receiveBodyblow = ReceiveBodyBlow(character, reflection);
         character.StartCoroutine(character.receiveBodyblow);
     }
 
     //反射ベクトル
-    protected Vector3 Reflection(Vector3 forward, Vector3 normal)
+    protected Vector3 Reflection(Vector3 right, Vector3 up)
     {
-        return (forward - 2 * Vector3.Dot(forward, normal) * normal);
+        //return (forward - 2 * Vector3.Dot(forward, normal) * normal);
+        return Quaternion.AngleAxis(-30f, right) * up;
     }
 
     //体当たりを食らった際の処理

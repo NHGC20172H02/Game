@@ -23,8 +23,8 @@ public class BodyblowTestEnemy : Character {
         if (isBodyblow)
         {
             /***ここはTestでやっているだけ**********************************/
-            //gravity.y += Physics.gravity.y * Time.deltaTime;
-            //transform.Translate(gravity * Time.deltaTime, Space.World);
+            gravity.y += Physics.gravity.y * Time.deltaTime;
+            transform.Translate(gravity * Time.deltaTime, Space.World);
             /***************************************************************/
 
             //例えばUpdateでisBodyblowがtrueになるとStateを落下状態に変えるとか
