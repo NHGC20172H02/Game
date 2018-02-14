@@ -222,7 +222,7 @@ public class EnemyDirectionCircle : MonoBehaviour
         gradationRate = Mathf.Clamp(gradationRate + gradationSpeed * Time.deltaTime, 0, 1f);
         Color color = m_RingMaterial.color;
         color.g = m_Gradation_Yellow.Evaluate(gradationRate);
-        m_RingMaterial.color = color;
+        //m_RingMaterial.color = color;
 
         if (gradationRate == 1f || !m_Enemy.GetComponent<EnemyAI4>().AttackPreparation())
         {

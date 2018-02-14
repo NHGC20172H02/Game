@@ -87,7 +87,8 @@ public class CameraMove : MonoBehaviour
 
     void TreeTpMove()
     {
-        if (Vector3.Distance(transform.position, m_Camera.position) < t_distance)
+        float distance = Vector3.Distance(m_Camera.position, target_pos);
+        if (distance < t_distance)
         {
             Vector3 to_pos = transform.position - transform.forward * t_distance;
             Move(to_pos, 1.0f, 0.2f, 0.6f);
@@ -97,14 +98,17 @@ public class CameraMove : MonoBehaviour
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
         RaycastHit hit;
-        if (Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, Vector3.Distance(m_Camera.position, target_pos), treeLayer)
-            || Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, Vector3.Distance(m_Camera.position, target_pos), groundLayer))
+        if (Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, distance, treeLayer)
+            || Physics.Raycast(target_pos, m_Camera.position - target_pos, out hit, distance, groundLayer))
         {
-            m_Camera.position = Vector3.Lerp(m_Camera.position, hit.point + Vector3.up, 0.5f);
+            m_Camera.position = Vector3.Lerp(m_Camera.position, hit.point, 0.5f);
             Move(hit.point, 1.0f, 0.2f, 0.6f);
+            float alpha = 0.5f;
+            if (distance < 2f)
+                alpha = 0.1f;
             Color current_color = m_Spider.GetComponent<Renderer>().material.color;
             m_Spider.GetComponent<Renderer>().material.color
-                = new Color(current_color.r, current_color.g, current_color.b, Mathf.Lerp(current_color.a, 0.0f, 0.2f));
+                = new Color(current_color.r, current_color.g, current_color.b, alpha);
         }
     }
 
