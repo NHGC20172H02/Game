@@ -33,6 +33,7 @@ public class StringShooter : MonoBehaviour
 	{
 		m_IsMoving = 0.001f < Vector3.Distance(m_Prepos, transform.position);
 		m_Prepos = transform.position;
+		m_MaxCost = m_PlayModeData.m_Cost;
 	}
 
 	public void StringShoot(Vector3 start, Vector3 end)

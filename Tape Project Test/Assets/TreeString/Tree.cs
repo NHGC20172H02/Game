@@ -42,7 +42,7 @@ public class Tree : Connecter
 		//座標計算
 		Vector2 pos = new Vector2(transform.position.x - PosMin.x, transform.position.z - PosMin.y);
 		Vector2 div = new Vector2((PosMax.x - PosMin.x) / Xstring.Length, (PosMax.y - PosMin.y) / Ystring.Length);
-		m_Zahyou = Xstring[(int)(pos.x / div.x)] + Ystring[(int)(pos.y / div.y)];
+		m_Zahyou = Xstring[(int)(pos.x / div.x)] +":"+ Ystring[(int)(pos.y / div.y)];
 	}
 
 	private void Update()
@@ -129,7 +129,21 @@ public class Tree : Connecter
 	private void ChangeSide(int sideNumber)
 	{
 		m_Renderer.material = m_Materials[sideNumber];
-		LogGenerate(sideNumber, m_SideNumber);
+		switch (sideNumber)
+		{
+			case 0:
+				LogManager.Instance.Create(m_Zahyou + "の木が中立になった", Color.yellow, false);
+				break;
+			case 1:
+				LogManager.Instance.Create(m_Zahyou + "の木を占領した", Color.blue, false);
+				break;
+			case 2:
+				LogManager.Instance.Create(m_Zahyou + "の木が敵に奪われた", Color.red, false);
+				break;
+			default:
+				break;
+		}
+
 		m_SideNumber = sideNumber;
 
 		var trees = new List<Tree>();
@@ -186,29 +200,5 @@ public class Tree : Connecter
 			m_IsMoveChara[ss.m_SideNumber - 1] = false;// ss.m_IsMoving;
 		}
 	}
-	private void LogGenerate(int newSide, int preSide)
-	{
-		if (preSide == 0)
-		{
-			if (newSide == 1)
-			{
-				LogManager.Instance.Create(m_Zahyou + "の木がプレイヤーの陣地になった", Color.blue, false);
-			}
-			else
-			{
-				LogManager.Instance.Create(m_Zahyou + "の木が敵の陣地になった", Color.yellow, false);
-			}
-		}
-		else
-		{
-			if (newSide == 1)
-			{
-				LogManager.Instance.Create(m_Zahyou + "の木がプレイヤーの陣地になった", Color.blue, false);
-			}
-			else
-			{
-				LogManager.Instance.Create(m_Zahyou + "の木が敵に奪われた", Color.red, true);
-			}
-		}
-	}
+
 }
