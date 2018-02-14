@@ -1149,14 +1149,16 @@ public partial class EnemyAI4 : Character
                     playerObj.GetComponent<Player>().IsAttack() == false)
                 {
                     m_randomCount = 0;
-                    if (nearObj0 != null)
-                    {
-                        m_StateProcessor.State = m_ColorlessTree;
-                    }
-                    else
-                    {
-                        m_StateProcessor.State = m_SearchTreeGauge;
-                    }
+                    //if (nearObj0 != null)
+                    //{
+                    //    m_StateProcessor.State = m_ColorlessTree;
+                    //}
+                    //else
+                    //{
+                    //    m_StateProcessor.State = m_SearchTreeGauge;
+                    //}
+
+                    m_StateProcessor.State = m_SearchRandom;
                 }
 
                 //ゲージ関係なしにジャンプ
@@ -1166,6 +1168,7 @@ public partial class EnemyAI4 : Character
                     string_Rob = true;
                     anim.SetBool("jump", true);
                     JumpCalculation(jump_start, jump_end, 30.0f);
+                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate; //ジャンプでのゲージの減り量
                     m_StateProcessor.State = m_JumpMove;
                 }
 
@@ -1334,14 +1337,16 @@ public partial class EnemyAI4 : Character
                 {
                     attack = false;
                     attack_wait = 0;
-                    if (nearObj0 != null)
-                    {
-                        m_StateProcessor.State = m_ColorlessTree;
-                    }
-                    else
-                    {
-                        m_StateProcessor.State = m_SearchTreeGauge;
-                    }
+                    //if (nearObj0 != null)
+                    //{
+                    //    m_StateProcessor.State = m_ColorlessTree;
+                    //}
+                    //else
+                    //{
+                    //    m_StateProcessor.State = m_SearchTreeGauge;
+                    //}
+
+                    m_StateProcessor.State = m_SearchRandom;
                 }
             }
             else if (playerDist >= player_Detection)
