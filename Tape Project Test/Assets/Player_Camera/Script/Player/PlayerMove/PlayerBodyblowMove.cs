@@ -27,8 +27,8 @@ public partial class Player {
         {
             if (move_end == m_Enemy.transform.position)
                 SendingBodyBlow(m_Enemy);
-            Ray ray = new Ray(move_end, m_enemyBottom);
-            Physics.Raycast(ray, out jump_target, 1f, m_TreeLayer);
+            Ray ray = new Ray(move_end + m_Enemy.transform.up, m_enemyBottom);
+            Physics.Raycast(ray, out jump_target, 2f, m_TreeLayer);
             move_end = jump_target.point;
             m_Animator.SetTrigger("Landing");
             JumpReset();
@@ -98,7 +98,8 @@ public partial class Player {
         transform.Translate(dir * m_BodyblowSpeed * Time.deltaTime, Space.World);
         LayerMask playerLayer = LayerMask.GetMask(new string[] { "Player" });
 
-        if (Physics.CheckBox(m_center, new Vector3(0.5f, 0.5f, 0.5f), transform.rotation, m_EnemyLayer))
+        var enemy = m_Enemy.GetComponent<EnemyAI4>();
+        if (Physics.CheckBox(m_center, new Vector3(0.5f, 0.5f, 0.5f), transform.rotation, m_EnemyLayer) && enemy.TreeDist())
         {
             m_Animator.SetTrigger("Tackle");
             return true;

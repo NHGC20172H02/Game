@@ -6,7 +6,8 @@ public enum JumpMode
 {
     NormalJump,         //通常
     CapturingJump,      //占領ジャンプ
-    StringJump          //糸ジャンプ
+    StringJump,          //糸ジャンプ
+    Bodyblow
 }
 
 public partial class Player : Character
@@ -149,6 +150,7 @@ public partial class Player : Character
         {
             bodyBlow = true;
             jump = false;
+            m_JumpMode = JumpMode.Bodyblow;
             Vector3 dir = m_Enemy.transform.position - m_center;
             m_CameraPivot.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
         }
@@ -395,6 +397,11 @@ public partial class Player : Character
                     //m_hitinfo.collider.GetComponent<StringUnit>().Delete();
                     StringAllMinus();
                     m_Shooter.StringShoot(move_start, move_end);
+                    break;
+                }
+            case JumpMode.Bodyblow:
+                {
+                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                     break;
                 }
             default:
