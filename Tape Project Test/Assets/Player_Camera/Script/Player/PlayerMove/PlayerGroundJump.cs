@@ -12,6 +12,7 @@ public partial class Player {
         {
             waitFrame = 0;
             m_Animator.ResetTrigger("Landing");
+            m_AudioSource.PlayOneShot(m_AudioClips[2]);
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
             return;
         }
