@@ -5,9 +5,10 @@ using UnityEngine.EventSystems;
 
 public class ManualBackButton : MonoBehaviour
 {
-    public GameObject m_ManualFont;
+   
     public GameObject m_ManualLeft;
     public GameObject m_ManualRight;
+    public GameObject m_ManualFont;
     public GameObject m_Manual2;
     public GameObject m_Manual3;
     public GameObject m_Manual4;
