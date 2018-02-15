@@ -942,6 +942,7 @@ GameObject:
   - component: {fileID: 114762623522888212}
   - component: {fileID: 114161548239021076}
   - component: {fileID: 114780313742344954}
+  - component: {fileID: 114418872505225784}
   m_Layer: 0
   m_Name: NPC1
   m_TagString: NPC
@@ -1891,6 +1892,22 @@ MonoBehaviour:
   m_JumpSpeed: 1
   m_speed: 4
   ground_detection: 15
+--- !u!114 &114418872505225784
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1977836974201614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7905857de4ce73d48a7796802d946368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Scripts:
+  - {fileID: 114762623522888212}
+  m_Animator:
+  - {fileID: 95975023100633560}
+  m_Particles: []
 --- !u!114 &114762623522888212
 MonoBehaviour:
   m_ObjectHideFlags: 1
