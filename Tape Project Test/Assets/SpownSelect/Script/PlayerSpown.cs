@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,7 +37,7 @@ public class PlayerSpown : MonoBehaviour
         if (m_State == state.selectNow)
         {
             //バトルシーンに遷移
-            SceneController.Instance.ChangeScenes(1);
+            //SceneController.Instance.ChangeScenes(1);
             m_State = state.decision;
         }        
     }
