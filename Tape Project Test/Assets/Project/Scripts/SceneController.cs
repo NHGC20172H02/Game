@@ -107,12 +107,18 @@ public class SceneController : SingletonMonoBehaviour<SceneController>
 			asyncs.Add(m_Async);
 			count++;
 		}
+		m_LoadingProgress = 1;
+		yield return new WaitForSeconds(0.2f);
 		foreach (var async in asyncs)
 		{
 			async.allowSceneActivation = true;
 		}
-		m_IsLoadingAnimation = true;
 		m_LoadingProgress = 1;
+		m_Async = asyncs[0];
+		yield return new WaitUntil(() => m_Async.isDone);
+
+		SceneManager.SetActiveScene(SceneManager.GetSceneByName(m_SceneListTable.m_Table[i].Scenes[0]));
+		m_IsLoadingAnimation = true;
 
 		yield return new WaitForSeconds(0.2f);
 		yield return new WaitUntil(() => !m_IsLoadingAnimation);
