@@ -70,7 +70,7 @@ public partial class EnemyAI4 : Character
     
     float attack_wait;         //攻撃行動までの時間
     float attack_timer;        //攻撃のクールタイム
-    float attack_time = 20.0f; //攻撃のクールタイム(指定秒数)
+    float attack_time = 30.0f; //攻撃のクールタイム(指定秒数)
 
 
     bool m_moveStart = false;
@@ -454,10 +454,6 @@ public partial class EnemyAI4 : Character
                 transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
                 transform.rotation = Quaternion.LookRotation(
                     Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-            }
-            else
-            {
-                m_StateProcessor.State = m_Fall;
             }
         }
 
@@ -1400,7 +1396,7 @@ public partial class EnemyAI4 : Character
             {
                 attack = false;
                 attack_wait = 0;
-                m_StateProcessor.State = m_ColorlessTree;
+                m_StateProcessor.State = m_TreeMove;
             }
             else if (jump_target.transform == playerObj.transform && playerDist <= player_Detection) //飛びたいところの間に障害物がなければ
             {
@@ -1461,7 +1457,7 @@ public partial class EnemyAI4 : Character
         {
             attack = false;
             attack_wait = 0;
-            m_StateProcessor.State = m_SearchTree;
+            m_StateProcessor.State = m_TreeMove;
         }
     }
 
@@ -1748,9 +1744,9 @@ public partial class EnemyAI4 : Character
         Ray ray2 = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         if (Physics.Raycast(ray2, out hit, 1.5f,groundLayer))
         {
-            transform.position = Vector3.Lerp(transform.position, hit.point, 0.5f);
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
-                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.5f), hit.normal);
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
 
             anim.SetBool("jump", false);
             ResetBodyblow();
