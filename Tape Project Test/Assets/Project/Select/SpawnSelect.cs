@@ -18,9 +18,10 @@ public class SpawnSelect : MonoBehaviour {
 
 	public SpownTreeGenerate spownTreeGenerate;
 
+	public bool m_IsSelected;
 	// Use this for initialization
 	void Start () {
-		
+		m_IsSelected = false;
 	}
 	
 	// Update is called once per frame
@@ -30,10 +31,11 @@ public class SpawnSelect : MonoBehaviour {
 
 	public void StartSelected()
 	{
-		StartCoroutine(Selected());
+		if (m_IsSelected == false) StartCoroutine(Selected());
 	}
 	public IEnumerator Selected()
 	{
+		m_IsSelected = true;
 		yield return null;
 		Instantiate(m_Ring, m_Player.transform.position, Quaternion.identity, transform);
 		yield return new WaitForSeconds(1.5f);
