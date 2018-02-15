@@ -10,11 +10,12 @@
 		LOD 200
 		
 		ZTest Always
+		Lighting Off
 
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
 		//#pragma surface surf Standard fullforwardshadows
-		#pragma surface surf Standard noshadow
+		#pragma surface surf Standard noshadow noambient novertexlights nolightmap nodirlightmap nolppv noshadowmask nometa
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		//#pragma target 3.0
