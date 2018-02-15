@@ -23,6 +23,7 @@ public class StringUnit : Connecter
 	}
 	public void Create(StringShooter stringShooter, Vector3 start, Vector3 end, Transform Cartridge)
 	{
+		m_Type = Type.String;
 		m_StringShooter = stringShooter;
 		m_PointA = start;
 		m_PointB = end;

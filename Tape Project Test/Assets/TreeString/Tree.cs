@@ -20,7 +20,7 @@ public class Tree : Connecter
 	public List<Connecter> m_Connecting = new List<Connecter>();
 
 	private int[,] m_ActivCounts = new int[2, 3];//[side, string=0 net=1]
-	private int[,] m_ConnectCounts = new int[2, 2];//[side, string=0 net=1]
+	public int[,] m_ConnectCounts = new int[2, 2];//[side, string=0 net=1]
 	public bool[] m_IsHitChara = new bool[] { false, false };
 	public bool[] m_IsMoveChara = new bool[] { false, false };
 
