@@ -64,6 +64,7 @@ public class TerritoryGaugeController : MonoBehaviour
 					m_stringPs.Clear();
 					for (int i = 0; i < cc[0, 0] + cc[0,1]; i++)
 					{
+						if (i == 13) break;
 						m_stringPs.Add(Instantiate(m_StringP, m_StringPParent));
 					}
 				}
@@ -76,6 +77,7 @@ public class TerritoryGaugeController : MonoBehaviour
 					m_stringEs.Clear();
 					for (int i = 0; i < cc[1, 0] + cc[1,1]; i++)
 					{
+						if (i == 13) break;
 						m_stringEs.Add(Instantiate(m_StringE, m_StringEParent));
 					}
 				}
