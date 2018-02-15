@@ -61,6 +61,9 @@ public class ResultUI : MonoBehaviour
 			m_PWL.sprite = m_PLose;
 			m_EWL.sprite = m_EWin;
 		}
+		m_BGM.Play();
+
+		GameObject.Find("Ground").GetComponent<AudioSource>().enabled = false;
 	}
 	private void Update()
 	{
@@ -72,6 +75,6 @@ public class ResultUI : MonoBehaviour
 	}
 	public void PlaySE()
 	{
-		m_SE.Play();
+		//m_SE.Play();
 	}
 }

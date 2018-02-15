@@ -1872,8 +1872,8 @@ MonoBehaviour:
   m_ELose: {fileID: 21300000, guid: cb1593db277b58a439bc3ea68da2c138, type: 3}
   m_BGM: {fileID: 1937234787}
   m_SE: {fileID: 1937234786}
-  m_WinBGM: {fileID: 0}
-  m_LoseBGM: {fileID: 0}
+  m_WinBGM: {fileID: 8300000, guid: 78d14ae899a258c41bd85949accd49ce, type: 3}
+  m_LoseBGM: {fileID: 8300000, guid: 78d14ae899a258c41bd85949accd49ce, type: 3}
   m_Animator: {fileID: 1937234785}
 --- !u!95 &1937234785
 Animator:
