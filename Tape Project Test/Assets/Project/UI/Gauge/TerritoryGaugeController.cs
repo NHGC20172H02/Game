@@ -26,6 +26,15 @@ public class TerritoryGaugeController : MonoBehaviour
 	public Sprite m_OK;
 	public Sprite m_NG;
 
+	public Transform m_StringPParent;
+	public Transform m_StringEParent;
+
+	public GameObject m_StringP;
+	public GameObject m_StringE;
+
+	public List<GameObject> m_stringPs;
+	public List<GameObject> m_stringEs;
+
 	void Start()
 	{
 		m_FlashMask.GetComponent<Animation>().Play();	
@@ -45,6 +54,31 @@ public class TerritoryGaugeController : MonoBehaviour
 				m_TGUIMy.SetTree((Tree)connecter);
 				active = true;
 				m_TreeSideL.sprite = m_TreeSide[stay.GetComponent<Tree>().m_SideNumber];
+				var cc = ((Tree)connecter).m_ConnectCounts;
+				if (cc[0, 0]+cc[0,1] != m_stringPs.Count)
+				{
+					foreach (var item in m_stringPs)
+					{
+						Destroy(item);
+					}
+					m_stringPs.Clear();
+					for (int i = 0; i < cc[0, 0] + cc[0,1]; i++)
+					{
+						m_stringPs.Add(Instantiate(m_StringP, m_StringPParent));
+					}
+				}
+				if (cc[1, 0] + cc[1,1] != m_stringEs.Count)
+				{
+					foreach (var item in m_stringEs)
+					{
+						Destroy(item);
+					}
+					m_stringEs.Clear();
+					for (int i = 0; i < cc[1, 0] + cc[1,1]; i++)
+					{
+						m_stringEs.Add(Instantiate(m_StringE, m_StringEParent));
+					}
+				}
 			}
 		}
 		m_TGUIMy.gameObject.SetActive(active);
