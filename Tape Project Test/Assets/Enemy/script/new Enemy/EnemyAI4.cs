@@ -483,11 +483,11 @@ public partial class EnemyAI4 : Character
         //落下後の移動先(近くの無職の木優先)
         if (m_randomCount != 1 && m_randomCount != 2)
             m_randomCount = Random.Range(1, 3);
-        if (m_randomCount == 1)
+        if (m_randomCount == 1 || nearObj == null)
         {
             m_targetPos = GetPosition();
         }
-        else
+        else if(nearObj != null)
         {
             m_targetPos = new Vector3(nearObj.transform.position.x, nearObj.transform.position.y, nearObj.transform.position.z);
         }
