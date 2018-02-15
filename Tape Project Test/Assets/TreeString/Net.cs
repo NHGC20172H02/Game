@@ -29,6 +29,11 @@ public class Net : Connecter {
 		TerritoryManager.Instance.m_Nets.Add(this);
 		m_Type = Type.Net;
 	}
+	private void Update()
+	{
+		SetColor(1);
+	}
+
 	public void Create(StringShooter stringShooter, Vector3 A, Vector3 B, Vector3 Corner)
 	{
 		m_StringShooter = stringShooter;
@@ -79,5 +84,18 @@ public class Net : Connecter {
 		m_EndConnecter.RemoveString(this);
 		Destroy(gameObject);
 		TerritoryManager.Instance.m_Nets.Remove(this);
+	}
+	public void SetColor(float a)
+	{
+		Color color = m_Materials[m_SideNumber].GetColor("_Color");
+		color.r *= a;
+		color.g *= a;
+		color.b *= a;
+		GetComponent<Renderer>().material.SetColor("_Color", color);
+		color = m_Materials[m_SideNumber].GetColor("_EmissionColor");
+		color.r *= a;
+		color.g *= a;
+		color.b *= a;
+		GetComponent<Renderer>().material.SetColor("_EmissionColor", color);
 	}
 }
