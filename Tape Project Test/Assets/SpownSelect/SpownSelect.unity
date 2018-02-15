@@ -540,8 +540,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 239372244}
-        m_MethodName: OnClick
+      - m_Target: {fileID: 1058079136}
+        m_MethodName: StartSelected
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1798,6 +1798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PMD: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
   m_Prefab: {fileID: 1377794184742898, guid: 53c8aad7ba97aea49a86419edb7ac8a8, type: 2}
+  m_Trees: []
 --- !u!1 &1000555013
 GameObject:
   m_ObjectHideFlags: 0
@@ -1889,6 +1890,7 @@ GameObject:
   - component: {fileID: 1058079134}
   - component: {fileID: 1058079133}
   - component: {fileID: 1058079132}
+  - component: {fileID: 1058079136}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1978,6 +1980,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1058079136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1058079131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af471ee24301a64a916eaf9e18a1d4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Enemy: {fileID: 1000555013}
+  m_AnimationIcon: {fileID: 1450608497309016, guid: fb33ae0d76a43b141a7b4d7925cadff0,
+    type: 2}
+  m_Player: {fileID: 239372239}
+  m_Ring: {fileID: 1040095025858072, guid: e13ebd3080056b14f9c8952c384cde0c, type: 2}
+  m_EnemyArrow: {fileID: 21300000, guid: 22df2a0bc10726a4a987d131e2066e1b, type: 3}
+  m_TreeArrow: {fileID: 21300000, guid: 68e6ff1387c24404d925bd45fe5ea023, type: 3}
+  spownTreeGenerate: {fileID: 924131500}
 --- !u!1001 &1103941483
 Prefab:
   m_ObjectHideFlags: 0

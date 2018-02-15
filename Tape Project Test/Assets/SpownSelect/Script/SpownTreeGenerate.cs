@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ public class SpownTreeGenerate : MonoBehaviour
 {
     public PlayModeData m_PMD;
     public GameObject m_Prefab;
-    private List<GameObject> m_Trees;
+    public List<GameObject> m_Trees;
 
     // Use this for initialization
     void Start ()
