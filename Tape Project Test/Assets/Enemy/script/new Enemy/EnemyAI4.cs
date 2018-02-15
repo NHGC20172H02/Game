@@ -459,6 +459,22 @@ public partial class EnemyAI4 : Character
             }
         }
 
+        //落下後の移動先(近くの無職の木優先)
+        if (m_randomCount != 1 && m_randomCount != 2 && m_randomCount != 3)
+            m_randomCount = Random.Range(1, 4);
+        if (m_randomCount == 1)
+        {
+            m_targetPos = GetPosition0();
+        }
+        else if (m_randomCount == 2)
+        {
+            m_targetPos = GetPosition();
+        }
+        else
+        {
+            m_targetPos = new Vector3(nearObj.transform.position.x, nearObj.transform.position.y, nearObj.transform.position.z);
+        }
+
         dead_time += Time.deltaTime * 1;
         if (dead_time >= down_time)//ダウン中の時間
         {
@@ -482,6 +498,7 @@ public partial class EnemyAI4 : Character
                     {
                         m_ground_jump_time = 0;
                         dead_time = 0;
+                        m_randomCount = 0;
                         m_targetPos = GetPosition3();
 
                         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
@@ -510,6 +527,7 @@ public partial class EnemyAI4 : Character
                     {
                         m_ground_jump_time = 0;
                         dead_time = 0;
+                        m_randomCount = 0;
                         m_targetPos = new Vector3(nearObj.transform.position.x, 7.0f, nearObj.transform.position.z);
 
                         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
@@ -1707,22 +1725,6 @@ public partial class EnemyAI4 : Character
         if (animInfo.normalizedTime < 1.0f)
         {
             anim.SetBool("dead", true);
-        }
-
-        //落下後の移動先(近くの無職の木優先)
-        if (m_randomCount != 1 && m_randomCount != 2 && m_randomCount != 3)
-            m_randomCount = Random.Range(1, 4);
-        if (m_randomCount == 1)
-        {
-            m_targetPos = GetPosition0();
-        }
-        else if (m_randomCount == 2)
-        {
-            m_targetPos = GetPosition();
-        }
-        else
-        {
-            m_targetPos = new Vector3(nearObj.transform.position.x, nearObj.transform.position.y, nearObj.transform.position.z);
         }
 
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
