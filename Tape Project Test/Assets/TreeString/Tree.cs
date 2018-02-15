@@ -37,6 +37,8 @@ public class Tree : Connecter
 
 	bool m_IsHitNPC;
 
+	public GameObject m_UIEffect;
+
 	private void Start()
 	{
 		TerritoryManager.Instance.m_Trees.Add(this);
@@ -137,6 +139,10 @@ public class Tree : Connecter
 	private void ChangeSide(int sideNumber)
 	{
 		m_Renderer.material = m_Materials[sideNumber];
+
+		var e = Instantiate(m_UIEffect, transform);
+		e.transform.position = transform.position;
+		Destroy(e, 2);
 		switch (sideNumber)
 		{
 			case 0:

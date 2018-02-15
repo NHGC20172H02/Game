@@ -450,6 +450,7 @@ MonoBehaviour:
   m_Connecting: []
   m_IsHitChara: 0000
   m_IsMoveChara: 0000
+  m_UIEffect: {fileID: 1948882902039744, guid: 0d55ba831fcd0b64184044ae3dde422a, type: 2}
 --- !u!114 &114747284519522566
 MonoBehaviour:
   m_ObjectHideFlags: 1
