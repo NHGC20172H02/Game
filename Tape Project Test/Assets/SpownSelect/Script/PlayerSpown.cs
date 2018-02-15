@@ -22,12 +22,24 @@ public class PlayerSpown : MonoBehaviour
 
     Image image;
 
+    enum state
+    {
+        selectNow,
+        decision,
+    }
+
+    state m_State = state.selectNow;
+
     //Camera c = Camera.main;
 
     public void OnClick()
     {
-        //バトルシーンに遷移
-        SceneController.Instance.ChangeScenes(1);
+        if (m_State == state.selectNow)
+        {
+            //バトルシーンに遷移
+            SceneController.Instance.ChangeScenes(1);
+            m_State = state.decision;
+        }        
     }
 
     void Start()
@@ -42,8 +54,18 @@ public class PlayerSpown : MonoBehaviour
         m_SpownNG.SetActive(false);
     }
 
+    public void PlayPos()
+    {
+
+    }
+
     void Update()
     {
+        if (m_State == state.decision)
+        {
+            return;
+        }
+
         if(Input.GetButtonDown("Cancel"))
         {
             //タイトルシーンに遷移
@@ -103,6 +125,5 @@ public class PlayerSpown : MonoBehaviour
 
         //現在の座標
         spownPos = new Vector2(x, y);
-        //spownPos = c.ScreenToWorldPoint(new Vector3(x, 0, y));
     }
 }

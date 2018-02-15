@@ -6488,7 +6488,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 73229192d48041649b9c931d0a9e69ee, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 420cbc6eada5bf746bd92cee59701a89, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -28679,6 +28679,7 @@ MonoBehaviour:
   m_PausePanel: {fileID: 753434984}
   m_PauseImage: {fileID: 1667017256}
   m_PauseBackGround: {fileID: 1269444280}
+  m_PauseBackGround2: {fileID: 946519687}
   m_ReturnToGame: {fileID: 1625136754}
   m_ReturnToTitle: {fileID: 1359115180}
 --- !u!114 &1625136757

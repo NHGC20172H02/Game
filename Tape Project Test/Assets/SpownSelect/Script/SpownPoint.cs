@@ -8,7 +8,7 @@ public class SpownPoint : MonoBehaviour
 	void Start ()
     {
         //PlayerSpownで決めた座標をバトルシーンの座標に変換
-        Vector3 spownPosition = new Vector3 (PlayerSpown.spownPos.x * 0.5f, 0 ,PlayerSpown.spownPos.y * 0.6f);
+        Vector3 spownPosition = new Vector3 (PlayerSpown.spownPos.x /2 , 0 ,PlayerSpown.spownPos.y/2 + 12.5f );
         GameObject.Find("PlayerCamera").transform.position = spownPosition;
 
         var playerRotate = this.gameObject.transform.eulerAngles;

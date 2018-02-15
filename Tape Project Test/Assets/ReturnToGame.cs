@@ -7,6 +7,7 @@ public class ReturnToGame : MonoBehaviour
     public GameObject m_PausePanel;
     public GameObject m_PauseImage;
     public GameObject m_PauseBackGround;
+    public GameObject m_PauseBackGround2;
     public GameObject m_ReturnToGame;
     public GameObject m_ReturnToTitle;
 
@@ -27,6 +28,7 @@ public class ReturnToGame : MonoBehaviour
         m_PausePanel.SetActive(false);
         m_PauseImage.SetActive(false);
         m_PauseBackGround.SetActive(false);
+        m_PauseBackGround2.SetActive(false);
         m_ReturnToGame.SetActive(false);
         m_ReturnToTitle.SetActive(false);
 
