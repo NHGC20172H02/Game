@@ -3799,7 +3799,7 @@ MonoBehaviour:
   m_Shooter: {fileID: 114459320162942166}
   ground_detection: 10
   tree_Detection: 180
-  player_Detection: 160
+  player_Detection: 120
   thought_Gauge: -100
 --- !u!114 &114459320162942166
 MonoBehaviour:
