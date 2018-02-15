@@ -23,7 +23,10 @@ public class BattleScene : MonoBehaviour {
     // Use this for initialization
     IEnumerator Start ()
     {
-		yield return null;
+        
+
+
+        yield return null;
 
 		state = GameState.Ready;
 		PauseManager.Instance.Pause(false);
