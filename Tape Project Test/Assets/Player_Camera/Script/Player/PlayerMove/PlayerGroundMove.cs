@@ -39,6 +39,7 @@ public partial class Player {
                 move_end = jump_target.point;
                 m_Prediction.SetActive(false);
                 m_Animator.SetTrigger("NormalJump");
+                m_AudioSource.PlayOneShot(m_AudioClips[4]);
                 JumpCalculation(move_start, move_end, m_Angle);
                 m_StateManager.StateProcassor.State = m_StateManager.GroundJump;
                 return;

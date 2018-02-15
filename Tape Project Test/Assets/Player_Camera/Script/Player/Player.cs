@@ -87,6 +87,7 @@ public partial class Player : Character
         transform.position = MoveRange(transform.position, new Vector3(MIN, 0, MIN), new Vector3(MAX, 50f, MAX));
         if (isBodyblow)
         {
+            m_Prediction.SetActive(false);
             m_StateManager.StateProcassor.State = m_StateManager.Falling;
         }
         //Debug.Log(m_StateManager.StateProcassor.State);
@@ -152,7 +153,7 @@ public partial class Player : Character
         else
             jump = Physics.Raycast(ray, out jump_target, m_JumpLimit + addLimit, m_TreeLayer);
 
-        if (Input.GetKeyDown(KeyCode.K) || Input.GetButtonDown("RB"))
+        if (Input.GetKeyDown(KeyCode.J) || Input.GetButtonDown("RB"))
         {
             m_AudioSource.PlayOneShot(m_AudioClips[5]);
             if (m_jumpableNum == -1)
@@ -593,6 +594,16 @@ public partial class Player : Character
 	{
 		return flightDuration == 0 ? 0 : elapse_time/m_JumpSpeed / flightDuration;
 	}
+
+    //ターゲットしている糸を取得
+    public GameObject GetTargetString()
+    {
+        if (m_hitinfo.collider == null) return null;
+        if (jump_target.collider == null) return null;
+        if (jump_target.collider.tag != "String") return null;
+        return jump_target.collider.gameObject;
+    }
+
     /*******************************************/
 
     void OnTriggerEnter(Collider other)
