@@ -130,9 +130,7 @@ public class EnemyAI40 : Character
     JumpMove m_JumpMove = new JumpMove();
 
     PredominanceDecision m_PredominanceDecision = new PredominanceDecision();
-    PredominanceStringCount m_PredominanceStringCount = new PredominanceStringCount();
-    PredominanceMyTree m_PredominanceMyTree = new PredominanceMyTree();
-
+    
     AttackJump m_AttackJump = new AttackJump();
     AttackJumpMove m_AttackJumpMove = new AttackJumpMove();
 
@@ -164,9 +162,7 @@ public class EnemyAI40 : Character
         m_AttackJumpMove.exeDelegate = AttackJumpMove;
 
         m_PredominanceDecision.exeDelegate = PredominanceDecision;
-        m_PredominanceStringCount.exeDelegate = PredominanceStringCount;
-        m_PredominanceMyTree.exeDelegate = PredominanceMyTree;
-
+        
         m_FallGroundMove.exeDelegate = FallGroundMove;
         m_Fall.exeDelegate = Fall;
     }
@@ -964,6 +960,7 @@ public class EnemyAI40 : Character
                     anim.SetBool("jump", true);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
+                    JumpCalculation(jump_start, jump_end, 30.0f);
                     m_StateProcessor.State = m_JumpMove;
                 }
                 if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
@@ -985,6 +982,7 @@ public class EnemyAI40 : Character
                     anim.SetBool("jump", true);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
+                    JumpCalculation(jump_start, jump_end, 30.0f);
                     m_StateProcessor.State = m_JumpMove;
                 }
             }
@@ -1074,6 +1072,7 @@ public class EnemyAI40 : Character
                     anim.SetBool("jump", true);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
+                    JumpCalculation(jump_start, jump_end, 30.0f);
                     m_StateProcessor.State = m_AttackJumpMove;
                 }
                 if (playerDist <= playerNearDist && player_onTree == playerObj.GetComponent<Player>().IsOnTree())
@@ -1235,100 +1234,6 @@ public class EnemyAI40 : Character
         else
         {
             m_StateProcessor.State = m_SearchRandom;
-        }
-    }
-
-    /*** 優勢時の近くの木の付いている糸の判別 ***/
-    private void PredominanceStringCount()
-    {
-        int sidenumber = GetComponent<StringShooter>().m_SideNumber;
-
-        if (m_randomCount != 5 && m_randomCount != 4 && m_randomCount != 6)
-            m_randomCount = Random.Range(4, 7);
-
-        //近くの木の付いている糸の差
-        Thread_count_difference1 = mytreecount1[1] - mytreecount1[sidenumber];
-        if (myTreeObj2 != null)
-        {
-            //2番目近くの木の付いている糸の差
-            Thread_count_difference2 = mytreecount2[1] - mytreecount2[sidenumber];
-        }
-        if (myTreeObj3 != null)
-        {
-            //3番目近くの木の付いている糸の差
-            Thread_count_difference3 = mytreecount3[1] - mytreecount3[sidenumber];
-        }
-
-        if (Thread_count_difference1 >= 0 && Thread_count_difference1 <= 2 &&
-            mytreecount1[sidenumber] > mytreecount1[1] && m_randomCount == 4) //近くの自分の木の糸の本数が２本以下
-        {
-            eyeObj = myTreeObj;
-            m_randomCount = 0;
-            //近い木に飛ぶ
-            m_targetPos = MyTreePosition1();
-
-            m_StateProcessor.State = m_Jumping;
-        }
-        else if (myTreeObj2 != null && Thread_count_difference2 >= 0 && Thread_count_difference2 <= 2 &&
-            mytreecount2[sidenumber] > mytreecount2[1] && m_randomCount == 5)//２番目に近くの自分の木の糸の本数が２本以下
-        {
-            eyeObj = myTreeObj2;
-            m_randomCount = 0;
-            //２番目の近くの木に飛ぶ
-            m_targetPos = MyTreePosition2();
-
-            m_StateProcessor.State = m_Jumping;
-        }
-        else if (myTreeObj3 != null && Thread_count_difference3 >= 0 && Thread_count_difference3 <= 2 &&
-            mytreecount3[sidenumber] > mytreecount3[1] && m_randomCount == 6)//３番目に近くの自分の木の糸の本数が２本以下
-        {
-            eyeObj = myTreeObj3;
-            m_randomCount = 0;
-            //３番目の近くの木に飛ぶ
-            m_targetPos = MyTreePosition3();
-
-            m_StateProcessor.State = m_Jumping;
-        }
-        else
-        {
-            m_randomCount = 0;
-            m_StateProcessor.State = m_PredominanceMyTree;
-        }
-    }
-
-    /*** 優勢時の近くの自分の陣地の木 ***/
-    private void PredominanceMyTree()
-    {
-        if (m_randomCount != 5 && m_randomCount != 4)
-            m_randomCount = Random.Range(4, 6);
-
-        if (m_randomCount == 4)
-        {
-            if (myTreeObj != null)
-            {
-                eyeObj = myTreeObj;
-                m_targetPos = MyTreePosition1();
-                m_StateProcessor.State = m_Jumping;
-            }
-            else if (myTreeObj == null)
-            {
-                m_StateProcessor.State = m_SearchRandom;
-            }
-        }
-        if (m_randomCount == 5)
-        {
-            if (myTreeObj2 != null)
-            {
-                eyeObj = myTreeObj2;
-                m_targetPos = MyTreePosition2();
-                m_StateProcessor.State = m_Jumping;
-            }
-            else if (myTreeObj2 == null)
-            {
-                eyeObj = myTreeObj3;
-                m_targetPos = MyTreePosition3();
-                m_StateProcessor.State = m_Jumping;
-            }
         }
     }
 
