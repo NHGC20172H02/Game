@@ -31,7 +31,7 @@ public class Tree : Connecter
 
 	float m_AddRateSpider = 10;//2.5f; // 0.4s 1%
 	float m_AddRateString = 1.25f; // 0.8s 1%
-	float m_DownRateNeutral = 1; // 1.0s 1%
+	float m_DownRateNeutral = 0;//1; // 1.0s 1%
 	float m_DownRate = 1/1.5f; // 1.5s 1%
 	float m_DownNPC = 2;
 
@@ -120,7 +120,7 @@ public class Tree : Connecter
 	private void TouchedSpider(int i)
 	{
 		if (m_IsHitChara[i])
-			m_TerritoryRate += m_AddRateSpider * Time.deltaTime * (i == 0 ? 1 : -1);
+			m_TerritoryRate += m_AddRateSpider * Time.deltaTime * (i == 0 ? 1 : -1.3f);
 	}
 	private void TouchedString(int i)
 	{

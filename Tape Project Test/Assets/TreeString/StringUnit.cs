@@ -21,6 +21,10 @@ public class StringUnit : Connecter
 		TerritoryManager.Instance.m_Strings.Add(this);
 		m_Type = Type.String;
 	}
+	private void Update()
+	{
+		SetColor(1);
+	}
 	public void Create(StringShooter stringShooter, Vector3 start, Vector3 end, Transform Cartridge)
 	{
 		m_Type = Type.String;
@@ -92,4 +96,18 @@ public class StringUnit : Connecter
 			m_StringShooter = null;
 		}
 	}
+	public void SetColor(float a)
+	{
+		Color color = m_Materials[m_SideNumber].GetColor("_Color");
+		color.r *= a;
+		color.g *= a;
+		color.b *= a;
+		GetComponent<Renderer>().material.SetColor("_Color", color);
+		color = m_Materials[m_SideNumber].GetColor("_EmissionColor");
+		color.r *= a;
+		color.g *= a;
+		color.b *= a;
+		GetComponent<Renderer>().material.SetColor("_EmissionColor", color);
+	}
+
 }
