@@ -2596,6 +2596,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 36124e38e8479264b8e35702361af531, type: 3}
   - {fileID: 8300000, guid: 582a521732d20344586802e93f2cf5cc, type: 3}
   - {fileID: 8300000, guid: 2773bb91637b3d844b70411d6422aae5, type: 3}
+  - {fileID: 8300000, guid: d22b82b95948d1d49a4afc47e991a779, type: 3}
   m_EscapeSphere: {fileID: 1490565171330538}
   m_WindLine: {fileID: 198651039020876628}
   m_AttackSpeed:

@@ -458,6 +458,14 @@ public partial class Player : Character
         transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
         switch (m_JumpMode)
         {
+            case JumpMode.CapturingJump:
+                {
+                    break;
+                }
+            case JumpMode.Bodyblow:
+                {
+                    break;
+                }
             case JumpMode.StringJump:
                 {
                     StringAllMinus();
