@@ -59,6 +59,8 @@ public partial class Player : Character
     private float m_treeWaitTime = 0;                   //同じ木の滞在時間
     private float m_attackRate = 0;
     private TargetCategory m_category = TargetCategory.Connecter;
+    private List<GameObject> m_trees = new List<GameObject>();
+    private int m_jumpableNum = -1;
 
     protected override void Start()
     {
@@ -73,6 +75,10 @@ public partial class Player : Character
         m_StateManager.GroundJump.p_exeDelegate = GroundJump;
         m_StateManager.ProximityAttack.p_exeDelegate = ProximityAttack;
         m_Prediction.SetActive(true);
+        foreach(GameObject g in GameObject.FindGameObjectsWithTag("Tree"))
+        {
+            m_trees.Add(g);
+        }
     }
 
     protected override void Update()
@@ -129,6 +135,15 @@ public partial class Player : Character
             addLimit = Vector3.Distance(s.m_PointA, s.m_PointB);
         }
 
+        List<GameObject> jumpable_tree = new List<GameObject>();
+        jumpable_tree.Add(m_Enemy);
+        foreach (GameObject g in m_trees)
+        {
+            if (Vector3.Distance(transform.position, g.transform.position) < m_JumpLimit + addLimit
+                && g != m_hitinfo.collider.gameObject)
+                jumpable_tree.Add(g);
+        }
+
         if (isTargetString)
         {
             if (!(jump = Physics.Raycast(ray, out jump_target, m_JumpLimit + addLimit, m_NetLayer)))
@@ -139,12 +154,33 @@ public partial class Player : Character
 
         if (Input.GetKeyDown(KeyCode.K) || Input.GetButtonDown("RB"))
         {
-            m_category = TargetCategory.Enemy;
             m_AudioSource.PlayOneShot(m_AudioClips[5]);
+            if (m_jumpableNum == -1)
+            {
+                m_category = TargetCategory.Enemy;
+                m_jumpableNum++;
+            }
+            else if(jumpable_tree.Count >= m_jumpableNum)
+            {
+                if (jumpable_tree.Count - 1 == m_jumpableNum)
+                {
+                    m_category = TargetCategory.Connecter;
+                    m_jumpableNum = -1;
+                    m_Prediction.SetActive(false);
+                    return;
+                }
+                else
+                {
+                    m_category = TargetCategory.JumpableTree;
+                    m_jumpableNum++;
+                }
+            }
+
         }
         if (Input.GetAxis("Horizontal2") != 0 || Input.GetAxis("Vertical2") != 0)
         {
             m_category = TargetCategory.Connecter;
+            m_jumpableNum = -1;
             m_Prediction.SetActive(false);
             return;
         }
@@ -154,7 +190,21 @@ public partial class Player : Character
             jump = false;
             m_JumpMode = JumpMode.Bodyblow;
             Vector3 dir = m_Enemy.transform.position - m_center;
-            m_CameraPivot.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+            m_CameraPivot.transform.rotation = Quaternion.LookRotation(Vector3.Lerp(m_CameraPivot.transform.forward, dir, 0.1f), Vector3.up);
+        }
+        else if (m_category == TargetCategory.JumpableTree)
+        {
+            bodyBlow = false;
+            jump = true;
+            if(jumpable_tree.Count > m_jumpableNum)
+            {
+                Vector3 posY = new Vector3(0, 10f, 0);
+                Vector3 dir = (jumpable_tree[m_jumpableNum].transform.position + posY) - m_center;
+                m_CameraPivot.transform.rotation = Quaternion.LookRotation(Vector3.Lerp(m_CameraPivot.transform.forward, dir, 0.1f), Vector3.up);
+                Ray ableRay = new Ray(m_center, dir);
+                float dis = Vector3.Distance(m_center, jumpable_tree[m_jumpableNum].transform.position + posY);
+                jump = Physics.Raycast(ableRay, out jump_target, dis, m_TreeLayer);
+            }
         }
 
         if (jump)
@@ -222,7 +272,8 @@ public partial class Player : Character
                 m_WindLine.Play();
                 m_AudioSource.PlayOneShot(m_AudioClips[4]);
                 m_Prediction.SetActive(false);
-                m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
+                if(m_hitinfo.collider.tag == "Tree")
+                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                 move_start = transform.position;
                 move_end = m_Enemy.transform.position;
                 m_Animator.SetTrigger("Jump");
@@ -406,34 +457,23 @@ public partial class Player : Character
         transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
         switch (m_JumpMode)
         {
-            //case JumpMode.CapturingJump:
-            //    {
-            //        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
-            //        break;
-            //    }
             case JumpMode.StringJump:
                 {
                     StringAllMinus();
                     m_Shooter.StringShoot(move_start, move_end);
                     break;
                 }
-            //case JumpMode.Bodyblow:
-            //    {
-            //        //m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
-            //        break;
-            //    }
             default:
                 {
                     if (isEscape)
                         m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
                     else
                         m_Shooter.StringShoot(move_start, move_end);
-                    //if (m_hitinfo.collider != jump_target.collider && m_hitinfo.collider.tag == "Tree")
-                    //    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                     break;
                 }
         }
         waitFrame = 0;
+        m_jumpableNum = -1;
         isEscape = false;
         isLanding = false;
         m_Prediction.m_HitStringPoint = Vector3.zero;
@@ -487,6 +527,7 @@ public partial class Player : Character
         elapse_time = 0;
         m_failureTime = 0;
         m_treeWaitTime = 0;
+        m_jumpableNum = -1;
         m_AudioSource.PlayOneShot(m_AudioClips[3]);
         m_Animator.SetTrigger("Landing");
         m_category = TargetCategory.Connecter;
