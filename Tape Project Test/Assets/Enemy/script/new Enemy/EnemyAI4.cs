@@ -29,7 +29,7 @@ public partial class EnemyAI4 : Character
     //攻撃を受けた後のダウン時間
     float down_time = 3.0f;
 
-    float jump_wait = 0.5f;
+    float jump_wait = 1.0f;
 
     int m_randomCount;
     int jump_random;
@@ -439,8 +439,6 @@ public partial class EnemyAI4 : Character
         anim.SetBool("move_left", false);
         anim.SetBool("move_right", false);
 
-        m_randomCount = 0;
-
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         if (Physics.Raycast(ray, out hit, 1.5f))
@@ -457,16 +455,16 @@ public partial class EnemyAI4 : Character
                 transform.rotation = Quaternion.LookRotation(
                     Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
             }
+            else
+            {
+                m_StateProcessor.State = m_Fall;
+            }
         }
 
         //落下後の移動先(近くの無職の木優先)
-        if (m_randomCount != 1 && m_randomCount != 2 && m_randomCount != 3)
-            m_randomCount = Random.Range(1, 4);
+        if (m_randomCount != 1 && m_randomCount != 2)
+            m_randomCount = Random.Range(1, 3);
         if (m_randomCount == 1)
-        {
-            m_targetPos = GetPosition0();
-        }
-        else if (m_randomCount == 2)
         {
             m_targetPos = GetPosition();
         }
@@ -500,6 +498,8 @@ public partial class EnemyAI4 : Character
                         dead_time = 0;
                         m_randomCount = 0;
                         m_targetPos = GetPosition3();
+                        jump_start = transform.position;
+                        jump_end = jump_target.point;
 
                         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
                         //移動先と自分の間のray
@@ -513,7 +513,7 @@ public partial class EnemyAI4 : Character
                         m_StateProcessor.State = m_GroundJumping;
                     }
                 }
-                else if(m_targetPos == nearObj.transform.position) //落ちる前にいた木を目標にした場合
+                if(m_targetPos == nearObj.transform.position) //落ちる前にいた木を目標にした場合
                 {
                     //地面から木に飛ぶ距離までバックする
                     if (dist2 >= ground_detection)
@@ -529,6 +529,8 @@ public partial class EnemyAI4 : Character
                         dead_time = 0;
                         m_randomCount = 0;
                         m_targetPos = new Vector3(nearObj.transform.position.x, 7.0f, nearObj.transform.position.z);
+                        jump_start = transform.position;
+                        jump_end = jump_target.point;
 
                         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
                         //移動先と自分の間のray
@@ -1307,7 +1309,7 @@ public partial class EnemyAI4 : Character
         }
         else
         {
-            m_StateProcessor.State = m_SearchTree;
+            m_StateProcessor.State = m_SearchRandom;
         }
     }
 
@@ -1714,6 +1716,7 @@ public partial class EnemyAI4 : Character
     {
         speed_attack = false;
         attack = false;
+        m_randomCount = 0;
 
         AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
         anim.SetBool("move_front", false);
@@ -1739,15 +1742,15 @@ public partial class EnemyAI4 : Character
         Vector3 fallSpeed = Physics.gravity.y * Vector3.up;
         transform.Translate(fallSpeed * Time.deltaTime, Space.World);
         Vector3 forward = Vector3.Cross(transform.right, jump_target.normal);
-        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.1f), jump_target.normal);
+        transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.3f), jump_target.normal);
 
         RaycastHit hit;
         Ray ray2 = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         if (Physics.Raycast(ray2, out hit, 1.5f,groundLayer))
         {
-            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.5f);
             transform.rotation = Quaternion.LookRotation(
-                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.5f), hit.normal);
 
             anim.SetBool("jump", false);
             ResetBodyblow();
@@ -1763,8 +1766,8 @@ public partial class EnemyAI4 : Character
         {
             m_randomCount = 0;
 
-            reObj2 = col.gameObject.gameObject;
-            nearObj = col.gameObject.gameObject;
+            reObj2 = col.transform.gameObject;
+            nearObj = col.transform.gameObject;
         }
 
         if (col.transform.tag == "Ground")
