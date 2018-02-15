@@ -19,7 +19,7 @@ public partial class EnemyAI4 : Character
     [Header("木の探知範囲")]
     public float tree_Detection = 180.0f;
     [Header("Playerの探知範囲")]
-    public float player_Detection = 160.0f;
+    public float player_Detection = 120.0f;
 
     [Header("Enemyのゲージのためる量")]
     public float thought_Gauge = -100.0f;
@@ -27,7 +27,7 @@ public partial class EnemyAI4 : Character
     int m_netrob = 4;
 
     //攻撃を受けた後のダウン時間
-    float down_time = 3.0f;
+    float down_time = 2.0f;
 
     float jump_wait = 1.0f;
 
@@ -70,7 +70,8 @@ public partial class EnemyAI4 : Character
     
     float attack_wait;         //攻撃行動までの時間
     float attack_timer;        //攻撃のクールタイム
-    float attack_time = 30.0f; //攻撃のクールタイム(指定秒数)
+    float attack_time = 45.0f; //攻撃のクールタイム(指定秒数)
+    float dist2;
 
 
     bool m_moveStart = false;
@@ -345,6 +346,16 @@ public partial class EnemyAI4 : Character
             tree_dist = false;
         }
 
+        //EnemyのY軸が0以下になったら
+        if(gameObject.transform.position.y <= 0)
+        {
+            gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0.5f, gameObject.transform.position.z);
+        }
+        if (gameObject.transform.position.y >= 80)
+        {
+            m_StateProcessor.State = m_Fall;
+        }
+
         //if (Input.GetKeyDown(KeyCode.G))
         //{
         //    m_StateProcessor.State = m_Fall;
@@ -438,6 +449,7 @@ public partial class EnemyAI4 : Character
         anim.SetBool("move_back", false);
         anim.SetBool("move_left", false);
         anim.SetBool("move_right", false);
+       
 
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
@@ -471,15 +483,14 @@ public partial class EnemyAI4 : Character
         //落下後の移動先(近くの無職の木優先)
         if (m_randomCount != 1 && m_randomCount != 2)
             m_randomCount = Random.Range(1, 3);
-        if (m_randomCount == 1)
+        if (m_randomCount == 1 || nearObj == null)
         {
             m_targetPos = GetPosition();
         }
-        else
+        else if(nearObj != null)
         {
             m_targetPos = new Vector3(nearObj.transform.position.x, nearObj.transform.position.y, nearObj.transform.position.z);
         }
-        m_targetPos = GetPosition();
 
         dead_time += Time.deltaTime * 1;
         if (dead_time >= down_time)//ダウン中の時間
@@ -494,7 +505,8 @@ public partial class EnemyAI4 : Character
                 anim.SetBool("move_front", true);   
 
                 float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
-                float dist2 = Vector3.Distance(nearObj.transform.position, this.transform.position);
+                if(nearObj != null)
+                dist2 = Vector3.Distance(nearObj.transform.position, this.transform.position);
 
                 if (m_randomCount == 1)
                 {
@@ -618,7 +630,7 @@ public partial class EnemyAI4 : Character
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
-        if (Physics.SphereCast(ray, 1f, out hit, 1f, treeLayer))
+        if (Physics.Raycast(ray, out hit, 1.5f, treeLayer))
         {
             nearObj = hit.collider.gameObject;
 
@@ -630,7 +642,6 @@ public partial class EnemyAI4 : Character
             }
             else
             {
-                down_time = 1.0f;
                 m_StateProcessor.State = m_Fall;
             }
         }
@@ -803,7 +814,20 @@ public partial class EnemyAI4 : Character
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
         int groundLayer = LayerMask.GetMask(new string[] { "Ground" });
-        if (Physics.SphereCast(ray, 0.5f, out hit, 1.5f, treeLayer))
+
+        if (Physics.SphereCast(transform.position, 1.5f, transform.position, out hit, 1f, groundLayer))
+        {
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+            anim.SetBool("move_front", false);
+            anim.SetBool("move_back", false);
+            anim.SetBool("move_left", false);
+            anim.SetBool("move_right", false);
+            m_StateProcessor.State = m_FallGroundMove;
+        }
+        else if(Physics.SphereCast(ray, 0.5f, out hit, 1.5f, treeLayer))
         {
             transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
@@ -821,19 +845,6 @@ public partial class EnemyAI4 : Character
             //{
             //    m_StateProcessor.State = m_Fall;
             //}
-        }
-
-        if (Physics.SphereCast(ray, 1f, out hit, 1f, groundLayer))
-        {
-            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-            transform.rotation = Quaternion.LookRotation(
-                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-
-            anim.SetBool("move_front", false);
-            anim.SetBool("move_back", false);
-            anim.SetBool("move_left", false);
-            anim.SetBool("move_right", false);
-            m_StateProcessor.State = m_GroundMove;
         }
 
         if (m_moveCount == 1) //前移動
@@ -1236,7 +1247,7 @@ public partial class EnemyAI4 : Character
                         string_Rob = true;
                         anim.SetBool("jump", true);
                         JumpCalculation(jump_start, jump_end, 30.0f);
-                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate + 10; //ジャンプでのゲージの減り量
+                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate - 10; //ジャンプでのゲージの減り量
                         m_StateProcessor.State = m_JumpMove;
                         return;
                     }
@@ -1268,7 +1279,7 @@ public partial class EnemyAI4 : Character
                         string_Rob = true;
                         anim.SetBool("jump", true);
                         JumpCalculation(jump_start, jump_end, 30.0f);
-                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate + 10; //ジャンプでのゲージの減り量
+                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate - 10; //ジャンプでのゲージの減り量
                         m_StateProcessor.State = m_JumpMove;
                     }
                 }
@@ -1438,7 +1449,7 @@ public partial class EnemyAI4 : Character
                         string_Rob = true;
                         anim.SetBool("jump", true);    
                         JumpCalculation(jump_start, jump_end, 30.0f);
-                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate + 10; //ジャンプでのゲージの減り量
+                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += JumpDemeritRate - 10; //ジャンプでのゲージの減り量
                         m_StateProcessor.State = m_AttackJumpMove;
                         return;
                     }
@@ -1761,8 +1772,8 @@ public partial class EnemyAI4 : Character
         transform.rotation = Quaternion.LookRotation(Vector3.Lerp(transform.forward, forward, 0.3f), jump_target.normal);
 
         RaycastHit hit;
-        Ray ray2 = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-        if (Physics.Raycast(ray2, out hit, 1.5f,groundLayer))
+        Ray ray2 = new Ray(transform.position + transform.up * 1.5f, -transform.up);
+        if (Physics.Raycast(ray2, out hit, 2.5f,groundLayer))
         {
             transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
@@ -1793,7 +1804,6 @@ public partial class EnemyAI4 : Character
             attack = false;
             attack_wait = 0;
 
-            if(m_StateProcessor.State != m_Fall)
             m_StateProcessor.State = m_FallGroundMove;
         }
     }
