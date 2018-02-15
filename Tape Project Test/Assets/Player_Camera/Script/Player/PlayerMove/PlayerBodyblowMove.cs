@@ -102,6 +102,7 @@ public partial class Player {
         if (Physics.CheckBox(m_center, new Vector3(0.5f, 0.5f, 0.5f), transform.rotation, m_EnemyLayer) && enemy.TreeDist())
         {
             m_Animator.SetTrigger("Tackle");
+            m_AudioSource.PlayOneShot(m_AudioClips[1]);
             return true;
         }
         else if(Physics.CheckSphere(end, 1f, playerLayer))

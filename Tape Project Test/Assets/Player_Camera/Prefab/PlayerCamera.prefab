@@ -2589,11 +2589,13 @@ MonoBehaviour:
   m_StateManager: {fileID: 114762972871999870}
   m_AudioSource: {fileID: 82889727999602952}
   m_AudioClips:
-  - {fileID: 8300000, guid: 9aa701a69f65c7e459969c87f3fc205a, type: 3}
-  - {fileID: 8300000, guid: f4a9e10f6d7b9c4409bfd39eaa1bed07, type: 3}
-  - {fileID: 8300000, guid: 426e67527e6338d45835e12085d0d392, type: 3}
-  - {fileID: 8300000, guid: b3976f240d06ff84f9aa83030535e20b, type: 3}
-  - {fileID: 8300000, guid: 31e7e7903fb8de24bb9e5f9c9bb6707e, type: 3}
+  - {fileID: 8300000, guid: 5f23d0d453aab9849969851e0356a966, type: 3}
+  - {fileID: 8300000, guid: 2d436ebf793a4e7469f586e956510bbb, type: 3}
+  - {fileID: 8300000, guid: c996f618feee9fa408a8903bc20c303a, type: 3}
+  - {fileID: 8300000, guid: 9b63c5115bcd8da4c9e3cbb9a7622bb1, type: 3}
+  - {fileID: 8300000, guid: 36124e38e8479264b8e35702361af531, type: 3}
+  - {fileID: 8300000, guid: 582a521732d20344586802e93f2cf5cc, type: 3}
+  - {fileID: 8300000, guid: 2773bb91637b3d844b70411d6422aae5, type: 3}
   m_EscapeSphere: {fileID: 1490565171330538}
   m_WindLine: {fileID: 198651039020876628}
   m_AttackSpeed:

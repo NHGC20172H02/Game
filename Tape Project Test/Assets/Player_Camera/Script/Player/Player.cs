@@ -34,7 +34,7 @@ public partial class Player : Character
     public StringShooter m_Shooter;
     public PlayerStateManager m_StateManager;           //Player状態管理
     public AudioSource m_AudioSource;
-    public List<AudioClip> m_AudioClips;                //0:回避、1:攻撃、2:ジャンプ着地、3:落下着地、4:風
+    public List<AudioClip> m_AudioClips;                //0:回避、1:攻撃、2:ジャンプ着地、3:落下着地、4:風、5:敵狙った時、6:Lボタン切り替え
     public GameObject m_EscapeSphere;                   //回避の範囲
     public ParticleSystem m_WindLine;
     public AnimationCurve m_AttackSpeed;
@@ -115,6 +115,7 @@ public partial class Player : Character
         {
             //m_enemy = null;
             isTargetString = !isTargetString;
+            m_AudioSource.PlayOneShot(m_AudioClips[6]);
         }
         if (hit.collider.tag == "Tree")
         {
@@ -139,6 +140,7 @@ public partial class Player : Character
         if (Input.GetKeyDown(KeyCode.K) || Input.GetButtonDown("RB"))
         {
             m_category = TargetCategory.Enemy;
+            m_AudioSource.PlayOneShot(m_AudioClips[5]);
         }
         if (Input.GetAxis("Horizontal2") != 0 || Input.GetAxis("Vertical2") != 0)
         {
@@ -190,6 +192,7 @@ public partial class Player : Character
                 m_WindLine.Play();
                 m_AudioSource.PlayOneShot(m_AudioClips[4]);
                 m_Prediction.SetActive(false);
+                TreeRateMinus();
                 move_start = transform.position;
                 move_end = jump_target.point;
                 m_Animator.SetTrigger("Jump");
@@ -219,6 +222,7 @@ public partial class Player : Character
                 m_WindLine.Play();
                 m_AudioSource.PlayOneShot(m_AudioClips[4]);
                 m_Prediction.SetActive(false);
+                m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                 move_start = transform.position;
                 move_end = m_Enemy.transform.position;
                 m_Animator.SetTrigger("Jump");
@@ -297,22 +301,10 @@ public partial class Player : Character
     {
         float shortest = 100000f;
         RaycastHit result = new RaycastHit();
-        Vector3 pos = Vector3.zero;
-        Vector3 dir = Vector3.zero;
         for (int i = 0; i < layerMask.Length; i++)
         {
             if (i > 0 && result.collider != null) break;
-            if(layerMask[i] == m_StringLayer || layerMask[i] == m_NetLayer)
-            {
-                pos = transform.position + Vector3.up;
-                dir = Vector3.down;
-            }
-            else if(layerMask[i] == m_TreeLayer)
-            {
-                pos = transform.position + -transform.forward;
-                dir = transform.forward;
-            }
-            foreach (RaycastHit hit in Physics.SphereCastAll(pos, 1f, dir, 1f, layerMask[i]))
+            foreach (RaycastHit hit in Physics.SphereCastAll(transform.position + Vector3.up, 1f, Vector3.down, 1f, layerMask[i]))
             {
                 if ((hit.collider.tag == "String" || hit.collider.tag == "Net")
                     && (hit.collider.GetComponent<Connecter>().m_SideNumber != m_Shooter.m_SideNumber))
@@ -336,6 +328,15 @@ public partial class Player : Character
             }
         }
         if (result.collider == null) return;
+        RaycastHit treeHit;
+        if(result.collider.tag == "Tree")
+        {
+            Vector3 dir = (m_center - m_hitinfo.transform.position).normalized;
+            Ray ray = new Ray(m_center - dir, dir);
+            Physics.Raycast(ray, out treeHit, 3f, m_TreeLayer);
+            if (treeHit.collider != null)
+                result = treeHit;
+        }
         m_hitinfo = result;
         transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_CameraPivot.transform.right, result.normal), result.normal);
         if (result.collider.tag == "Net" || result.collider.tag == "Tree")
@@ -380,6 +381,24 @@ public partial class Player : Character
         m_Animator.ResetTrigger("Tackle");
         m_Animator.ResetTrigger("NormalJump");
     }
+    private void TreeRateMinus()
+    {
+        switch (m_JumpMode)
+        {
+            case JumpMode.StringJump:
+                {
+                    StringAllMinus();
+                    break;
+                }
+            default:
+                {
+                    if (m_hitinfo.collider != jump_target.collider && m_hitinfo.collider.tag == "Tree")
+                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
+                    break;
+                }
+        }
+    }
+
     //ジャンプパラメータをリセット
     private void JumpReset()
     {
@@ -387,31 +406,30 @@ public partial class Player : Character
         transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
         switch (m_JumpMode)
         {
-            case JumpMode.CapturingJump:
-                {
-                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
-                    break;
-                }
+            //case JumpMode.CapturingJump:
+            //    {
+            //        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
+            //        break;
+            //    }
             case JumpMode.StringJump:
                 {
-                    //m_hitinfo.collider.GetComponent<StringUnit>().Delete();
                     StringAllMinus();
                     m_Shooter.StringShoot(move_start, move_end);
                     break;
                 }
-            case JumpMode.Bodyblow:
-                {
-                    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
-                    break;
-                }
+            //case JumpMode.Bodyblow:
+            //    {
+            //        //m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
+            //        break;
+            //    }
             default:
                 {
                     if (isEscape)
                         m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
                     else
                         m_Shooter.StringShoot(move_start, move_end);
-                    if (m_hitinfo.collider != jump_target.collider && m_hitinfo.collider.tag == "Tree")
-                        m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
+                    //if (m_hitinfo.collider != jump_target.collider && m_hitinfo.collider.tag == "Tree")
+                    //    m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate -= JumpDemeritRate;
                     break;
                 }
         }
