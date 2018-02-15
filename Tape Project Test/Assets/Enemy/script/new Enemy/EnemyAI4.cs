@@ -71,7 +71,6 @@ public partial class EnemyAI4 : Character
     float attack_wait;         //攻撃行動までの時間
     float attack_timer;        //攻撃のクールタイム
     float attack_time = 45.0f; //攻撃のクールタイム(指定秒数)
-    float dist2;
 
 
     bool m_moveStart = false;
@@ -466,7 +465,7 @@ public partial class EnemyAI4 : Character
                 //Playerに当たった時
                 if (isBodyblow)
                 {
-                    down_time = 3.0f;
+                    down_time = 2.0f;
                     anim.SetBool("dead", true);
                     m_StateProcessor.State = m_Fall;
                     return;
@@ -477,6 +476,10 @@ public partial class EnemyAI4 : Character
                 transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
                 transform.rotation = Quaternion.LookRotation(
                     Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+            }
+            else
+            {
+                m_StateProcessor.State = m_Fall;
             }
         }
 
@@ -505,8 +508,7 @@ public partial class EnemyAI4 : Character
                 anim.SetBool("move_front", true);   
 
                 float dist = Vector3.Distance(nearObj2.transform.position, this.transform.position);
-                if(nearObj != null)
-                dist2 = Vector3.Distance(nearObj.transform.position, this.transform.position);
+                float dist2 = Vector3.Distance(nearObj.transform.position, this.transform.position);
 
                 if (m_randomCount == 1)
                 {
@@ -595,7 +597,7 @@ public partial class EnemyAI4 : Character
         //Playerに当たった時
         if (isBodyblow)
         {
-            down_time = 3.0f;
+            down_time = 2.0f;
             anim.SetBool("dead", true);
             m_StateProcessor.State = m_Fall;
             return;
@@ -796,7 +798,7 @@ public partial class EnemyAI4 : Character
         //Playerに当たった時
         if (isBodyblow)
         {
-            down_time = 3.0f;
+            down_time = 2.0f;
             anim.SetBool("dead", true);
             m_StateProcessor.State = m_Fall;
             return;
@@ -827,7 +829,7 @@ public partial class EnemyAI4 : Character
             anim.SetBool("move_right", false);
             m_StateProcessor.State = m_FallGroundMove;
         }
-        else if(Physics.SphereCast(ray, 0.5f, out hit, 1.5f, treeLayer))
+        else if(Physics.SphereCast(ray, 1.5f, out hit, 2.0f, treeLayer))
         {
             transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
@@ -1207,7 +1209,7 @@ public partial class EnemyAI4 : Character
         //Playerに当たった時
         if (isBodyblow)
         {
-            down_time = 3.0f;
+            down_time = 2.0f;
             anim.SetBool("dead", true);
             m_StateProcessor.State = m_Fall;
             return;
@@ -1312,7 +1314,7 @@ public partial class EnemyAI4 : Character
                     m_playerTarget = GetPlayerPosition();
                     m_StateProcessor.State = m_AttackJump;
                 }
-                //攻撃のクールタイムが15秒経ったら
+                //攻撃のクールタイムが45秒経ったら
                 else if (attack_timer >= attack_time)
                 {
                     attack_timer = 0;
@@ -1394,7 +1396,7 @@ public partial class EnemyAI4 : Character
         //Playerに当たった時
         if (isBodyblow)
         {
-            down_time = 3.0f;
+            down_time = 2.0f;
             anim.SetBool("dead", true);
             m_StateProcessor.State = m_Fall;
             return;
@@ -1594,7 +1596,7 @@ public partial class EnemyAI4 : Character
         //Playerに当たった時
         if (isBodyblow)
         {
-            down_time = 3.0f;
+            down_time = 2.0f;
             anim.SetBool("dead", true);
             m_StateProcessor.State = m_Fall;
             return;
@@ -1803,8 +1805,8 @@ public partial class EnemyAI4 : Character
             on_trigger = true;
             attack = false;
             attack_wait = 0;
-
-            m_StateProcessor.State = m_FallGroundMove;
+            //if(m_StateProcessor.State != m_GroundMove)
+            //m_StateProcessor.State = m_FallGroundMove;
         }
     }
 
