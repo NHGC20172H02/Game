@@ -80,7 +80,6 @@ public partial class EnemyAI4 : Character
     bool noGaugeJump = false;
     bool attack;
 
-    bool on_trigger = false;
     bool speed_attack = false;
     bool tree_dist;
 
@@ -628,8 +627,6 @@ public partial class EnemyAI4 : Character
         anim.SetBool("avoidance", false);
         anim.SetBool("Attack", false);
 
-        on_trigger = false;
-
         //Playerに当たった時
         if (isBodyblow)
         {
@@ -869,6 +866,12 @@ public partial class EnemyAI4 : Character
                 Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
 
             nearObj = hit.collider.gameObject;
+
+            if(hit.collider.gameObject == null)
+            {
+                down_time = 1.0f;
+                m_StateProcessor.State = m_Fall;
+            }
         }
 
         if (m_moveCount == 1) //前移動
@@ -1552,7 +1555,6 @@ public partial class EnemyAI4 : Character
             attack = false;
             transform.position = jump_end;
             m_Shooter.StringShoot(jump_start, jump_end);
-            //m_hitinfo.collider.GetComponent<Tree>().m_TerritoryRate += Vector3.Distance(jump_start, jump_end);   
             m_StateProcessor.State = m_TreeDecision;
         }
 
@@ -1639,6 +1641,11 @@ public partial class EnemyAI4 : Character
                     Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
 
                 nearObj = hit.collider.gameObject;
+            }
+            if(hit.transform.tag == null)
+            {
+                dead_time = 1.0f;
+                m_StateProcessor.State = m_Fall;
             }
         }
 
@@ -1819,7 +1826,6 @@ public partial class EnemyAI4 : Character
         if (col.transform.tag == "Ground")
         {
             ResetBodyblow();
-            on_trigger = true;
             attack = false;
             attack_wait = 0;
             //if(m_StateProcessor.State != m_GroundMove)
@@ -1827,9 +1833,20 @@ public partial class EnemyAI4 : Character
         }
     }
 
-    private void OnTriggerStay(Collider col)
+    //private void OnTriggerStay(Collider col)
+    //{
+    //    if (col.transform.tag != "Tree" && m_StateProcessor.State != m_GroundMove &&
+    //        m_StateProcessor.State != m_FallGroundMove && m_StateProcessor.State != m_GroundJumping &&
+    //        m_StateProcessor.State != m_JumpMove && m_StateProcessor.State != m_AttackJumpMove)
+    //    {
+    //        down_time = 1.0f;
+    //        m_StateProcessor.State = m_Fall;
+    //    }
+    //}
+
+    private void OnTriggerExit(Collider col)
     {
-        if (col.transform.tag != "Tree" && on_trigger == false)
+        if (col.transform.tag == "Tree")
         {
             if (m_StateProcessor.State == m_TreeMove)
             {
@@ -1839,17 +1856,4 @@ public partial class EnemyAI4 : Character
             }
         }
     }
-
-    //private void OnTriggerExit(Collider col)
-    //{
-    //    if (col.transform.tag == "Tree" && on_trigger == false)
-    //    {
-    //        if (m_StateProcessor.State == m_TreeMove)
-    //        {
-    //            down_time = 1.0f;
-    //            anim.SetBool("jump", true);
-    //            m_StateProcessor.State = m_Fall;
-    //        }
-    //    }
-    //}
 }
