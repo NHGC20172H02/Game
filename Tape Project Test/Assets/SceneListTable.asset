@@ -16,3 +16,8 @@ MonoBehaviour:
     - Title
   - Scenes:
     - Scene
+  - Scenes:
+    - Scene
+    - Result
+  - Scenes:
+    - SpownSelect

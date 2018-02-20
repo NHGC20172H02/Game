@@ -6,11 +6,15 @@ public class NearObj40 : MonoBehaviour {
     [System.NonSerialized]
     public GameObject m_nearObj0;
     [System.NonSerialized]
+    public GameObject m_nearObj02;
+    [System.NonSerialized]
     public GameObject m_nearObj;
     [System.NonSerialized]
     public GameObject m_nearObj2;
     [System.NonSerialized]
     public GameObject m_nearObj3;
+    [System.NonSerialized]
+    public GameObject m_nearObj4;
     [System.NonSerialized]
     public GameObject m_nearObj40;
     [System.NonSerialized]
@@ -20,6 +24,8 @@ public class NearObj40 : MonoBehaviour {
     public GameObject m_myTreeObj;
     [System.NonSerialized]
     public GameObject m_myTreeObj2;
+    [System.NonSerialized]
+    public GameObject m_myTreeObj3;
 
     [System.NonSerialized]
     public GameObject m_myStringObj;
@@ -48,6 +54,8 @@ public class NearObj40 : MonoBehaviour {
         m_nearObj2 = serchTag(this.gameObject, "Tree");
         //2番目のオブジェクト（木）
         m_nearObj3 = serchTag2(this.gameObject, "Tree");
+        //3番目のオブジェクト（木）
+        m_nearObj4 = RandomSerchTag3(this.gameObject, "Tree");
 
         //近くの自分の陣地ではない木
         m_nearObj40 = serchTag3(this.gameObject, "Tree");
@@ -62,6 +70,9 @@ public class NearObj40 : MonoBehaviour {
 
         //2番目に近くの自分の陣地の木
         m_myTreeObj2 = MyTreeSerch2(this.gameObject, "Tree");
+
+        //3番目に近くの自分の陣地の木
+        m_myTreeObj3 = MyTreeSerch3(this.gameObject, "Tree");
 
         //近くの自分の糸
         m_myStringObj = stringTag0(this.gameObject, "String");
@@ -135,6 +146,52 @@ public class NearObj40 : MonoBehaviour {
                 continue;
             }
             else if (m_nearObj2 == obs)
+            {
+                continue;
+            }
+            if (m_reObj == obs)
+            {
+                continue;
+            }
+
+            //自身と取得したオブジェクトの距離を取得
+            tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
+
+            //オブジェクトの距離が近く、距離0であればオブジェクト名を取得
+            if (nearDis == 0 || nearDis > tmpDis)
+            {
+                nearDis = tmpDis;
+                targetObj = obs;
+            }
+
+        }
+        //3番目近かったオブジェクトを返す
+        return targetObj;
+    }
+    //指定されたタグの中で3番目近いオブジェクト
+    public GameObject RandomSerchTag3(GameObject nowObj, string tagName)
+    {
+        //距離用一時変換
+        float tmpDis;
+
+        //最も近いオブジェクトの距離
+        float nearDis = 0;
+
+        GameObject targetObj = null;
+
+        //タグ指定されたオブジェクトを配列で取得
+        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
+        {
+            //触れているオブジェクトを検索から外す
+            if (m_nearObj == obs)
+            {
+                continue;
+            }
+            else if (m_nearObj2 == obs)
+            {
+                continue;
+            }
+            else if (m_nearObj3 == obs)
             {
                 continue;
             }
@@ -329,7 +386,45 @@ public class NearObj40 : MonoBehaviour {
         return targetObj;
     }
 
+    public GameObject MyTreeSerch3(GameObject nowObj, string tagName)
+    {
+        GameObject targetObj = null;
+        float tmpDis;
+        float nearDis = 0;
 
+        foreach (GameObject obs in GameObject.FindGameObjectsWithTag(tagName))
+        {
+
+            if (m_nearObj == obs)
+            {
+                continue;
+            }
+            else if (m_myTreeObj == obs)
+            {
+                continue;
+            }
+            else if (m_myTreeObj2 == obs)
+            {
+                continue;
+            }
+
+            int number = obs.GetComponent<Tree>().m_SideNumber;
+            int sidenumber = GetComponent<StringShooter>().m_SideNumber;
+
+            if (number == sidenumber)
+            {
+                //自身と取得したオブジェクトの距離を取得
+                tmpDis = Vector3.Distance(obs.transform.position, nowObj.transform.position);
+
+                if (nearDis == 0 || nearDis > tmpDis)
+                {
+                    nearDis = tmpDis;
+                    targetObj = obs;
+                }
+            }
+        }
+        return targetObj;
+    }
 
     //近くの自分の糸
     public GameObject stringTag0(GameObject nowObj, string tagName)

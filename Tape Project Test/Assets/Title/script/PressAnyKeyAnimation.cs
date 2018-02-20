@@ -34,6 +34,7 @@ public class PressAnyKeyAnimation : MonoBehaviour {
             {
                 animator_.SetBool("PressButtonAnimation", false);
                 animationTimer = 0;
+                
             }
 
             selectSource.Play();

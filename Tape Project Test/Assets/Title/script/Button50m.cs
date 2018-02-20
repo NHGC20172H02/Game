@@ -7,7 +7,7 @@ public class Button50m : MonoBehaviour {
     public void OnClick()
     {
         Debug.Log("Button50m click");
-		SceneController.Instance.ChangeScenes(1);
+		SceneController.Instance.ChangeScenes(3);
 
 	}
 

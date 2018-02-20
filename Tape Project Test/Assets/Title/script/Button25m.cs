@@ -11,7 +11,7 @@ public class Button25m : MonoBehaviour {
         Debug.Log("Button25m click");
 
 		//シーン移動
-		SceneController.Instance.ChangeScenes(1);
+		SceneController.Instance.ChangeScenes(3);
     }
 
     // Use this for initialization

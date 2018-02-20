@@ -81,14 +81,6 @@ namespace EnemyState
         }
     }
 
-    public class ThreadSearchTree : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "ThreadSearchTree";
-        }
-    }
-
     public class SearchRandom : EnemyState
     {
         public override string getStateName()
@@ -97,13 +89,20 @@ namespace EnemyState
         }
     }
 
-    public class ThreadJump : EnemyState
+    public class SearchMyTreeGauge : EnemyState
     {
         public override string getStateName()
         {
-            return "ThreadJump";
+            return "SearchMyTreeGauge";
         }
-    } 
+    }
+    public class SearchTreeGauge : EnemyState
+    {
+        public override string getStateName()
+        {
+            return "SearchTreeGauge";
+        }
+    }
 
     public class Jumping : EnemyState
     {
@@ -129,51 +128,11 @@ namespace EnemyState
         }
     }
 
-    public class StringMove : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringMove";
-        }
-    }
-
     public class StringCount : EnemyState
     {
         public override string getStateName()
         {
             return "StringCount";
-        }
-    }
-
-    public class StringJump : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringJumpt";
-        }
-    }
-
-    public class StringJumping : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringJumping";
-        }
-    }
-
-    public class StringDecision : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "StringDecisiont";
-        }
-    }
-
-    public class ThreadSearchRandom : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "ThreadSearchRandom";
         }
     }
 
@@ -238,22 +197,6 @@ namespace EnemyState
         public override string getStateName()
         {
             return "PredominanceJumpMove";
-        }
-    }
-
-    public class LatterHalfDecision : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "LatterHalfDecision";
-        }
-    }
-
-    public class LatterHalfColorlessTree : EnemyState
-    {
-        public override string getStateName()
-        {
-            return "LatterHalfColorlessTree";
         }
     }
 

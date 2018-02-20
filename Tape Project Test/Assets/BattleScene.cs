@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 public class BattleScene : MonoBehaviour {
 	public Animator m_UIAnimator;
-	public float m_Timer = 180;
+	public float m_Timer = 600;
 	public Text m_TimerUI;
+	public List<Vector2Int> m_Time_Cost;
+	public PlayModeData m_PMD;
 
-    enum GameState
+	enum GameState
     {
 		Ready,
         Play,
@@ -21,7 +23,10 @@ public class BattleScene : MonoBehaviour {
     // Use this for initialization
     IEnumerator Start ()
     {
-		yield return null;
+        
+
+
+        yield return null;
 
 		state = GameState.Ready;
 		PauseManager.Instance.Pause(false);
@@ -50,6 +55,15 @@ public class BattleScene : MonoBehaviour {
         {
             m_Timer -= Time.deltaTime;
         }
-		m_TimerUI.text = ((int)(m_Timer + 1)).ToString();
+		var time = (int)(m_Timer + 1);
+		m_TimerUI.text = (time / 60).ToString("00") +":"+ (time % 60).ToString("00");
+
+		foreach (var item in m_Time_Cost)
+		{
+			if (item.x >= m_Timer)
+			{
+				m_PMD.m_Cost = item.y;
+			}
+		}
 	}
 }

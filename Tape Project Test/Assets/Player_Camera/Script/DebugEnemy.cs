@@ -17,6 +17,7 @@ public class DebugEnemy : Character
     public float jumpLower = 5f;
     public Transform m_Camera;
     public LayerMask m_GroundLayer, m_TreeLayer, m_StringLayer, m_NetLayer, m_EnemyLayer;
+    public PredictionLine m_Prediction;
     public Animator m_Animator;
     public StringShooter m_Shooter;
     public PlayerStateManager m_StateManager;           //Player状態管理
@@ -29,6 +30,7 @@ public class DebugEnemy : Character
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
     private bool isCursor = false;
+    private bool isEscape = false;
     private int waitFrame = 0;
     private float m_failureTime = 0;
     private float m_attackTime = 0;
@@ -45,6 +47,7 @@ public class DebugEnemy : Character
         m_StateManager.Falling.p_exeDelegate = FallingMove;
         m_StateManager.BodyBlow.p_exeDelegate = BodyBlowMove;
         m_StateManager.GroundJump.p_exeDelegate = GroundJump;
+        m_Prediction.gameObject.SetActive(true);
     }
 
     protected override void Update()
@@ -60,6 +63,7 @@ public class DebugEnemy : Character
     void GroundMove()
     {
         m_Animator.SetBool("IsString", false);
+        m_Prediction.gameObject.SetActive(false);
         Vector3 start = transform.position + transform.up * 0.5f;
         //足元の情報取得（地面優先）
         if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_GroundLayer))
@@ -148,7 +152,7 @@ public class DebugEnemy : Character
         Ray ray = new Ray(origin, transform.forward);
         int[] layers = new int[1];
         layers[0] = m_StringLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
         }
@@ -184,9 +188,14 @@ public class DebugEnemy : Character
         {
             transform.position = jump_target.point;
             transform.rotation = Quaternion.LookRotation(Vector3.Cross(transform.right, jump_target.normal), jump_target.normal);
-            m_Shooter.StringShoot(move_start, move_end);
+            if (isEscape)
+                m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
+            else
+                m_Shooter.StringShoot(move_start, move_end);
             waitFrame = 0;
+            isEscape = false;
             isLanding = false;
+            m_Prediction.m_HitStringPoint = Vector3.zero;
             if (jump_target.collider.tag == "String")
             {
                 m_hitinfo = jump_target;
@@ -207,11 +216,29 @@ public class DebugEnemy : Character
                 m_Animator.SetBool("IsString", false);
         }
 
-        if (Physics.CheckSphere(transform.position, 1f, m_StringLayer))
+        if (m_Prediction.m_HitStringPoint != Vector3.zero)
         {
-            waitFrame = 0;
-            Fall();
-            return;
+            if (Physics.CheckSphere(m_Prediction.m_HitStringPoint, 4f, m_EnemyLayer))
+            {
+                //回避行動
+                if ((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")))
+                {
+                    if (m_Prediction.m_IsString)
+                        m_Prediction.m_HitString.SideUpdate(m_Shooter.m_SideNumber);
+                    else
+                        m_Prediction.m_HitNet.SideUpdate(m_Shooter.m_SideNumber);
+                    m_Shooter.StringShoot(move_start, m_Prediction.m_HitStringPoint);
+                    m_Animator.SetTrigger("Escape");
+                    isEscape = true;
+                }
+                else if (Physics.CheckSphere(m_Prediction.m_HitStringPoint, 0.5f, m_EnemyLayer) && !isEscape)
+                {
+                    waitFrame = 0;
+                    m_Prediction.m_HitStringPoint = Vector3.zero;
+                    Fall();
+                    return;
+                }
+            }
         }
     }
 
@@ -275,7 +302,7 @@ public class DebugEnemy : Character
         int[] layers = new int[2];
         layers[0] = m_StringLayer;
         layers[1] = m_NetLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
         }
@@ -399,6 +426,14 @@ public class DebugEnemy : Character
 
         if (jump)
         {
+            if (hit.collider.gameObject == jump_target.collider.gameObject)
+            {
+                if (Vector3.Distance(transform.position, jump_target.point) < jumpLower)
+                {
+                    m_Prediction.gameObject.SetActive(false);
+                    return;
+                }
+            }
             if (jump_target.transform.tag == "String")
                 if (jump_target.transform.GetComponent<StringUnit>().m_SideNumber != m_Shooter.m_SideNumber)
                     return;
@@ -407,9 +442,15 @@ public class DebugEnemy : Character
                     return;
 
             //予測線、カーソル表示
+            m_Prediction.gameObject.SetActive(true);
+            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber);
+            if (m_enemy != null)
+                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle, m_Shooter.m_SideNumber);
+            m_Prediction.Calculation();
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
+                m_Prediction.gameObject.SetActive(false);
                 move_start = transform.position;
                 move_end = jump_target.point;
                 m_Animator.SetTrigger("Jump");
@@ -426,6 +467,8 @@ public class DebugEnemy : Character
             }
             return;
         }
+        m_Prediction.gameObject.SetActive(false);
+        m_Prediction.m_HitStringPoint = Vector3.zero;
         m_enemy = null;
     }
 

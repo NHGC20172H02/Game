@@ -23,17 +23,23 @@ public class PauseObject : MonoBehaviour {
 		}
 		foreach (var item in m_Animator)
 		{
-			item.enabled = pause;
-		}
+            if(item != null)
+            {
+                item.enabled = pause;
+            }
+        }
         foreach(var item in m_Particles)
         {
-            if (pause && item.isPaused)
+            if(item != null)
             {
-                item.Play();
-            }
-            else if(item.isPlaying)
-            {
-                item.Pause();
+                if (pause && item.isPaused)
+                {
+                    item.Play();
+                }
+                else if (item.isPlaying)
+                {
+                    item.Pause();
+                }
             }
         }
 	}

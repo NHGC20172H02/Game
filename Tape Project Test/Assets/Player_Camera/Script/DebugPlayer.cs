@@ -33,6 +33,7 @@ public class DebugPlayer : Character
     private Vector3 move_start;                         //ジャンプ始点
     private Vector3 move_end;                           //ジャンプ終点
     private RaycastHit jump_target;
+    private JumpMode m_jumpMode = JumpMode.NormalJump;
     private bool isCursor = false;
     private bool isEscape = false;
     private int waitFrame = 0;
@@ -90,7 +91,7 @@ public class DebugPlayer : Character
         if (Physics.Raycast(start + Vector3.up * m_GroundJumpHeight, transform.forward, out hit, m_GroundJumpForward, m_TreeLayer))
         {
             m_Prediction.gameObject.SetActive(true);
-            m_Prediction.SetParameter(transform.position, hit.point, m_Angle);
+            m_Prediction.SetParameter(transform.position, hit.point, m_Angle, m_Shooter.m_SideNumber);
             m_Prediction.Calculation();
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
             {
@@ -163,7 +164,7 @@ public class DebugPlayer : Character
         Ray ray = new Ray(origin, transform.forward);
         int[] layers = new int[1];
         layers[0] = m_StringLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
         }
@@ -326,7 +327,7 @@ public class DebugPlayer : Character
         int[] layers = new int[2];
         layers[0] = m_StringLayer;
         layers[1] = m_NetLayer;
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Intersect"))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetButtonDown("Fire1"))
         {
             IntersectString(layers);
         }
@@ -471,9 +472,9 @@ public class DebugPlayer : Character
 
             //予測線、カーソル表示
             m_Prediction.gameObject.SetActive(true);
-            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle);
+            m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber);
             if (m_enemy != null)
-                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle);
+                m_Prediction.SetParameter(transform.position, m_enemy.transform.position, m_Angle, m_Shooter.m_SideNumber);
             m_Prediction.Calculation();
             //ジャンプ
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))

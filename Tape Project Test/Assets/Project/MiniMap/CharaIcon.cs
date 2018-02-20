@@ -21,6 +21,6 @@ public class CharaIcon : MonoBehaviour {
 
 		pos = m_Rotation.forward;
 		pos.y = 0;
-		transform.LookAt(transform.position + Vector3.down, pos);
+		transform.LookAt(transform.position + Vector3.down , pos.normalized);
 	}
 }

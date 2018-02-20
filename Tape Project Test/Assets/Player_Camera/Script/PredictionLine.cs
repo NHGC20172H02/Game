@@ -2,30 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TargetCategory
+{
+    Connecter = 0,  //木、糸、ネット
+    Enemy,          //敵
+    JumpableTree,   //ジャンプ可能な木
+    None            //届かない場合
+}
+
 //予測線
 public class PredictionLine : MonoBehaviour {
 
     public LineRenderer m_LineRenderer;
+    //public Transform m_Cursor;
+    public RectTransform m_Cursor;
+    public Camera m_UICamera;
     public Vector3 m_HitStringPoint;
     public StringUnit m_HitString;
     public Net m_HitNet;
     public bool m_IsString = false;
     public GameObject m_Collision;
+    public List<Color> m_Colors;
+    public List<GameObject> m_AttackableImage;
+    public List<Material> m_Materials;
 
     private Vector3 m_start;             //始点
     private Vector3 m_end;               //終点
     private float m_angle;               //射角
     private Vector3 m_top;              //曲線の頂点
-    private Transform m_Cursor;
     private Vector3 m_forward;          //予測線の方向
-    private int m_HitNumber = 0;
-    private List<GameObject> m_Collisions;
+    private List<GameObject> m_collisions;
+    private int m_shooterNum = 0;
+    private bool m_isCursorActive = true;
 
     void Start () {
-        m_Collisions = new List<GameObject>();
-        for(int i = 0; i < 10; i++)
+        m_collisions = new List<GameObject>();
+        for(int i = 0; i < 8; i++)
         {
-            m_Collisions.Add(Instantiate(m_Collision, transform));
+            m_collisions.Add(Instantiate(m_Collision, transform));
         }
     }
 	
@@ -37,18 +51,41 @@ public class PredictionLine : MonoBehaviour {
         Prediction();
         SetLines();
         //カーソル関連
-        m_Cursor = transform.GetChild(0);
-        m_Cursor.gameObject.SetActive(true);
-        m_Cursor.position = m_end - m_forward * 0.3f;
-        m_Cursor.rotation = Quaternion.LookRotation(m_forward);
+        //m_Cursor = transform.GetChild(0);
+        m_Cursor.gameObject.SetActive(m_isCursorActive);
+        //m_Cursor.position = m_end - m_forward * 0.3f;
+        Vector2 pos = Vector2.zero;
+        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, m_end);
+        var parentRect = m_Cursor.parent.GetComponent<RectTransform>();
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, screenPos, m_UICamera, out pos);
+        m_Cursor.localPosition = pos;
+        //m_Cursor.rotation = Quaternion.LookRotation(m_forward);
     }
 
-    //始点、終点、射角の設定
-    public void SetParameter(Vector3 start = new Vector3(), Vector3 end = new Vector3(), float angle = 0)
+    //始点、終点、射角、シューター番号、色の設定
+    public void SetParameter(Vector3 start, Vector3 end, float angle, int shooterNum, 
+        JumpMode mode = JumpMode.NormalJump, TargetCategory category = TargetCategory.Connecter, bool isAttackable = false)
     {
         m_start = start;
         m_end = end;
         m_angle = angle;
+        m_shooterNum = shooterNum;
+        m_LineRenderer.material = m_Materials[0];
+        m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode]);
+        m_isCursorActive = (category == TargetCategory.Enemy || category == TargetCategory.JumpableTree);
+        if (category == TargetCategory.None || (category == TargetCategory.Enemy && !isAttackable))
+        {
+            m_LineRenderer.material = m_Materials[1];
+            m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode] / 2);
+        }
+        if (category != TargetCategory.Enemy)
+        {
+            m_AttackableImage[0].SetActive(false);
+            m_AttackableImage[1].SetActive(false);
+            return;
+        }
+        m_AttackableImage[0].SetActive(isAttackable);
+        m_AttackableImage[1].SetActive(!isAttackable);
     }
 
     //弾道計算
@@ -100,9 +137,9 @@ public class PredictionLine : MonoBehaviour {
             //予測線のCollision設定
             Vector3 dir = (posList[i] - posList[i - 1]).normalized;
             float dis = Vector3.Distance(posList[i], posList[i - 1]);
-            m_Collisions[i].transform.position = posList[i] - dir * dis / 2;
-            m_Collisions[i].transform.rotation = Quaternion.LookRotation(dir);
-            m_Collisions[i].GetComponent<BoxCollider>().size = new Vector3(0.1f, 0.1f, dis);
+            m_collisions[i - 2].transform.position = posList[i] - dir * dis / 2;
+            m_collisions[i - 2].transform.rotation = Quaternion.LookRotation(dir);
+            m_collisions[i - 2].GetComponent<BoxCollider>().size = new Vector3(0.1f, 0.1f, dis);
         }
 
         m_LineRenderer.positionCount = posList.Count;
@@ -112,22 +149,30 @@ public class PredictionLine : MonoBehaviour {
     //子のCollision情報受け取り
     public void ReceiveChildCollision(Collision collision)
     {
+        int hitNumber = 0;
         foreach (ContactPoint point in collision.contacts)
         {
             if (collision.transform.tag == "Net")
             {
                 m_HitNet = collision.transform.GetComponent<Net>();
                 m_IsString = false;
-                m_HitNumber = m_HitNet.m_SideNumber;
+                hitNumber = m_HitNet.m_SideNumber;
             }
             else if(collision.transform.tag == "String")
             {
                 m_HitString = collision.transform.GetComponent<StringUnit>();
                 m_IsString = true;
-                m_HitNumber = m_HitString.m_SideNumber;
+                hitNumber = m_HitString.m_SideNumber;
             }
-            if (m_HitNumber == 1) return;
+            if (hitNumber == m_shooterNum) return;
             m_HitStringPoint = point.point;
         }
+    }
+
+    //表示するかどうか
+    public void SetActive(bool active)
+    {
+        m_Cursor.gameObject.SetActive(active);
+        gameObject.SetActive(active);
     }
 }

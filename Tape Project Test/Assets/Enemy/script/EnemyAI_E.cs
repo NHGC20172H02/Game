@@ -55,7 +55,7 @@ public class EnemyAI_E : Character {
     bool m_moveStart = false;
     bool net_bool = false;
     bool dead_bool = false;
-    bool player_onTree;
+    bool player_onTree = false;
     bool bodyBlow = true;
 
     GameObject nearObj0;
@@ -71,7 +71,6 @@ public class EnemyAI_E : Character {
 
     GameObject eyeObj;
 
-    GameObject myStringObj;
     GameObject stringObj1;
     GameObject stringNet;
 
@@ -167,9 +166,6 @@ public class EnemyAI_E : Character {
 
         //近くの自分の陣地の木
         myTreeObj2 = GetComponent<NearObj>().m_myTreeObj2;
-
-        //近くの自分の糸
-        myStringObj = GetComponent<NearObj>().m_myStringObj;
 
         //近くの相手の糸
         stringObj1 = GetComponent<NearObj>().m_stringObj1;
@@ -509,18 +505,22 @@ public class EnemyAI_E : Character {
         RaycastHit hit;
         Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         int treeLayer = LayerMask.GetMask(new string[] { "Tree" });
-        if (Physics.Raycast(ray, out hit, 1f, treeLayer))
+        if (Physics.SphereCast(ray, 1.0f,  out hit, 1.5f, treeLayer))
         {
-            if (hit.transform.tag == "Tree")
-            {
-                transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
-                transform.rotation = Quaternion.LookRotation(
-                    Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
-            }
-            if (hit.transform.gameObject == null)
-            {
-                m_StateProcessor.State = m_Fall;
-            }
+            transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            transform.rotation = Quaternion.LookRotation(
+                Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+            //if (hit.transform.tag == "Tree")
+            //{
+            //    transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
+            //    transform.rotation = Quaternion.LookRotation(
+            //        Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+            //}
+            //if (hit.transform.gameObject == null)
+            //{
+            //    m_StateProcessor.State = m_Fall;
+            //}
         }
 
         if (m_moveCount == 1) //前移動
@@ -553,7 +553,7 @@ public class EnemyAI_E : Character {
         {
             m_moveTimer += Time.deltaTime * 1;
 
-            if (m_moveTimer >= 2)
+            if (m_moveTimer >= 1.5f)
             {
                 m_moveCount = 0;
 
@@ -834,7 +834,7 @@ public class EnemyAI_E : Character {
     /*** 攻撃ジャンプ移動中 ***/
     private void AttackJumpMove()
     {
-        if (playerDist <= 5)
+        if (playerDist <= 7)
         {
             anim.SetBool("Attack", true);
             if (bodyBlow == true)
@@ -1125,7 +1125,7 @@ public class EnemyAI_E : Character {
 
         RaycastHit hit;
         Ray ray2 = new Ray(transform.position, -transform.up);
-        if (Physics.Raycast(ray2, out hit, 0.5f,groundLayer))
+        if (Physics.Raycast(ray2, out hit, 1.0f,groundLayer))
         {
             transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
             transform.rotation = Quaternion.LookRotation(
@@ -1201,7 +1201,7 @@ public class EnemyAI_E : Character {
     //}
     private void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Tree")
+        if (col.transform.tag == "Tree")
         {
             m_randomCount = 0;
 
@@ -1210,7 +1210,7 @@ public class EnemyAI_E : Character {
             nearObj = col.gameObject.gameObject;
         }
 
-        if (col.gameObject.tag == "Ground")
+        if (col.transform.tag == "Ground")
         {
             ResetBodyblow();
 

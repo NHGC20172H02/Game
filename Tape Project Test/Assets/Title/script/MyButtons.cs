@@ -9,16 +9,17 @@ public class MyButtons : MonoBehaviour {
 
     public GameObject m_GameStart;
     public GameObject m_Manual;
+    public GameObject m_ManualLeft;
+    public GameObject m_ManualRight;
     public GameObject m_ManualFont;
+    public GameObject m_Manual2;
+    public GameObject m_Manual3;
+    public GameObject m_Manual4;
+    public GameObject m_Manual5;
     public GameObject m_ManualBackButton;
+    public GameObject m_ManualPanel;
     public GameObject m_GameEnd;
-
-    public GameObject titleCamera;
-    public GameObject selectCamera;
-
     
-
-    public GameObject m_Select;
     public GameObject m_Select4;
     public GameObject m_Select5;
     public GameObject m_Select6;
@@ -32,19 +33,24 @@ public class MyButtons : MonoBehaviour {
 
     GameObject lastSelectedGameObject = null;
 
+    
     // Use this for initialization
     void Start ()
     {
+       
         m_GameStart.SetActive(false);
         m_Manual.SetActive(false);
+        m_ManualLeft.SetActive(false);
+        m_ManualRight.SetActive(false);
         m_ManualFont.SetActive(false);
+        m_Manual2.SetActive(false);
+        m_Manual3.SetActive(false);
+        m_Manual4.SetActive(false);
+        m_Manual5.SetActive(false);
         m_ManualBackButton.SetActive(false);
+        m_ManualPanel.SetActive(false);
         m_GameEnd.SetActive(false);
-
-        titleCamera.SetActive(true);
-        selectCamera.GetComponent<Camera>().enabled = false;
-
-        m_Select.SetActive(false);
+       
         m_Select4.SetActive(true);
         m_Select5.SetActive(true);
         m_Select6.SetActive(false);
@@ -75,6 +81,7 @@ public class MyButtons : MonoBehaviour {
                 }
             }
         }
+
 
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
 

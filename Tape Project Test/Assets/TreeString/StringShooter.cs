@@ -9,28 +9,31 @@ public class StringShooter : MonoBehaviour
 	public GameObject m_StringUnit;
 	public int m_SideNumber;
 	public int m_MaxCost = 200;
-	public int m_Cost;
+	public float m_Cost;
 	public List<StringUnit> m_Strings;
 	public GameObject m_Net;
 	public float m_NetAngleLimit = 40;
-	public int m_NetCostLimit = 3;
+	public int m_NetCostLimit = 30;
 	public LayerMask layerMask;
 	public Transform m_Cartridge;
 	public PlayModeData m_PlayModeData;
+
+	public bool m_IsMoving;
+	public Vector3 m_Prepos;
+
 	// Use this for initialization
 	void Start()
 	{
 		m_Strings = new List<StringUnit>();
-		m_MaxCost = m_PlayModeData.cost;
+		m_MaxCost = 1000;
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Tab))
-		{
-			m_SideNumber = (m_SideNumber + 4) % 3;
-		}
+		m_IsMoving = 0.001f < Vector3.Distance(m_Prepos, transform.position);
+		m_Prepos = transform.position;
+		m_MaxCost = m_PlayModeData.m_Cost;
 	}
 
 	public void StringShoot(Vector3 start, Vector3 end)
@@ -39,8 +42,9 @@ public class StringShooter : MonoBehaviour
 		end = SnapPoint(end);
 		Quaternion look = Quaternion.LookRotation(end - start);
 		StringUnit stringUnit = Instantiate(m_StringUnit, start, look).GetComponent<StringUnit>();
+		stringUnit.AddTree(GetConnectingTree(start));
+		stringUnit.AddTree(GetConnectingTree(end));
 		stringUnit.Create(this, start, end,m_Cartridge);
-		stringUnit.SetSide(m_SideNumber);
 		stringUnit.SetConnecter(GetConnecter(start,stringUnit.GetComponent<Collider>()), GetConnecter(end, stringUnit.GetComponent<Collider>()));
 		m_Strings.Add(stringUnit);
 		m_Cost += stringUnit.m_Cost;
@@ -64,17 +68,19 @@ public class StringShooter : MonoBehaviour
 				if (Vector3.Angle(end - start, SU.m_PointA - start) < m_NetAngleLimit)
 				{
 					Net net = Instantiate(m_Net).GetComponent<Net>();
-					net.m_StringShooter = this;
-					net.SetTriangle(SU.m_PointA, end, start);
-					net.SetSide(m_SideNumber);
+					net.AddTree(GetConnectingTree(SU.m_PointA));
+					net.AddTree(GetConnectingTree(start));
+					net.AddTree(GetConnectingTree(end));
+					net.Create(this, SU.m_PointA, end, start);
 					net.SetConnecter(SU, stringUnit);
 				}
 				if (Vector3.Angle(end - start, SU.m_PointB - start) < m_NetAngleLimit)
 				{
 					Net net = Instantiate(m_Net).GetComponent<Net>();
-					net.m_StringShooter = this;
-					net.SetTriangle(SU.m_PointB, end, start);
-					net.SetSide(m_SideNumber);
+					net.AddTree(GetConnectingTree(SU.m_PointB));
+					net.AddTree(GetConnectingTree(start));
+					net.AddTree(GetConnectingTree(end));
+					net.Create(this, SU.m_PointB, end, start);
 					net.SetConnecter(SU, stringUnit);
 				}
 			}
@@ -90,17 +96,19 @@ public class StringShooter : MonoBehaviour
 				if (Vector3.Angle(start - end, SU.m_PointA - end) < m_NetAngleLimit)
 				{
 					Net net = Instantiate(m_Net).GetComponent<Net>();
-					net.m_StringShooter = this;
-					net.SetTriangle(SU.m_PointA, start, end);
-					net.SetSide(m_SideNumber);
+					net.AddTree(GetConnectingTree(SU.m_PointA));
+					net.AddTree(GetConnectingTree(start));
+					net.AddTree(GetConnectingTree(end));
+					net.Create(this, SU.m_PointA, start, end);
 					net.SetConnecter(SU, stringUnit);
 				}
 				if (Vector3.Angle(start - end, SU.m_PointB - end) < m_NetAngleLimit)
 				{
 					Net net = Instantiate(m_Net).GetComponent<Net>();
-					net.m_StringShooter = this;
-					net.SetTriangle(SU.m_PointB, start, end);
-					net.SetSide(m_SideNumber);
+					net.AddTree(GetConnectingTree(SU.m_PointB));
+					net.AddTree(GetConnectingTree(start));
+					net.AddTree(GetConnectingTree(end));
+					net.Create(this, SU.m_PointB, start, end);
 					net.SetConnecter(SU, stringUnit);
 				}
 			}
@@ -111,7 +119,7 @@ public class StringShooter : MonoBehaviour
 	{
 		List<Collider> colliders = new List<Collider>(Physics.OverlapSphere(position, m_Radius));
 		colliders.Remove(ignoercollider);
-		var collider = colliders.Find((item) => item.tag == "Tree");
+		var	collider = colliders.Find((item) => item.tag == "Tree");
 		if (collider == null) collider = colliders.Find((item) => item.tag == "Net");
 		if (collider == null) collider = colliders.Find((item) => item.tag == "String");
 		return collider.GetComponent<Connecter>();
@@ -130,5 +138,10 @@ public class StringShooter : MonoBehaviour
 		}
 
 		return (result == position + Vector3.forward * m_Radius) ? position : result;
+	}
+	private Tree GetConnectingTree(Vector3 position)
+	{
+		var c = Physics.OverlapSphere(position, m_Radius, LayerMask.GetMask(new string[] { "Tree" }));
+		return c.Length == 0 ? null : c[0].GetComponent<Tree>();
 	}
 }
