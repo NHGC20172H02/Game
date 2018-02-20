@@ -357,7 +357,7 @@ public partial class EnemyAI4 : Character
             //EnemyのY軸が0以下になったら
             if (gameObject.transform.position.y <= 0)
         {
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0.5f, gameObject.transform.position.z);
+            gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0.8f, gameObject.transform.position.z);
         }
         if (gameObject.transform.position.y >= 80)
         {
@@ -1360,17 +1360,11 @@ public partial class EnemyAI4 : Character
                     m_playerTarget = GetPlayerPosition();
                     m_StateProcessor.State = m_AttackJump;
                 }       
-                else if (m_randomCount == 1)
-                {
-                    speed_attack = true;
-                    m_randomCount = 0;
-                    m_playerTarget = GetPlayerPosition();
-                    m_StateProcessor.State = m_AttackJump;
-                }
                 else
                 {
                     m_randomCount = 0;
-                    m_StateProcessor.State = m_SearchTreeGauge;
+                    m_playerTarget = GetPlayerPosition();
+                    m_StateProcessor.State = m_AttackJump;
                 }
             }
         }
