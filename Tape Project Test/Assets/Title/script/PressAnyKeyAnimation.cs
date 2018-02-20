@@ -36,8 +36,8 @@ public class PressAnyKeyAnimation : MonoBehaviour {
                 animationTimer = 0;
                 
             }
-
             selectSource.Play();
+
         }
 
     }

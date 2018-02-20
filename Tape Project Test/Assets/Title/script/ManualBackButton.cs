@@ -12,6 +12,7 @@ public class ManualBackButton : MonoBehaviour
     public GameObject m_Manual2;
     public GameObject m_Manual3;
     public GameObject m_Manual4;
+    public GameObject m_Manual5;
     public GameObject m_ManualBack;
     public GameObject m_ManualPanel;
     public GameObject m_Title;
@@ -74,11 +75,13 @@ public class ManualBackButton : MonoBehaviour
         m_ManualFont.SetActive(false);
         m_ManualLeft.SetActive(false);
         m_ManualRight.SetActive(false);
-        m_ManualBack.SetActive(false);
         m_Manual2.SetActive(false);
         m_Manual3.SetActive(false);
         m_Manual4.SetActive(false);
+        m_Manual5.SetActive(false);
         m_ManualPanel.SetActive(false);
+        m_ManualBack.SetActive(false);
+        m_CurrentPage = 0;
 
         m_Title.SetActive(true);
         m_Select4.SetActive(true);
