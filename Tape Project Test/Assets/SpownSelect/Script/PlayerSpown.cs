@@ -22,6 +22,8 @@ public class PlayerSpown : MonoBehaviour
 
     Image image;
 
+    public AudioSource audioSource;
+
     enum state
     {
         selectNow,
@@ -39,7 +41,10 @@ public class PlayerSpown : MonoBehaviour
             //バトルシーンに遷移
             //SceneController.Instance.ChangeScenes(1);
             m_State = state.decision;
-        }        
+            audioSource.Play();
+        }
+
+              
     }
 
     void Start()
@@ -52,11 +57,8 @@ public class PlayerSpown : MonoBehaviour
 
         m_SpownOK.SetActive(false);
         m_SpownNG.SetActive(false);
-    }
 
-    public void PlayPos()
-    {
-
+        audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     void Update()
