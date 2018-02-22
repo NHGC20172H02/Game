@@ -11,10 +11,9 @@ public partial class Player {
         m_Animator.SetBool("IsString", false);
         m_Prediction.SetActive(false);
         m_WindLine.Stop();
-        Vector3 start = transform.position + transform.up * 0.5f;
         //足元の情報取得（地面優先）
-        if (!Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_GroundLayer))
-            Physics.Raycast(start, -transform.up, out m_hitinfo, 1f, m_TreeLayer);
+        if (!Physics.Raycast(m_center, -transform.up, out m_hitinfo, 1f, m_GroundLayer))
+            Physics.Raycast(m_center, -transform.up, out m_hitinfo, 1f, m_TreeLayer);
 
         if (m_hitinfo.collider.tag == "Tree")
         {
@@ -26,9 +25,13 @@ public partial class Player {
         transform.position = Vector3.Lerp(transform.position, m_hitinfo.point, 0.2f);
         Vector3 move = Vector3.zero;
         if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("GroundMove"))
-            move = Move(m_Camera.right, m_hitinfo.normal);
+        {
+            move = Move(m_Camera.right, m_hitinfo.normal) * m_Speed * Time.deltaTime;
+            transform.Translate(move, Space.World);
+            transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, m_hitinfo.normal), m_hitinfo.normal);
+        }
 
-        if (Physics.Raycast(start + Vector3.up * m_GroundJumpHeight, transform.forward, out jump_target, m_GroundJumpForward, m_TreeLayer))
+        if (Physics.Raycast(m_center + Vector3.up * m_GroundJumpHeight, transform.forward, out jump_target, m_GroundJumpForward, m_TreeLayer))
         {
             m_Prediction.SetActive(true);
             m_Prediction.SetParameter(transform.position, jump_target.point, m_Angle, m_Shooter.m_SideNumber);
@@ -50,11 +53,11 @@ public partial class Player {
 
         RaycastHit hit;
         //木に登る
-        if (Physics.Raycast(start, move, out hit, 1f, m_TreeLayer))
+        if (Physics.Raycast(m_center, move, out hit, 1f, m_TreeLayer))
         {
             m_hitinfo = hit;
             transform.position = m_hitinfo.point;
-            transform.rotation = Quaternion.LookRotation(Vector3.Cross(transform.right, m_hitinfo.normal), m_hitinfo.normal);
+            transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, m_hitinfo.normal), m_hitinfo.normal);
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
         }
     }

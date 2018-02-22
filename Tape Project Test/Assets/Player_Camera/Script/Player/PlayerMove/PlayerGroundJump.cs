@@ -10,7 +10,8 @@ public partial class Player {
         //if (!Depression()) return;
         if (Projection(move_start, move_end, jump_target.normal, m_Angle))
         {
-            waitFrame = 0;
+            //waitFrame = 0;
+            m_hitinfo = jump_target;
             m_Animator.ResetTrigger("Landing");
             m_AudioSource.PlayOneShot(m_AudioClips[2]);
             m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
