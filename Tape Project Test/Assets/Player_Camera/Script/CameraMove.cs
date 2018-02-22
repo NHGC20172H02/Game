@@ -64,7 +64,7 @@ public class CameraMove : MonoBehaviour
         float x = Input.GetAxis("Horizontal2");
         transform.RotateAround(target_pos, Vector3.up, x * rotate_Speed * Time.deltaTime);
         transform.RotateAround(target_pos, transform.right, Input.GetAxis("Vertical2") * rotate_Speed * Time.deltaTime);
-        if(x != 0)
+        if(x != 0 && m_Animator.GetFloat("MoveX") == 0)
             m_Animator.SetFloat("MoveX", x);
         //角度制限
         float rotateY = (transform.eulerAngles.y > 180) ? transform.eulerAngles.y - 360 : transform.eulerAngles.y;
