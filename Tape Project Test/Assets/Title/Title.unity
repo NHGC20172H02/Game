@@ -9797,7 +9797,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: BACK to B Button
+  m_Text: Back to B Button
 --- !u!222 &1300591214
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10090,6 +10090,7 @@ MonoBehaviour:
   m_Manual2: {fileID: 1250678484}
   m_Manual3: {fileID: 1628655299}
   m_Manual4: {fileID: 1415078173}
+  m_Manual5: {fileID: 1150987896}
   m_ManualBack: {fileID: 1332310797}
   m_ManualPanel: {fileID: 1011629522}
   m_Title: {fileID: 1551423649}
@@ -10187,8 +10188,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7a18e5a5c50cf28489541052795af63f, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -11589,6 +11590,7 @@ MonoBehaviour:
   m_Manual2: {fileID: 1250678484}
   m_Manual3: {fileID: 1628655299}
   m_Manual4: {fileID: 1415078173}
+  m_Manual5: {fileID: 1150987896}
   m_ManualPanel: {fileID: 1011629522}
   m_StartButton: {fileID: 961389536}
   m_ManualButton: {fileID: 1523885033}

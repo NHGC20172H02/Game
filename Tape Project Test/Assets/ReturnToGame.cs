@@ -44,6 +44,7 @@ public class ReturnToGame : MonoBehaviour
         m_Manual5.SetActive(false);
         m_ManualLeft.SetActive(false);
         m_ManualRight.SetActive(false);
+        PauseUI.m_Pfrag = false;
 
         PauseManager.Instance.Pause(true);
     }

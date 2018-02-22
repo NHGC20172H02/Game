@@ -14,6 +14,7 @@ public class Manual : MonoBehaviour
     public GameObject m_Manual2;
     public GameObject m_Manual3;
     public GameObject m_Manual4;
+    public GameObject m_Manual5;
     public GameObject m_ManualPanel;
 
     public GameObject m_StartButton;
@@ -33,6 +34,7 @@ public class Manual : MonoBehaviour
         m_Manual2.SetActive(false);
         m_Manual3.SetActive(false);
         m_Manual4.SetActive(false);
+        m_Manual5.SetActive(false);
         m_ManualFont.SetActive(true);
         m_ManualBack.SetActive(true);
         m_ManualLeft.SetActive(true);

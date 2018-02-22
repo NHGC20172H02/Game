@@ -19,7 +19,6 @@ public class PauseUI : MonoBehaviour
     public GameObject m_Manual4;
     public GameObject m_Manual5;
     
-
     public AudioSource audioSource;
 
     GameObject lastSelectedGameObject = null;
@@ -27,6 +26,7 @@ public class PauseUI : MonoBehaviour
     public GameObject[] m_Pages;
     int m_CurrentPage = 0;
 
+    public static bool m_Pfrag;
     private AudioSource manualSource;
 
     // Use this for initialization
@@ -46,6 +46,8 @@ public class PauseUI : MonoBehaviour
         m_Manual4.SetActive(false);
         m_Manual5.SetActive(false);
 
+        m_Pfrag = false;
+
         audioSource = gameObject.GetComponent<AudioSource>();
 
     }
@@ -60,12 +62,15 @@ public class PauseUI : MonoBehaviour
             m_PausePanel.SetActive(true);
             m_PauseBackGround2.SetActive(true);
             m_ManualFont.SetActive(true);
-            
+            m_CurrentPage = 0;
+
             m_PauseBackGround.SetActive(true);
             m_ReturnToGame.SetActive(true);
             m_ReturnToTitle.SetActive(true);
             m_ManualLeft.SetActive(true);
             m_ManualRight.SetActive(true);
+
+            m_Pfrag = true;
 
             audioSource.Play();
 
@@ -77,7 +82,7 @@ public class PauseUI : MonoBehaviour
            
         }
 
-        if (Input.GetButtonDown("RB") && !PauseManager.Instance.Pausing())
+        if (Input.GetButtonDown("RB") && !PauseManager.Instance.Pausing()&& m_Pfrag == true)
         {
             m_CurrentPage++;
             if (m_CurrentPage >= m_Pages.Length)
@@ -87,7 +92,7 @@ public class PauseUI : MonoBehaviour
             UpdatePage();
             manualSource.Play();
         }
-        if (Input.GetButtonDown("LB") && !PauseManager.Instance.Pausing())
+        if (Input.GetButtonDown("LB") && !PauseManager.Instance.Pausing() && m_Pfrag == true)
         {
             m_CurrentPage--;
             if (m_CurrentPage < 0)
@@ -114,8 +119,4 @@ public class PauseUI : MonoBehaviour
             m_Pages[i].SetActive(i == m_CurrentPage);
         }
     }
-
-    void DrawPage()
-    { 
-}
 }
