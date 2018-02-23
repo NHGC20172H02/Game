@@ -8,8 +8,8 @@ public class NPCButterfly : MonoBehaviour {
     public float m_move_speed = 1.0f;
     [Header("ステージに停滞している時間")]
     public float Stagnation_time = 10.0f;
-
-    float Descent_distance = 20.0f; //降下距離
+    [Header("y軸の降下距離")]
+    public float Descent_distance = 20.0f; //降下距離
 
     Vector3 vec3;
     Vector3 Start_pos;
