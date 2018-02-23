@@ -1906,7 +1906,7 @@ GameObject:
   - component: {fileID: 212704154}
   - component: {fileID: 212704153}
   m_Layer: 0
-  m_Name: Enemy4 (1)
+  m_Name: Enemy40 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1937,16 +1937,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 212704151}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a24ea6c2a4c974e9db36bc2e5b0dc8, type: 3}
+  m_Script: {fileID: 11500000, guid: e2c388f48e8594b469e4cd7beef12a48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_JumpSpeed: 1
-  m_speed: 1
-  m_Shooter: {fileID: 212704156}
-  ground_detection: 30
-  tree_Detection: 150
-  player_Detection: 100
-  thought_Gauge: -70
+  m_speed: 4
+  m_Shooter: {fileID: 0}
+  ground_detection: 10
+  tree_Detection: 100
+  player_Detection: 80
+  thought_Gauge: 100
 --- !u!114 &212704154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2185,8 +2185,8 @@ GameObject:
   - component: {fileID: 236844021}
   - component: {fileID: 236844022}
   m_Layer: 0
-  m_Name: Enemy4
-  m_TagString: Untagged
+  m_Name: Enemy40
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2211,16 +2211,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 236844020}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a24ea6c2a4c974e9db36bc2e5b0dc8, type: 3}
+  m_Script: {fileID: 11500000, guid: e2c388f48e8594b469e4cd7beef12a48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_JumpSpeed: 1
-  m_speed: 1
-  m_Shooter: {fileID: 236844024}
-  ground_detection: 30
-  tree_Detection: 150
-  player_Detection: 100
-  thought_Gauge: -70
+  m_speed: 4
+  m_Shooter: {fileID: 0}
+  ground_detection: 10
+  tree_Detection: 100
+  player_Detection: 80
+  thought_Gauge: 100
 --- !u!95 &236844023
 Animator:
   serializedVersion: 3
@@ -8079,7 +8079,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1029855279}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: PlayerCamera
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8094,7 +8094,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 250, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1256498467}
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9518,6 +9519,63 @@ Transform:
   m_Father: {fileID: 2041271754}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1256498466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1256498467}
+  - component: {fileID: 1256498468}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1256498467
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1256498466}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 596.2038, y: 101.71817, z: -23.125}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1029855279}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1256498468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1256498466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534e9a4438d3865448c8a1beea1defb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Radius: 0
+  m_StringUnit: {fileID: 1173252171523702, guid: 5cbbee2f3f2f26e449662ca8f86992ee,
+    type: 2}
+  m_SideNumber: 1
+  m_MaxCost: 200
+  m_Cost: 0
+  m_Strings: []
+  m_Net: {fileID: 1779774980515568, guid: 119e0faa09e8d32429c12ac35bb87826, type: 2}
+  m_NetAngleLimit: 40
+  m_NetCostLimit: 30
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 512
+  m_Cartridge: {fileID: 0}
+  m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
+  m_IsMoving: 0
+  m_Prepos: {x: 0, y: 0, z: 0}
 --- !u!1 &1260387783
 GameObject:
   m_ObjectHideFlags: 0
