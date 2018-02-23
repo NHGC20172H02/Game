@@ -7,6 +7,7 @@ public partial class Player {
     //木の上の一人称カメラ状態での操作
     void TreeFpMove()
     {
+        m_Animator.enabled = false;
         if (IsChangedNumber())
             return;
         m_treeWaitTime += Time.deltaTime;
@@ -17,6 +18,7 @@ public partial class Player {
                 m_StateManager.StateProcassor.State = m_StateManager.TreeTp;
             else if (m_hitinfo.collider.tag == "String")
                 m_StateManager.StateProcassor.State = m_StateManager.StringTp;
+            m_Animator.enabled = true;
         }
 
         Vector3 origin = start + (m_Camera.position - start).normalized;

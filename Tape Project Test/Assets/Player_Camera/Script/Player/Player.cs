@@ -51,7 +51,7 @@ public partial class Player : Character
     private JumpMode m_JumpMode = JumpMode.NormalJump;
     private bool isTargetString = false;
     private bool isEscape = false;
-    private int waitFrame = 0;
+    //private int waitFrame = 0;
     private float m_failureTime = 0;
     private bool isLanding = false;
     private bool isFlyable = false;
@@ -88,16 +88,17 @@ public partial class Player : Character
         if (isBodyblow)
         {
             m_Prediction.SetActive(false);
+            m_Animator.enabled = true;
             m_StateManager.StateProcassor.State = m_StateManager.Falling;
         }
         //Debug.Log(m_StateManager.StateProcassor.State);
     }
 
-    //移動
+    //移動方向
     private Vector3 Move(Vector3 right, Vector3 up)
     {
         Vector3 forward = Vector3.Cross(right, up);
-        transform.rotation = Quaternion.LookRotation(forward, up);
+        //transform.rotation = Quaternion.LookRotation(forward, up);
         float vertical = Input.GetAxis("Vertical");
         float horizontal = Input.GetAxis("Horizontal");
         Vector3 move = forward * vertical + transform.right * horizontal;
@@ -106,7 +107,7 @@ public partial class Player : Character
         m_Animator.SetFloat("MoveZ", vertical);
         vertical = Mathf.Abs(vertical);
         horizontal = Mathf.Abs(horizontal);
-        transform.Translate(move * m_Speed * Time.deltaTime, Space.World);
+        //transform.Translate(move * m_Speed * Time.deltaTime, Space.World);
         return move;
     }
 
@@ -120,7 +121,6 @@ public partial class Player : Character
         //糸を狙うのかどうか
         if (Input.GetKeyUp(KeyCode.K) || Input.GetButtonDown("LB"))
         {
-            //m_enemy = null;
             isTargetString = !isTargetString;
             m_AudioSource.PlayOneShot(m_AudioClips[6]);
         }
@@ -161,7 +161,7 @@ public partial class Player : Character
                 m_category = TargetCategory.Enemy;
                 m_jumpableNum++;
             }
-            else if(jumpable_tree.Count >= m_jumpableNum)
+            else if(jumpable_tree.Count > m_jumpableNum)
             {
                 if (jumpable_tree.Count - 1 == m_jumpableNum)
                 {
@@ -200,7 +200,8 @@ public partial class Player : Character
             if(jumpable_tree.Count > m_jumpableNum)
             {
                 Vector3 posY = new Vector3(0, 10f, 0);
-                Vector3 dir = (jumpable_tree[m_jumpableNum].transform.position + posY) - m_center;
+                Vector3 dir = transform.forward;
+                dir = (jumpable_tree[m_jumpableNum].transform.position + posY) - m_center;
                 m_CameraPivot.transform.rotation = Quaternion.LookRotation(Vector3.Lerp(m_CameraPivot.transform.forward, dir, 0.1f), Vector3.up);
                 Ray ableRay = new Ray(m_center, dir);
                 float dis = Vector3.Distance(m_center, jumpable_tree[m_jumpableNum].transform.position + posY);
@@ -210,19 +211,17 @@ public partial class Player : Character
 
         if (jump)
         {
-            if (hit.collider.gameObject == jump_target.collider.gameObject)
+            if (jump_target.collider == null) return;
+            float dis = Vector3.Distance(transform.position, jump_target.point);
+            if (hit.collider.gameObject == jump_target.collider.gameObject && dis < jumpLower)
             {
-                if (Vector3.Distance(transform.position, jump_target.point) < jumpLower)
-                {
-                    m_Prediction.SetActive(false);
-                    return;
-                }
+                m_Prediction.SetActive(false);
+                return;
             }
             if (jump_target.transform.tag == "String" || jump_target.transform.tag == "Net")
                 if (jump_target.transform.GetComponent<Connecter>().m_SideNumber != m_Shooter.m_SideNumber)
                     return;
 
-            float dis = Vector3.Distance(transform.position, jump_target.point);
             if (dis > m_JumpLimit)
             {
                 if (hit.collider.tag == "Tree")
@@ -298,21 +297,20 @@ public partial class Player : Character
         }
         m_Prediction.SetActive(false);
         m_Prediction.m_HitStringPoint = Vector3.zero;
-        //m_enemy = null;
     }
 
     private bool Depression()
     {
-        waitFrame++;
-        if (waitFrame < 5) return false;
-        if(waitFrame == 5)
-        {
-            m_AudioSource.PlayOneShot(m_AudioClips[4]);
-            if(m_StateManager.StateProcassor.State != m_StateManager.GroundJump)
-            {
-                m_WindLine.Play();
-            }
-        }
+        //waitFrame++;
+        //if (waitFrame < 5) return false;
+        //if(waitFrame == 5)
+        //{
+        //    m_AudioSource.PlayOneShot(m_AudioClips[4]);
+        //    if(m_StateManager.StateProcassor.State != m_StateManager.GroundJump)
+        //    {
+        //        m_WindLine.Play();
+        //    }
+        //}
         return true;
     }
 
@@ -427,6 +425,9 @@ public partial class Player : Character
     //アニメータートリガーをリセット
     private void ResetTrigger()
     {
+        if (!m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Jumpair"))
+            m_Animator.ResetTrigger("Landing");
+
         m_Animator.ResetTrigger("Jump");
         //m_Animator.ResetTrigger("Failure");
         m_Animator.ResetTrigger("Escape");
@@ -458,12 +459,12 @@ public partial class Player : Character
         transform.rotation = Quaternion.LookRotation(Vector3.Cross(m_Camera.right, jump_target.normal), jump_target.normal);
         switch (m_JumpMode)
         {
-            case JumpMode.CapturingJump:
+            case JumpMode.NormalJump:
                 {
-                    break;
-                }
-            case JumpMode.Bodyblow:
-                {
+                    if (isEscape)
+                        m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
+                    else
+                        m_Shooter.StringShoot(move_start, move_end);
                     break;
                 }
             case JumpMode.StringJump:
@@ -474,14 +475,11 @@ public partial class Player : Character
                 }
             default:
                 {
-                    if (isEscape)
-                        m_Shooter.StringShoot(m_Prediction.m_HitStringPoint, move_end);
-                    else
-                        m_Shooter.StringShoot(move_start, move_end);
                     break;
                 }
         }
-        waitFrame = 0;
+        //waitFrame = 0;
+        isTargetString = false;
         m_jumpableNum = -1;
         isEscape = false;
         isLanding = false;
@@ -533,6 +531,7 @@ public partial class Player : Character
     private void LandingReset(Collider other)
     {
         ResetBodyblow();
+        isTargetString = false;
         elapse_time = 0;
         m_failureTime = 0;
         m_treeWaitTime = 0;

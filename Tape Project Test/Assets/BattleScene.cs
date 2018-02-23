@@ -11,6 +11,8 @@ public class BattleScene : MonoBehaviour {
 	public List<Vector2Int> m_Time_Cost;
 	public PlayModeData m_PMD;
 
+    public EndDestroy m_EndDestroy;
+
 	enum GameState
     {
 		Ready,
@@ -45,6 +47,7 @@ public class BattleScene : MonoBehaviour {
 		yield return new WaitForSeconds(2.0f);
 
 		SceneController.Instance.AddScene("Result");
+        m_EndDestroy.AllDestroy();
 		m_UIAnimator.SetTrigger("Finish");
 	}
 

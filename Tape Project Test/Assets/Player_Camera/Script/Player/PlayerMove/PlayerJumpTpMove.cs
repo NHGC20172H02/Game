@@ -12,10 +12,10 @@ public partial class Player {
         {
             JumpReset();
             //m_Animator.ResetTrigger("Landing");
+            m_hitinfo = jump_target;
             m_AudioSource.PlayOneShot(m_AudioClips[2]);
             if (jump_target.collider.tag == "String")
             {
-                m_hitinfo = jump_target;
                 m_StateManager.StateProcassor.State = m_StateManager.StringTp;
                 return;
             }
@@ -55,7 +55,7 @@ public partial class Player {
                 }
                 else if (Physics.CheckSphere(m_Prediction.m_HitStringPoint, 0.3f, playerLayer) && !isEscape)
                 {
-                    waitFrame = 0;
+                    //waitFrame = 0;
                     m_Prediction.m_HitStringPoint = Vector3.zero;
                     m_EscapeSphere.SetActive(false);
                     m_WindLine.Stop();
