@@ -66,11 +66,11 @@ public class Tree : Connecter
 		{
 			sideNumber = 2;
 		}
-		if(m_SideNumber == 1 && m_TerritoryRate < 0)
+		if(m_SideNumber == 1 && m_TerritoryRate <= 0)
 		{
 			sideNumber = 0;
 		}
-		if (m_SideNumber == 2 && m_TerritoryRate > 0)
+		if (m_SideNumber == 2 && m_TerritoryRate >= 0)
 		{
 			sideNumber = 0;
 		}
