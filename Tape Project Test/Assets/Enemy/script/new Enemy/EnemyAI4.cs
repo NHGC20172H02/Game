@@ -370,7 +370,7 @@ public partial class EnemyAI4 : Character
         //}
 
         //Debug.Log(TreeDist());
-        //Debug.Log(m_StateProcessor.State);
+        Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position + transform.up * 0.5f, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
@@ -487,6 +487,9 @@ public partial class EnemyAI4 : Character
                 transform.position = Vector3.Lerp(transform.position, hit.point, 0.2f);
                 transform.rotation = Quaternion.LookRotation(
                     Vector3.Lerp(transform.forward, Vector3.Cross(transform.right, hit.normal), 0.3f), hit.normal);
+
+                m_StateProcessor.State = m_TreeDecision;
+                return;
             }
         }
 

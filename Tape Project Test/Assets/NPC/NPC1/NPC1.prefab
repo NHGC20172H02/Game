@@ -958,9 +958,9 @@ GameObject:
   - component: {fileID: 65024356676027980}
   - component: {fileID: 54018467347013038}
   - component: {fileID: 95975023100633560}
-  - component: {fileID: 114762623522888212}
   - component: {fileID: 114161548239021076}
   - component: {fileID: 114418872505225784}
+  - component: {fileID: 114689409824049438}
   m_Layer: 0
   m_Name: NPC1
   m_TagString: NPC
@@ -1950,12 +1950,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Scripts:
-  - {fileID: 114762623522888212}
+  - {fileID: 0}
   - {fileID: 114161548239021076}
   m_Animator:
   - {fileID: 95975023100633560}
   m_Particles: []
---- !u!114 &114762623522888212
+--- !u!114 &114689409824049438
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -1963,7 +1963,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1977836974201614}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91cf854cb2183f94ba0be60ca7693d15, type: 3}
+  m_Script: {fileID: 11500000, guid: 32ca9e8ce4fb95049bead5871c5d1645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114786671583191934

@@ -958,6 +958,7 @@ public class EnemyAI40 : Character
                 {
                     string_Rob = true;
                     anim.SetBool("jump", true);
+                    anim.SetBool("dead", false);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
                     JumpCalculation(jump_start, jump_end, 30.0f);
@@ -1070,6 +1071,7 @@ public class EnemyAI40 : Character
                     dead_bool = true;
                     string_Rob = true;
                     anim.SetBool("jump", true);
+                    anim.SetBool("dead", false);
                     jump_start = transform.position;
                     jump_end = jump_target.point;
                     JumpCalculation(jump_start, jump_end, 30.0f);
