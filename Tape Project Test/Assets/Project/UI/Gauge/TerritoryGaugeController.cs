@@ -89,6 +89,7 @@ public class TerritoryGaugeController : MonoBehaviour
 
 
 		active = false;
+		m_SpiderIcon.SetProgress(m_Player.JumpProgress());
 		if (target != null && stay != target)
 		{
 			var connecter = target.GetComponent<Connecter>();
@@ -101,7 +102,6 @@ public class TerritoryGaugeController : MonoBehaviour
 					active = true;
 					m_TreeSideR.sprite = m_TreeSide[target.GetComponent<Tree>().m_SideNumber];
 					target.GetComponent<Tree>().SetOutLineColor(1 - m_FlashMask.color.a);
-					m_SpiderIcon.SetProgress(m_Player.JumpProgress());
 					break;
 				case Connecter.Type.String:
 					if(target.GetComponent<StringUnit>().m_SideNumber==1)
