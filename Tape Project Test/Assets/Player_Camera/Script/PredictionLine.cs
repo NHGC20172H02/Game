@@ -71,12 +71,14 @@ public class PredictionLine : MonoBehaviour {
         m_angle = angle;
         m_shooterNum = shooterNum;
         m_LineRenderer.material = m_Materials[0];
-        m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode]);
+        if(mode != JumpMode.Bodyblow)
+            m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode]);
         m_isCursorActive = (category == TargetCategory.Enemy || category == TargetCategory.JumpableTree);
         if (category == TargetCategory.None || (category == TargetCategory.Enemy && !isAttackable))
         {
             m_LineRenderer.material = m_Materials[1];
-            m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode] / 2);
+            if(mode != JumpMode.Bodyblow)
+                m_LineRenderer.material.SetColor("_TintColor", m_Colors[(int)mode] / 2);
         }
         if (category != TargetCategory.Enemy)
         {

@@ -22,7 +22,7 @@ public partial class Player {
                 SendingBodyBlow(m_Enemy);
                 m_AudioSource.PlayOneShot(m_AudioClips[1]);
             }
-            Ray ray = new Ray(move_end + m_Enemy.transform.up, m_enemyBottom);
+            Ray ray = new Ray(move_end - m_enemyBottom, m_enemyBottom);
             Physics.Raycast(ray, out jump_target, 2f, m_TreeLayer);
             move_end = jump_target.point;
             m_hitinfo = jump_target;
