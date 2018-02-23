@@ -958,9 +958,9 @@ GameObject:
   - component: {fileID: 65024356676027980}
   - component: {fileID: 54018467347013038}
   - component: {fileID: 95975023100633560}
+  - component: {fileID: 114689409824049438}
   - component: {fileID: 114161548239021076}
   - component: {fileID: 114418872505225784}
-  - component: {fileID: 114689409824049438}
   m_Layer: 0
   m_Name: NPC1
   m_TagString: NPC

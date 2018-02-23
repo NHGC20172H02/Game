@@ -370,7 +370,7 @@ public partial class EnemyAI4 : Character
         //}
 
         //Debug.Log(TreeDist());
-        Debug.Log(m_StateProcessor.State);
+        //Debug.Log(m_StateProcessor.State);
         Debug.DrawLine(transform.position + transform.up * 0.5f, m_targetPos, Color.blue);
 
         m_StateProcessor.Execute();
@@ -750,6 +750,14 @@ public partial class EnemyAI4 : Character
                 m_StateProcessor.State = m_SearchTreeGauge;
             }
 
+            //近くの２本の木が自身の木だった場合
+            if(nearObj2.GetComponent<Tree>().m_SideNumber == myString_number && 
+                nearObj3.GetComponent<Tree>().m_SideNumber == myString_number)
+            {
+                m_randomCount = 0;
+                m_StateProcessor.State = m_SearchTreeGauge;
+            }
+
             //if (color_number == playerString_number)//今いる木が相手の木の場合
             //{
             //    noGaugeJump = true;
@@ -770,6 +778,14 @@ public partial class EnemyAI4 : Character
             {
                 m_randomCount = 0;
                 m_StateProcessor.State = m_StringCount;
+            }
+
+            //近くの２本の木が自身の木だった場合
+            if (nearObj2.GetComponent<Tree>().m_SideNumber == myString_number &&
+                nearObj3.GetComponent<Tree>().m_SideNumber == myString_number)
+            {
+                m_randomCount = 0;
+                m_StateProcessor.State = m_SearchTreeGauge;
             }
             //m_StateProcessor.State = m_SearchTree;
         }
@@ -1409,12 +1425,14 @@ public partial class EnemyAI4 : Character
             if (netCount <= m_netrob) //失敗したとき
             {
                 m_StateProcessor.State = m_Fall;
+                return;
             }
             else //成功したとき
             {
                 anim.SetBool("avoidance", true);
 
                 stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
+                stringNet.GetComponent<Net>().SideUpdate(sidenumber);
 
                 //AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(0);
                 //if (animInfo.normalizedTime < 1.0f)
@@ -1576,7 +1594,7 @@ public partial class EnemyAI4 : Character
         {
             attack = false;
             transform.position = jump_end;
-            m_Shooter.StringShoot(jump_start, jump_end);
+            //m_Shooter.StringShoot(jump_start, jump_end);
             m_StateProcessor.State = m_TreeDecision;
         }
 
@@ -1595,6 +1613,7 @@ public partial class EnemyAI4 : Character
             if (netCount <= m_netrob) //失敗したとき
             {
                 m_StateProcessor.State = m_Fall;
+                return;
             }
             else //成功したとき
             {
@@ -1607,6 +1626,7 @@ public partial class EnemyAI4 : Character
                 }
 
                 stringObj1.GetComponent<StringUnit>().SideUpdate(sidenumber);
+                stringNet.GetComponent<Net>().SideUpdate(sidenumber);
             }
         }
     }
