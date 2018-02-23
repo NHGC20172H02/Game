@@ -47,5 +47,10 @@ public class ReturnToGame : MonoBehaviour
         PauseUI.m_Pfrag = false;
 
         PauseManager.Instance.Pause(true);
+
+        // 一旦わざと選択を解除してから、Return to Gameを選択しなおす。
+        //そうしないと、Highlightedトリガーが発行されないため
+        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(m_ReturnToGame);
     }
 }

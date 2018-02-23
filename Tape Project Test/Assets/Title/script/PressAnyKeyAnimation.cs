@@ -36,7 +36,12 @@ public class PressAnyKeyAnimation : MonoBehaviour {
                 animationTimer = 0;
                 
             }
-            selectSource.Play();
+
+            if(animationTimer >= 0 && animationTimer <= 1)
+            {
+                selectSource.Play();
+            }
+            
 
         }
 
