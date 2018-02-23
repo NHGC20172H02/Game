@@ -425,8 +425,8 @@ public partial class Player : Character
     //アニメータートリガーをリセット
     private void ResetTrigger()
     {
-        if (!m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Jumpair"))
-            m_Animator.ResetTrigger("Landing");
+        //if (!m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Jumpair"))
+        //    m_Animator.ResetTrigger("Landing");
 
         m_Animator.ResetTrigger("Jump");
         //m_Animator.ResetTrigger("Failure");
