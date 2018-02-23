@@ -8,6 +8,8 @@ public class PauseObject : MonoBehaviour {
 	public List<Animator> m_Animator;
     public List<ParticleSystem> m_Particles;
 
+    private Character m_character = null;
+
 	void Start () {
 		PauseManager.Instance.AddObject(this);
 	}
@@ -19,8 +21,12 @@ public class PauseObject : MonoBehaviour {
             if (item != null)
             {
                 item.enabled = pause;
+                if (item.tag == "Player" || item.tag == "Enemy")
+                {
+                    m_character = item.GetComponent<Character>();
+                }
             }
-		}
+        }
 		foreach (var item in m_Animator)
 		{
             if(item != null)
@@ -41,6 +47,14 @@ public class PauseObject : MonoBehaviour {
                     item.Pause();
                 }
             }
+        }
+        if(m_character != null)
+        {
+            if (m_character.GetReceiveBodyblow == null) return;
+            if (pause)
+                m_character.StartCoroutine(m_character.GetReceiveBodyblow);
+            else
+                m_character.StopCoroutine(m_character.GetReceiveBodyblow);
         }
 	}
 

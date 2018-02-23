@@ -12,6 +12,10 @@ public class Character : MonoBehaviour {
     protected bool isBodyblow = false;          //体当たりを食らったか
     protected Vector3 gravity = Vector3.zero;   //重力
     protected IEnumerator receiveBodyblow = null;
+    public IEnumerator GetReceiveBodyblow
+    {
+        get { return receiveBodyblow; }
+    }
 
     static float BodyblowForce = 5f;            //体当たりの威力
     static protected readonly float JumpDemeritRate = 20f;
@@ -134,6 +138,7 @@ public class Character : MonoBehaviour {
         if(receiveBodyblow != null)
         {
             StopCoroutine(receiveBodyblow);
+            receiveBodyblow = null;
         }
         gravity.y = 0;
         isBodyblow = false;

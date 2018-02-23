@@ -551,8 +551,7 @@ public partial class Player : Character
     {
         if (m_hitinfo.collider == null) return false;
         var state = m_StateManager.StateProcassor.State;
-        return (m_hitinfo.collider.tag == "Tree" 
-            && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp));
+        return (m_hitinfo.collider.tag == "Tree" && (state == m_StateManager.TreeTp || state == m_StateManager.TreeFp));
     }
 
     //自分の乗っている木を取得

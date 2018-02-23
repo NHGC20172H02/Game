@@ -960,7 +960,6 @@ GameObject:
   - component: {fileID: 95975023100633560}
   - component: {fileID: 114762623522888212}
   - component: {fileID: 114161548239021076}
-  - component: {fileID: 114780313742344954}
   - component: {fileID: 114418872505225784}
   m_Layer: 0
   m_Name: NPC1
@@ -1967,34 +1966,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91cf854cb2183f94ba0be60ca7693d15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114780313742344954
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1977836974201614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 534e9a4438d3865448c8a1beea1defb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Radius: 0
-  m_StringUnit: {fileID: 1173252171523702, guid: 5cbbee2f3f2f26e449662ca8f86992ee,
-    type: 2}
-  m_SideNumber: 0
-  m_MaxCost: 200
-  m_Cost: 0
-  m_Strings: []
-  m_Net: {fileID: 1779774980515568, guid: 119e0faa09e8d32429c12ac35bb87826, type: 2}
-  m_NetAngleLimit: 40
-  m_NetCostLimit: 30
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 512
-  m_Cartridge: {fileID: 0}
-  m_PlayModeData: {fileID: 11400000, guid: 36825c6a32312a0409e4e25d860dd69a, type: 2}
-  m_IsMoving: 0
-  m_Prepos: {x: 0, y: 0, z: 0}
 --- !u!114 &114786671583191934
 MonoBehaviour:
   m_ObjectHideFlags: 1
