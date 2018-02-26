@@ -64,9 +64,9 @@ public class NPC1 : Character
     // Update is called once per frame
     protected override void Update () {
         //近かったオブジェクト（木）を取得
-        nearObj = GetComponent<NearObj>().m_nearObj2;
+        nearObj = GetComponent<NPCNearObj>().m_nearObj2;
         //2番目のオブジェクト（木）
-        nearObj2 = GetComponent<NearObj>().m_nearObj3;
+        nearObj2 = GetComponent<NPCNearObj>().m_nearObj3;
 
         NPCSpawn.GetComponent<NPC1Spawn>().wait_time = Spawn_time;
         NPCSpawn.GetComponent<NPC1Spawn>().spawn_true = spawn_true;
