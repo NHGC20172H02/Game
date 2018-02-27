@@ -8284,7 +8284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIAnimator: {fileID: 1436097655}
-  m_Timer: 180
+  m_Timer: 300
   m_TimerUI: {fileID: 632160130}
   m_Time_Cost:
   - {x: 300, y: 250}
