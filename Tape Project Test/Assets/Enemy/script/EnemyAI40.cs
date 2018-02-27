@@ -352,8 +352,10 @@ public class EnemyAI40 : Character
             {
                 m_randomCount = 0;
                 m_targetPos = GetPosition3();
+                JumpCalculation(jump_start, jump_end, 30.0f);
                 m_StateProcessor.State = m_GroundJumping;
             }
+            
         }
         else
         {
@@ -421,6 +423,7 @@ public class EnemyAI40 : Character
                         m_ground_jump_time = 0;
                         dead_time = 0;
                         m_targetPos = GetPosition3();
+                        JumpCalculation(jump_start, jump_end, 30.0f);
                         m_StateProcessor.State = m_GroundJumping;
                     }
                 }
