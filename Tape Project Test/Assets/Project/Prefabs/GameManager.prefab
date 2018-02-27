@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CursorVisible: 0
-  m_CursorLockMode: 0
+  m_CursorLockMode: 1
   m_AFKActive: 1
   m_AFKTime: 60
   m_MultiSceneHotKeyActive: 1

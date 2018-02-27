@@ -52,7 +52,10 @@ public class Tree : Connecter
 
 	private void Update()
 	{
-		Senryoutyu.Instance.Active(m_IsHitChara[0] && m_TerritoryRate < 100); 
+        if (Senryoutyu.Instance != null)
+        {
+            Senryoutyu.Instance.Active(m_IsHitChara[0] && m_TerritoryRate < 100);
+        }
 		TerritoryUpdate();
 
 		m_IsHitChara = new bool[] { false, false };
@@ -122,7 +125,7 @@ public class Tree : Connecter
 	private void TouchedSpider(int i)
 	{
 		if (m_IsHitChara[i])
-			m_TerritoryRate += m_AddRateSpider * Time.deltaTime * (i == 0 ? 1 : -1.3f);
+			m_TerritoryRate += m_AddRateSpider * Time.deltaTime * (i == 0 ? 1 : -1.1f);
 	}
 	private void TouchedString(int i)
 	{
