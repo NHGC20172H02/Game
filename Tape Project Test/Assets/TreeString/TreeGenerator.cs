@@ -12,12 +12,12 @@ public class TreeGenerator : MonoBehaviour {
 		m_Trees = new List<GameObject>();
 		Generate();
 	}
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.LeftControl)) {
-			Generate();
-		}
-	}
+	//private void Update()
+	//{
+	//	if (Input.GetKeyDown(KeyCode.LeftControl)) {
+	//		Generate();
+	//	}
+	//}
 	private void Generate()
 	{
 		foreach (var item in m_Trees)
