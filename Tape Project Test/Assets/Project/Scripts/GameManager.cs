@@ -33,7 +33,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Escape)) Exit();
+		if (Input.GetKeyDown(KeyCode.Escape)||Input.GetButtonDown("Start")&&Input.GetButtonDown("Back")) Exit();
 		HotKey();
 		AFK();
 	}
