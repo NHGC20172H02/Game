@@ -122,7 +122,7 @@ public class Tree : Connecter
 	private void TouchedSpider(int i)
 	{
 		if (m_IsHitChara[i])
-			m_TerritoryRate += m_AddRateSpider * Time.deltaTime * (i == 0 ? 1 : -1.3f);
+			m_TerritoryRate += m_AddRateSpider * Time.deltaTime * (i == 0 ? 1 : -1.1f);
 	}
 	private void TouchedString(int i)
 	{
