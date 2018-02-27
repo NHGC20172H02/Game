@@ -24,7 +24,7 @@ public partial class Player {
             }
             Ray ray = new Ray(move_end - m_enemyBottom, m_enemyBottom);
             Physics.Raycast(ray, out jump_target, 2f, m_TreeLayer);
-            move_end = jump_target.point;
+            //move_end = jump_target.point;
             m_hitinfo = jump_target;
             m_Animator.SetTrigger("Landing");
             JumpReset();

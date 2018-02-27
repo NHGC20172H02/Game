@@ -25,6 +25,7 @@ public class PredictionLine : MonoBehaviour {
     public List<Color> m_Colors;
     public List<GameObject> m_AttackableImage;
     public List<Material> m_Materials;
+    public RectTransform m_CursorParent;
 
     private Vector3 m_start;             //始点
     private Vector3 m_end;               //終点
@@ -57,7 +58,7 @@ public class PredictionLine : MonoBehaviour {
         Vector2 pos = Vector2.zero;
         Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, m_end);
         var parentRect = m_Cursor.parent.GetComponent<RectTransform>();
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, screenPos, m_UICamera, out pos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(m_CursorParent, screenPos, m_UICamera, out pos);
         m_Cursor.localPosition = pos;
         //m_Cursor.rotation = Quaternion.LookRotation(m_forward);
     }

@@ -22,16 +22,14 @@ public class EnemyDirectionCircle : MonoBehaviour
     public RectTransform m_DirectionIcon;
     public RectTransform m_IconText;
     public Material m_RingMaterial;
-    public AnimationCurve m_Gradation_Yellow;
     public GameObject m_DangerText;
+    public AudioSource m_Alert;
 
     private List<GameObject> m_trees = new List<GameObject>();
     private List<GameObject> m_treeRingArrows = new List<GameObject>();
     private List<GameObject> m_treeArrowIcons = new List<GameObject>();
 
-    private bool isGradation = false;
-    private float gradationRate = 0;
-    private float gradationSpeed = 0.2f;
+    private bool isAlert = false;
 
     void Start()
     {
@@ -46,8 +44,12 @@ public class EnemyDirectionCircle : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!isGradation)
-            isGradation = m_Enemy.GetComponent<EnemyAI4>().AttackPreparation();
+        if (!isAlert)
+        {
+            isAlert = m_Enemy.GetComponent<EnemyAI4>().AttackPreparation();
+            if(isAlert)
+                m_Alert.Play();
+        }
         AttackAlert();
 
         float dis = Vector3.Distance(m_Player.position, m_MainCamera.transform.position);
@@ -75,8 +77,6 @@ public class EnemyDirectionCircle : MonoBehaviour
             m_RingArrow.gameObject.SetActive(true);
             RingUpdate();
         }
-
-        m_DangerText.GetComponent<Flashing>().FlashUpdate();
     }
 
     //サークル状態での更新
@@ -217,18 +217,17 @@ public class EnemyDirectionCircle : MonoBehaviour
 
     private void AttackAlert()
     {
-        if (!isGradation) return;
+        if (!isAlert) return;
         m_DangerText.SetActive(true);
-        gradationRate = Mathf.Clamp(gradationRate + gradationSpeed * Time.deltaTime, 0, 1f);
-        Color color = m_RingMaterial.color;
-        color.g = m_Gradation_Yellow.Evaluate(gradationRate);
-        //m_RingMaterial.color = color;
+        m_DangerText.GetComponent<Flashing>().FlashUpdate();
 
-        if (gradationRate == 1f || !m_Enemy.GetComponent<EnemyAI4>().AttackPreparation())
+        if (!m_Enemy.GetComponent<EnemyAI4>().AttackPreparation())
         {
             m_DangerText.SetActive(false);
-            gradationRate = 0;
-            isGradation = false;
+            m_DangerText.GetComponent<Flashing>().TimeReset();
+            isAlert = false;
+            m_Alert.Stop();
+            m_Alert.time = 0;
         }
     }
 }
