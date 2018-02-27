@@ -30,14 +30,6 @@ public class PauseUI : MonoBehaviour
     
     private AudioSource manualSource;
 
-    enum state
-    {
-        none,
-        push,
-    }
-
-    state m_State = state.none;
-
     // Use this for initialization
     void Start ()
     {
@@ -66,7 +58,7 @@ public class PauseUI : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        if (Input.GetButtonDown("Start") && m_State == state.push)
+        if (Input.GetButtonDown("Start") && !PauseManager.Instance.Pausing())
         {
             m_PausePanel.SetActive(false);
             m_PauseBackGround.SetActive(false);
@@ -82,7 +74,6 @@ public class PauseUI : MonoBehaviour
             m_ManualRight.SetActive(false);
             PauseUI.m_Pfrag = false;
             m_CurrentPage = 0;
-            m_State = state.none;
 
             PauseManager.Instance.Pause(true);
             return;
@@ -93,7 +84,6 @@ public class PauseUI : MonoBehaviour
         {
             PauseManager.Instance.Pause(false);
 
-            m_State = state.push;
 
             m_PausePanel.SetActive(true);
             m_PauseBackGround2.SetActive(true);
