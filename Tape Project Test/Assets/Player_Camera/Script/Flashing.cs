@@ -5,25 +5,18 @@ using UnityEngine;
 public class Flashing : MonoBehaviour {
 
     public CanvasRenderer m_Renderer;
-    public float m_Interval = 1f;
+    public AnimationCurve m_AlertInterval;
 
-    private float m_nextTime;
+    private float time = 0;
 
-	void Start () {
-        m_nextTime = Time.time;
-	}
-	
 	public void FlashUpdate () {
-		if(Time.time > m_nextTime)
-        {
-            float alpha = m_Renderer.GetAlpha();
-
-            if(alpha == 1f)
-                m_Renderer.SetAlpha(0);
-            else
-                m_Renderer.SetAlpha(1f);
-
-            m_nextTime += m_Interval;
-        }
+        float alpha = m_AlertInterval.Evaluate(time);
+        m_Renderer.SetAlpha(alpha);
+        time += Time.deltaTime;
 	}
+
+    public void TimeReset()
+    {
+        time = 0;
+    }
 }
