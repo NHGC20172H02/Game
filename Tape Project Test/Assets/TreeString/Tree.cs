@@ -52,7 +52,10 @@ public class Tree : Connecter
 
 	private void Update()
 	{
-		Senryoutyu.Instance.Active(m_IsHitChara[0] && m_TerritoryRate < 100); 
+        if (Senryoutyu.Instance != null)
+        {
+            Senryoutyu.Instance.Active(m_IsHitChara[0] && m_TerritoryRate < 100);
+        }
 		TerritoryUpdate();
 
 		m_IsHitChara = new bool[] { false, false };

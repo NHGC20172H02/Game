@@ -354,8 +354,8 @@ public partial class EnemyAI4 : Character
             }
         }
 
-            //EnemyのY軸が0以下になったら
-            if (gameObject.transform.position.y <= 0)
+        //EnemyのY軸が0以下になったら
+        if (gameObject.transform.position.y <= 0)
         {
             gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0.8f, gameObject.transform.position.z);
         }
